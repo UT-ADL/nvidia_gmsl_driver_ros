@@ -1,6 +1,6 @@
-//#include <iostream>
-//#include <ros/ros.h>
-//#include "SekonixCamera.h"
+#include <iostream>
+#include <ros/ros.h>
+#include "SekonixCamera.h"
 //#include "PrintEventHandler.h"
 
 int main(/*int argc, char **argv*/) {

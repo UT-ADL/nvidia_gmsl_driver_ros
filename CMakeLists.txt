@@ -23,6 +23,7 @@ include_directories(
         /usr/local/driveworks/targets/aarch64-Linux/include
         /usr/local/cuda-10.2/targets/aarch64-linux/include
         $ENV{HOME}/nvidia/nvidia_sdk/DRIVE_OS_5.2.0.0_SDK_Linux_OS_DDPX/DRIVEOS/drive-t186ref-linux/include
+        include
 )
 
 catkin_package(
@@ -44,12 +45,12 @@ add_executable(${NODE_NAME}
 
 target_link_libraries(${NODE_NAME}
         ${catkin_LIBRARIES}
-#        nvmedia
-#        ${GLEW_LIBRARY}
-#        driveworks
-#        GLESv2
-#        EGL
-#        drm
-#        ${CUDA_LIBRARIES}
-#        ${OpenCV_LIBS}
+        nvmedia
+        ${GLEW_LIBRARY}
+        driveworks
+        GLESv2
+        EGL
+        drm
+        ${CUDA_LIBRARIES}
+        ${OpenCV_LIBS}
         )
