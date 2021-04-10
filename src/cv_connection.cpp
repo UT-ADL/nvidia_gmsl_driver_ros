@@ -48,8 +48,8 @@ OpenCVConnector::OpenCVConnector(std::string topic_name,
                                  std::string cam_info_file,
                                  int buffer)
     : it_(nh_),
-      counter(0),
       camera_id(camera_frame_id),
+      counter(0),
       camera_info_manager(ros::NodeHandle(topic_name), camera_frame_id) {
   std::string topic_raw = topic_name + std::string("/image_raw");
   std::string topic_jpg = topic_name + std::string("/image_raw/compressed");

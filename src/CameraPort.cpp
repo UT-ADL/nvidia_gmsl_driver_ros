@@ -19,11 +19,10 @@ CameraPort::CameraPort(
   std::cout << "------------------ CameraPort::CameraPort() --------------------" << std::endl;
   name_pretty_ = "Port #" + std::to_string(port);
 
-  auto report_status = [&](const std::string &subject, const dwStatus &status) {
+  auto report_status = [&](const std::string &subject, const dwStatus &status) -> void {
     if (status != DW_SUCCESS) {
       std::string msg_error = subject + " status: " + dwGetStatusName(status);
       printer_->Print(name_pretty_, msg_error);
-      return false;
     }
   };
 
@@ -39,7 +38,7 @@ CameraPort::CameraPort(
   std::cout << "GetSiblingCount(): " << GetSiblingCount() << std::endl;
   Cameras.resize(GetSiblingCount());
 
-  for (uint32_t ind_camera = 0; ind_camera < GetSiblingCount(); ind_camera++) {
+  for (size_t ind_camera = 0; ind_camera < GetSiblingCount(); ind_camera++) {
     const std::string topic = "port_" + std::to_string(port) + "/camera_" + std::to_string(ind_camera);
     const std::string camera_frame_id = "port_" + std::to_string(port) + "/camera_" + std::to_string(ind_camera);
     const std::string cam_info_file = "file://" + caminfo_folder + std::to_string(port) + std::to_string(ind_camera) + "_calibration.yml";
@@ -50,7 +49,7 @@ CameraPort::CameraPort(
   }
 }
 
-dwStatus CameraPort::Start(const dwContextHandle_t &context_handle) {
+dwStatus CameraPort::Start() {
   for (size_t ind_camera = 0; ind_camera < GetSiblingCount(); ++ind_camera) {
     Camera &camera = Cameras[ind_camera];
     const uint32_t max_jpeg_bytes = 3 * 1290 * 1208;
@@ -80,7 +79,7 @@ dwStatus CameraPort::Start(const dwContextHandle_t &context_handle) {
   return dwSensor_start(GetSensorHandle());
 }
 
-int CameraPort::GetSiblingCount() {
+size_t CameraPort::GetSiblingCount() {
   return camera_properties_.siblings;
 }
 
@@ -89,7 +88,7 @@ dwSensorHandle_t CameraPort::GetSensorHandle() const {
 }
 
 void CameraPort::ProcessCameraStreams(std::atomic_bool &is_running, const dwContextHandle_t &context_handle) {
-  for (int ind_camera = 0; ind_camera < Cameras.size(); ind_camera++) {
+  for (size_t ind_camera = 0; ind_camera < Cameras.size(); ind_camera++) {
     Camera &camera = Cameras[ind_camera];
 
     dwStatus status;
@@ -100,6 +99,7 @@ void CameraPort::ProcessCameraStreams(std::atomic_bool &is_running, const dwCont
     dwImageHandle_t image_handle_original;
 
     status = dwSensorCamera_readFrame(&camera_frame_handle, ind_camera, 0, sensor_handle_);
+//    status = dwSensorCamera_readFrameNew(&camera_frame_handle, 0, sensor_handle_);
     if (status != DW_SUCCESS) {
       continue;
     }

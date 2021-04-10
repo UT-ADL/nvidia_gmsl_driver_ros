@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.14 FATAL_ERROR)
 
 project(sekonix_camera_ut)
 
+set(CMAKE_WARN_DEPRECATED OFF)
+
 #-------------------------------------------------------------------------------
 # Configure project for cross-compilation
 #-------------------------------------------------------------------------------
@@ -34,13 +36,13 @@ set(NODE_NAME ${PROJECT_NAME}_node)
 
 add_executable(${NODE_NAME}
         src/main.cpp
-#        src/SekonixCamera.cpp
-#        src/DriveWorksApi.cpp
-#        src/DeviceArguments.cpp
-#        src/cv_connection.cpp
-#        src/CameraPort.cpp
-#        src/StopWatch.cpp
-#        src/PrintEventHandler.cpp
+        src/SekonixCamera.cpp
+        src/DriveWorksApi.cpp
+        src/DeviceArguments.cpp
+        src/cv_connection.cpp
+        src/CameraPort.cpp
+        src/StopWatch.cpp
+        src/PrintEventHandler.cpp
         )
 
 target_link_libraries(${NODE_NAME}

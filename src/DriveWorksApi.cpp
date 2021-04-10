@@ -38,11 +38,11 @@ namespace DriveWorks {
 DriveWorksApi::DriveWorksApi(DeviceArguments arguments,
                              ImageConfigPub pub_image_config,
                              PrintEventHandler::Ptr print_event_handler) :
+    debug_mode_(false),
     device_arguments_(std::move(arguments)),
     pub_image_config_(std::move(pub_image_config)),
-    debug_mode_(false),
-    name_pretty_("DriveWorksApi"),
     print_event_handler_(std::move(print_event_handler)) {
+  name_pretty_ = "DriveWorksApi";
   print_event_handler_->Print(name_pretty_, "Constructor is called.");
   InitializeContextHandle(context_handle_);
   print_event_handler_->Print(name_pretty_, "context_handle_ is initialized!");
@@ -95,7 +95,7 @@ DriveWorksApi::InitializeCameraPorts(std::vector<CameraPort::Ptr> &camera_ports,
 
   count_cameras = 0;
 
-  int pp = 0;
+  size_t pp = 0;
   if (port == "a")
     pp = 0;
   else if (port == "b")
@@ -157,7 +157,7 @@ DriveWorksApi::InitializeCameraPorts(std::vector<CameraPort::Ptr> &camera_ports,
   }
 
   for (auto &camera_port : camera_ports) {
-    dwStatus status = camera_port->Start(context_handle_);
+    dwStatus status = camera_port->Start();
     if (status != DW_SUCCESS) {
       std::cerr << "camera_port.Start failed " << std::endl;
       exit(EXIT_FAILURE);

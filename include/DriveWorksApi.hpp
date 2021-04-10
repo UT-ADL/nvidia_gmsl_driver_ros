@@ -71,12 +71,12 @@
 
 #include <dw/image/Image.h>
 
-#include <drive-t186ref-linux/include/nvmedia_image.h>
-#include <drive-t186ref-linux/include/nvmedia_ijpe.h>
+#include <nvmedia_image.h>
+#include <nvmedia_ijpe.h>
 
 #include "cv_connection.hpp"
 #include "DeviceArguments.hpp"
-#include <folly/ProducerConsumerQueue.h>
+//#include <folly/ProducerConsumerQueue.h>
 #include "CameraPort.h"
 #include "PrintEventHandler.h"
 

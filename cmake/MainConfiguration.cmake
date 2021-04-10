@@ -1,4 +1,5 @@
 # Copyright (c) 2016-2020 NVIDIA CORPORATION.  All rights reserved.
+# Edited by Maxandre Ogeret - University of Tartu
 
 cmake_minimum_required(VERSION 3.14 FATAL_ERROR)
 
@@ -49,7 +50,6 @@ find_package(Threads REQUIRED)
 # Basic configuration
 #-------------------------------------------------------------------------------
 include(ArchConfiguration)
-include(SamplesConfiguration)
 include(ResourcesConfiguration)
 include(Samples3rdparty)
 

@@ -4,7 +4,7 @@
 #include <dw/sensors/Sensors.h>
 #include <dw/image/Image.h>
 #include <dw/sensors/camera/Camera.h>
-#include <drive-t186ref-linux/include/nvmedia_ijpe.h>
+#include <nvmedia_ijpe.h>
 #include "cv_connection.hpp"
 #include "PrintEventHandler.h"
 
@@ -33,11 +33,11 @@ namespace DriveWorks {
 
     explicit CameraPort(dwSensorHandle_t sensor_handle, bool debug_mode, int port, const std::string &caminfo_folder, PrintEventHandler::Ptr printer);
 
-    dwStatus Start(const dwContextHandle_t &context_handle);
+    dwStatus Start();
 
     void ProcessCameraStreams(std::atomic_bool &is_running, const dwContextHandle_t &context_handle);
 
-    int GetSiblingCount();
+    size_t GetSiblingCount();
 
     dwSensorHandle_t GetSensorHandle() const;
 
