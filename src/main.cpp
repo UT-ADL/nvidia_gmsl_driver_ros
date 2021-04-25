@@ -1,44 +1,42 @@
-#include <iostream>
+// Created by Maxandre Ogeret.
+// (c) 2021 University of Tartu - Autonomous Driving Lab.
+
 #include <ros/ros.h>
-#include "SekonixCamera.h"
-#include "PrintEventHandler.h"
+#include "Sekonix_driver.h"
+#include <unistd.h>
+#include <dw/core/VersionCurrent.h>
+#include "framework/Log.hpp"
 
-int main(int argc, char **argv) {
-  std::cout << "------------------ main --------------------" << std::endl;
-  ros::init(argc, argv, "sekonix_camera_node", ros::init_options::NoSigintHandler);
-  ros::NodeHandle nh;
-  ros::NodeHandle nh_p("~");
+int main(int argc, char **argv)
+{
+  if (!(DW_VERSION.major == 3 && DW_VERSION.minor == 5)) {
+    ROS_FATAL("This driver requires Driveworks 3.5 !");
+    return 1;
+  }
 
-  auto signal_handler = [](int sig) {
-    (void) sig;
-    std::cout << "Signal handler calling...." << std::endl;
-    ros::shutdown();
-  };
+  // initialize loggers
+  ros::console::set_logger_level(ROSCONSOLE_DEFAULT_NAME, ros::console::levels::Debug);
+  dwLogger_initialize(getConsoleLoggerCallback(true));
+  dwLogger_setLogLevel(DW_LOG_VERBOSE);
 
-  // Detect exit signals
-  signal(SIGHUP, signal_handler);  // controlling terminal closed, Ctrl-D
-  signal(SIGINT, signal_handler);  // Ctrl-C
-  signal(SIGQUIT, signal_handler); // Ctrl-\, clean quit with core dump
-  signal(SIGABRT, signal_handler); // abort() called.
-  signal(SIGTERM, signal_handler); // kill command
-  signal(SIGSTOP, signal_handler); // kill command
+  ros::init(argc, argv, "sekonix_camera_ut_rewrite");
+  ros::NodeHandle nh("~");
+  ros::Rate rate(30);
 
-  std::string name_pretty{"Main"};
-  PrintEventHandler::Ptr print_event_handler = std::make_shared<PrintEventHandler>();
-  print_event_handler->Print(name_pretty, "sekonix_camera_node started!");
+  std::unique_ptr<Sekonix_driver> driver;
+  driver = std::make_unique<Sekonix_driver>(&nh);
 
-  SekonixCamera sekonix_camera(nh_p, print_event_handler);
+  if (!driver->setup_cameras())
+  {
+    return 1;
+  }
 
-  ros::AsyncSpinner spinner(1);
-  print_event_handler->Print(name_pretty, "Spinning has started!");
-  spinner.start();
-
-  ros::waitForShutdown();
-  print_event_handler->Print(name_pretty, "Spinning has ended!");
-
-  sekonix_camera.Shutdown();
-
-  print_event_handler->Print(name_pretty, "Just before return 0;");
-  std::cout << "------------------ end main --------------------" << std::endl;
+  while(ros::ok()) {
+    if (!driver->poll_and_process()) {
+        return 1;
+      }
+    ros::spinOnce();
+    rate.sleep();
+  }
   return 0;
 }

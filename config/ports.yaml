@@ -1,0 +1,20 @@
+ports:
+  # Camera HFM port list (interface) (a to d)
+  a:
+    # Fakra port list (link) (0 to 3)
+    0:
+      topic: "/interfacea/link0"
+      parameters:
+        # Parameter list, see https://docs.nvidia.com/drive/driveworks-3.5/camera_mainsection.html
+        camera-name : SF3324
+        output-format : processed
+    1:
+      topic: "/interfacea/link1"
+      parameters:
+        camera-name : SF3324
+        output-format : processed
+    2:
+      topic: "/interfacea/link2"
+      parameters:
+        camera-name : SF3325
+        output-format : processed

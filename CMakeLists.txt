@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.14 FATAL_ERROR)
 
-project(sekonix_camera_ut)
+project(sekonix_camera_ut_rewrite)
 
 set(CMAKE_WARN_DEPRECATED OFF)
 
@@ -11,6 +11,7 @@ include(cmake/MainConfiguration.cmake)
 
 find_package(OpenCV REQUIRED)
 find_package(gflags REQUIRED)
+find_package(YamlCpp REQUIRED)
 
 find_package(catkin REQUIRED COMPONENTS
         roscpp
@@ -36,13 +37,10 @@ set(NODE_NAME ${PROJECT_NAME}_node)
 
 add_executable(${NODE_NAME}
         src/main.cpp
-        src/SekonixCamera.cpp
-        src/DriveWorksApi.cpp
-        src/DeviceArguments.cpp
-        src/cv_connection.cpp
-        src/CameraPort.cpp
-        src/StopWatch.cpp
-        src/PrintEventHandler.cpp
+        src/Sekonix_driver.cpp
+        src/Camera.cpp
+        src/DriveworksApiWrapper.cpp
+        src/framework/Log.cpp
         )
 
 target_link_libraries(${NODE_NAME}
@@ -55,6 +53,7 @@ target_link_libraries(${NODE_NAME}
         drm
         ${CUDA_LIBRARIES}
         ${OpenCV_LIBS}
+        ${YAMLCPP_LIBRARY}
         )
 
 install(TARGETS
@@ -62,4 +61,12 @@ install(TARGETS
         ARCHIVE DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
         LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
         RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+        )
+
+install(DIRECTORY config/
+        DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/config
+        )
+
+install(DIRECTORY calib/
+        DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/calib
         )
