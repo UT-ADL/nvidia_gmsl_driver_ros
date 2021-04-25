@@ -1,8 +1,8 @@
 // Created by Maxandre Ogeret.
 // (c) 2021 University of Tartu - Autonomous Driving Lab.
 
-#ifndef SEKONIX_CAMERA_UT_REWRITE_CAMERA_H
-#define SEKONIX_CAMERA_UT_REWRITE_CAMERA_H
+#ifndef SEKONIX_CAMERA_UT_CAMERA_H
+#define SEKONIX_CAMERA_UT_CAMERA_H
 
 #include <ros/ros.h>
 #include <ros/package.h>
@@ -25,11 +25,39 @@
 
 class Camera {
 public:
+  /**
+   * @brief Constructor, initializes the camera handles and ros params.
+   * @param driveworksApiWrapper
+   * @param config
+   * @param interface
+   * @param link
+   * @param nodehandle
+   */
   Camera(std::shared_ptr<DriveworksApiWrapper> driveworksApiWrapper, const YAML::Node config, const std::string interface, const std::string link, ros::NodeHandle *nodehandle);
+
+  /**
+   * @brief Destructor, releases camera handles
+   */
   virtual ~Camera();
+
+  /**
+   * @brief Starts the sensor
+   */
   bool start();
+
+  /**
+   * @brief Polls camera for frame, gets jpg data then returns frame to sensor
+   */
   bool poll();
+
+  /**
+   * @brief Publishes the current jpg data and camera info
+   */
   void publish();
+
+  /**
+   * @brief Destroys image handle. Allows
+   */
   void clean();
 
 private:
@@ -42,7 +70,7 @@ private:
   NvMediaDevice *nvmediaDevice_ = nullptr;
   NvMediaIJPE *nvMediaIjpe_ = nullptr;
   uint32_t countByteJpeg_;
-  uint8_t *jpegImage_;
+  std::unique_ptr<uint8_t[]> jpegImage_;
   const uint32_t maxJpegBytes_ = 3 * 1290 * 1208;
   NvMediaSurfFormatAttr attrs_[7];
   NvMediaSurfaceType surfaceType_;
@@ -67,4 +95,4 @@ private:
   sensor_msgs::CameraInfo camera_info_;
 };
 
-#endif // SEKONIX_CAMERA_UT_REWRITE_CAMERA_H
+#endif // SEKONIX_CAMERA_UT_CAMERA_H

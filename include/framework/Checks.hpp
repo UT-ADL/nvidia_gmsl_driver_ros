@@ -1,3 +1,6 @@
+// Copyright (c) 2015-2016 NVIDIA Corporation. All rights reserved.
+// Edited by Maxandre Ogeret - 2021 - University of Tartu - Autonomous Driving Lab.
+
 #ifndef SAMPLES_COMMON_CHECKS_HPP_
 #define SAMPLES_COMMON_CHECKS_HPP_
 

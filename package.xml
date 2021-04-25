@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <package>
-  <name>sekonix_camera_ut_rewrite</name>
+  <name>sekonix_camera_ut</name>
   <version>0.0.0</version>
   <description>The sekonix_camera package</description>
 

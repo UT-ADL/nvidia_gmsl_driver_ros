@@ -19,7 +19,7 @@ int main(int argc, char **argv)
   dwLogger_initialize(getConsoleLoggerCallback(true));
   dwLogger_setLogLevel(DW_LOG_VERBOSE);
 
-  ros::init(argc, argv, "sekonix_camera_ut_rewrite");
+  ros::init(argc, argv, "sekonix_camera_ut");
   ros::NodeHandle nh("~");
   ros::Rate rate(30);
 

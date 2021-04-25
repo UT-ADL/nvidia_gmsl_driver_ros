@@ -1,8 +1,8 @@
 // Created by Maxandre Ogeret.
 // (c) 2021 University of Tartu - Autonomous Driving Lab.
 
-#ifndef SEKONIX_CAMERA_UT_REWRITE_SEKONIX_DRIVER_H
-#define SEKONIX_CAMERA_UT_REWRITE_SEKONIX_DRIVER_H
+#ifndef SEKONIX_CAMERA_UT_SEKONIX_DRIVER_H
+#define SEKONIX_CAMERA_UT_SEKONIX_DRIVER_H
 
 #include <ros/ros.h>
 #include <ros/package.h>
@@ -21,10 +21,13 @@ public:
   Sekonix_driver(ros::NodeHandle* nodehandle);
 
   /**
-   * Initializes all parameters and config.
+   * @brief Initializes all parameters and config, handles exception.
    */
   bool setup_cameras();
 
+  /**
+   * @brief Polls camera, publishes images and handles exception.
+   */
   bool poll_and_process();
 
 private:
@@ -47,4 +50,4 @@ public:
   dwSensorHandle_t m_camera[1];
 };
 
-#endif // SEKONIX_CAMERA_UT_REWRITE_SEKONIX_DRIVER_H
+#endif // SEKONIX_CAMERA_UT_SEKONIX_DRIVER_H

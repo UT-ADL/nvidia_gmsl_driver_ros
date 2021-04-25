@@ -24,7 +24,7 @@ Camera::Camera(std::shared_ptr<DriveworksApiWrapper> driveworksApiWrapper, const
   CHECK_DW_ERROR_ROS(dwSensorCamera_getSensorProperties(&cameraProperties_, sensorHandle_));
 
   // JPG Init
-  jpegImage_ = (uint8_t *) malloc(maxJpegBytes_);
+  jpegImage_ = std::make_unique<uint8_t[]>(maxJpegBytes_);
   NVM_SURF_FMT_SET_ATTR_YUV(attrs_, YUV, 422, PLANAR, UINT, 8, PL);
   surfaceType_ = NvMediaSurfaceFormatGetType(attrs_, 7);
 
@@ -46,8 +46,6 @@ Camera::Camera(std::shared_ptr<DriveworksApiWrapper> driveworksApiWrapper, const
   if (camera_info_manager_->validateURL(cam_info_file_.str()) &&
       camera_info_manager_->loadCameraInfo(cam_info_file_.str())) {
     camera_info_ = camera_info_manager_->getCameraInfo();
-  } else {
-    ROS_ERROR_STREAM("ERROR READING CALIBRATION FILE " << cam_info_file_.str() << " FOR " << frame_.str());
   }
 
   ROS_INFO_STREAM("Camera on interface : " << interface_ << ", link : " << link_ << " initialized successfully!");
@@ -70,8 +68,13 @@ bool Camera::poll() {
     return false;
   }
 
+  if (status_ == DW_TIME_OUT) {
+    ROS_WARN_STREAM("DROPPED FRAME FOR : " << frame_.str());
+    return false;
+  }
+
   if (status_ != DW_SUCCESS) {
-    ROS_FATAL_STREAM("FAILED TO READ FRAME!");
+    ROS_FATAL_STREAM("FAILED TO READ FRAME FOR : " << frame_.str());
     CHECK_DW_ERROR_ROS(status_);
     return false;
   }
@@ -126,7 +129,7 @@ bool Camera::poll() {
     nvMediaStatus_ = NvMediaIJPEBitsAvailable(nvMediaIjpe_, &countByteJpeg_, NVMEDIA_ENCODE_BLOCKING_TYPE_NEVER, 0);
   } while (nvMediaStatus_ != NVMEDIA_STATUS_OK);
 
-  nvMediaStatus_ = NvMediaIJPEGetBits(nvMediaIjpe_, &countByteJpeg_, jpegImage_, 0);
+  nvMediaStatus_ = NvMediaIJPEGetBits(nvMediaIjpe_, &countByteJpeg_, jpegImage_.get(), 0);
   if (nvMediaStatus_ != NVMEDIA_STATUS_OK) {
     ROS_FATAL_STREAM("NvMediaIJPEGetBits() failed: " << std::to_string(nvMediaStatus_));
     return false;
@@ -138,7 +141,7 @@ bool Camera::poll() {
 void Camera::publish() {
   sensor_msgs::CompressedImage img_msg_compressed;
   img_msg_compressed.data.resize(countByteJpeg_);
-  memcpy(&img_msg_compressed.data[0], jpegImage_, countByteJpeg_);
+  std::copy(jpegImage_.get(), jpegImage_.get()+countByteJpeg_, img_msg_compressed.data.begin());
   std_msgs::Header header;
   header.stamp = imageStamp_;
   header.frame_id = frame_.str();

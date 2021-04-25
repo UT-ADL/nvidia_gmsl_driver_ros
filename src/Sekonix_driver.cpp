@@ -61,6 +61,7 @@ bool Sekonix_driver::poll_and_process() {
         }
       }
     } catch (const std::runtime_error) {
+      ROS_FATAL_STREAM("COULDNT REACH CAMERA AFTER " << MAX_TRIES_ << " TRIALS");
       return false;
     }
   }

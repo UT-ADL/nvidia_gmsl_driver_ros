@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.14 FATAL_ERROR)
 
-project(sekonix_camera_ut_rewrite)
+project(sekonix_camera_ut)
 
 set(CMAKE_WARN_DEPRECATED OFF)
 
@@ -11,7 +11,7 @@ include(cmake/MainConfiguration.cmake)
 
 find_package(OpenCV REQUIRED)
 find_package(gflags REQUIRED)
-find_package(YamlCpp REQUIRED)
+find_package(YAMLCPP REQUIRED)
 
 find_package(catkin REQUIRED COMPONENTS
         roscpp
@@ -46,7 +46,6 @@ add_executable(${NODE_NAME}
 target_link_libraries(${NODE_NAME}
         ${catkin_LIBRARIES}
         nvmedia
-        ${GLEW_LIBRARY}
         driveworks
         GLESv2
         EGL

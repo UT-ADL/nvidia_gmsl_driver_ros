@@ -4,7 +4,7 @@
 # Dependencies
 #-------------------------------------------------------------------------------
 #add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/src/lodepng)
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/src/glfw)
+#add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/src/glfw)
 
 #set(cudnn_DIR "${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/${SDK_ARCH_DIR}/cudnn-${CUDNN_VERSION}" CACHE PATH '' FORCE)
 #find_package(cudnn REQUIRED CONFIG)
