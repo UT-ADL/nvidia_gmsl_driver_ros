@@ -1,8 +1,15 @@
 <upper>*Inspired by [NVIDIA dw_ros](https://github.com/NVIDIA/dw-ros) & [leo-drive drivers](https://gitlab.com/leo-drive/Drivers/sekonix_camera).* </upper>
 
-## How to use
+# Nvidia Drive GMSL Sekonix Camera ROS Driver
 
 *Note : In this documentation and in the source 'interface' designates the HFM connector, and 'link' the number of the FAKRA Z. See [here](https://docs.nvidia.com/drive/drive_os_5.1.6.1L/nvvib_docs/index.html#page/DRIVE_OS_Linux_SDK_Development_Guide/Camera/camera_xavier.html).*
+
+
+- Compatible with Driveworks 3.5
+- Compatible with ROS Melodic
+- Tested with Sekonix GMSL SF3324 and SF3325 cameras.
+
+## How to use
 
 ### Setup
 
