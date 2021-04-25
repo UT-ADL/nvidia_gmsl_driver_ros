@@ -14,10 +14,17 @@ int main(int argc, char **argv)
     return 1;
   }
 
-  // initialize loggers
-  ros::console::set_logger_level(ROSCONSOLE_DEFAULT_NAME, ros::console::levels::Debug);
-  dwLogger_initialize(getConsoleLoggerCallback(true));
-  dwLogger_setLogLevel(DW_LOG_VERBOSE);
+  std::vector<std::string> args_out;
+  ros::removeROSArgs(argc, argv, args_out);
+  for(auto arg : args_out) {
+    std::cout << arg << "\n";
+    if (arg == "--verbose") {
+      // initialize loggers
+      ros::console::set_logger_level(ROSCONSOLE_DEFAULT_NAME, ros::console::levels::Debug);
+      dwLogger_initialize(getConsoleLoggerCallback(true));
+      dwLogger_setLogLevel(DW_LOG_VERBOSE);
+    }
+  }
 
   ros::init(argc, argv, "sekonix_camera_ut");
   ros::NodeHandle nh("~");
@@ -35,6 +42,7 @@ int main(int argc, char **argv)
     if (!driver->poll_and_process()) {
         return 1;
       }
+    ROS_INFO_ONCE("Driver started !");
     ros::spinOnce();
     rate.sleep();
   }

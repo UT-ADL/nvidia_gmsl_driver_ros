@@ -41,14 +41,15 @@ Camera::Camera(std::shared_ptr<DriveworksApiWrapper> driveworksApiWrapper, const
   pub_info = nh_.advertise<sensor_msgs::CameraInfo>(config_["topic"].as<std::string>() + "/camera_info", 1024);
 
   //Calibration
+  nh_.param<std::string>("calib_dir_path", calibDirPath_, ros::package::getPath(ros::this_node::getName().substr(1)) + "/calib/");
   camera_info_manager_ = std::make_unique<camera_info_manager::CameraInfoManager>(ros::NodeHandle(config_["topic"].as<std::string>()), frame_.str());
-  cam_info_file_ << "file://" << ros::package::getPath(ros::this_node::getName().substr(1)) << "/calib/" << frame_.str() << ".yaml";
+  cam_info_file_ << "file://" << calibDirPath_ << frame_.str() << ".yaml";
   if (camera_info_manager_->validateURL(cam_info_file_.str()) &&
       camera_info_manager_->loadCameraInfo(cam_info_file_.str())) {
     camera_info_ = camera_info_manager_->getCameraInfo();
   }
 
-  ROS_INFO_STREAM("Camera on interface : " << interface_ << ", link : " << link_ << " initialized successfully!");
+  ROS_DEBUG_STREAM("Camera on interface : " << interface_ << ", link : " << link_ << " initialized successfully!");
 }
 
 Camera::~Camera() {

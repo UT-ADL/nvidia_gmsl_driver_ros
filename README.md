@@ -1,5 +1,29 @@
 <upper>*Inspired by [NVIDIA dw_ros](https://github.com/NVIDIA/dw-ros) & [leo-drive drivers](https://gitlab.com/leo-drive/Drivers/sekonix_camera).* </upper>
 
+## How to use
+
+*Note : In this documentation and in the source 'interface' designates the HFM connector, and 'link' the number of the FAKRA Z. See [here](https://docs.nvidia.com/drive/drive_os_5.1.6.1L/nvvib_docs/index.html#page/DRIVE_OS_Linux_SDK_Development_Guide/Camera/camera_xavier.html).*
+
+### Setup
+
+- Copy the config file `ports.yaml` to your workspace.
+- Copy the launchfile `sekonix_driver_ut.launch` to to your workspace.
+- Edit the config file `ports.yaml` to your need.
+
+### Calibrating the cameras
+
+This drivers **doesn't** use the native nvidia RIG calibration file. It uses the ROS ones.  
+To calibrate the cameras :
+- Run the driver with an empty calibration dir. 
+- Use ros [camera_calibration](wiki.ros.org/camera_calibration) to calibrate the cameras.
+- Put the camera calibration yaml files in your calib dir.
+
+**Note :** In the calibration dir the calibration files **MUST** have this syntax : `interface<a-d>_link<0-3>.yaml`. For example : `interfacea_link1.yaml`.
+
+### Debug
+
+In case of problem you can start the driver in verbose mode :  `rosrun sekonix_camera_ut sekonix_camera_ut_node --verbose`
+
 ## How to build on host
 
 #### Required steps

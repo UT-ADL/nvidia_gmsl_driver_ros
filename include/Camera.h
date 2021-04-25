@@ -85,6 +85,7 @@ private:
   dwStatus status_;
   NvMediaStatus nvMediaStatus_;
   YAML::Node config_;
+  std::string calibDirPath_ = "";
   std::string params_ = "";
   std::string interface_ = "";
   std::string link_ = "";

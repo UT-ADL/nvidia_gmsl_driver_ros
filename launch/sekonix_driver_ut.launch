@@ -1,0 +1,9 @@
+<launch>
+    <arg name="config_path" default="$(dirname)/../config/ports.yaml" doc="Path to the port config file" />
+    <arg name="calib_dir_path" default="$(dirname)/../calib/" doc="Path to calib dir with trailing slash" />
+
+    <node pkg="sekonix_camera_ut" type="sekonix_camera_ut_node" name="sekonix_camera_ut">
+        <param name="config_path" value="$(arg config_path)" />
+        <param name="calib_dir_path" value="$(arg calib_dir_path)" />
+    </node>
+</launch>
