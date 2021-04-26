@@ -1,24 +1,27 @@
 // Created by Maxandre Ogeret.
 // (c) 2021 University of Tartu - Autonomous Driving Lab.
 
-#include <ros/ros.h>
 #include "Sekonix_driver.h"
-#include <unistd.h>
-#include <dw/core/VersionCurrent.h>
 #include "framework/Log.hpp"
+#include <dw/core/VersionCurrent.h>
+#include <ros/ros.h>
+#include <unistd.h>
 
-int main(int argc, char **argv)
+int main(int argc, char** argv)
 {
-  if (!(DW_VERSION.major == 3 && DW_VERSION.minor == 5)) {
+  if (!(DW_VERSION.major == 3 && DW_VERSION.minor == 5))
+  {
     ROS_FATAL("This driver requires Driveworks 3.5 !");
     return 1;
   }
 
   std::vector<std::string> args_out;
   ros::removeROSArgs(argc, argv, args_out);
-  for(auto arg : args_out) {
+  for (auto arg : args_out)
+  {
     std::cout << arg << "\n";
-    if (arg == "--verbose") {
+    if (arg == "--verbose")
+    {
       // initialize loggers
       ros::console::set_logger_level(ROSCONSOLE_DEFAULT_NAME, ros::console::levels::Debug);
       dwLogger_initialize(getConsoleLoggerCallback(true));
@@ -38,10 +41,12 @@ int main(int argc, char **argv)
     return 1;
   }
 
-  while(ros::ok()) {
-    if (!driver->poll_and_process()) {
-        return 1;
-      }
+  while (ros::ok())
+  {
+    if (!driver->poll_and_process())
+    {
+      return 1;
+    }
     ROS_INFO_ONCE("Driver started !");
     ros::spinOnce();
     rate.sleep();

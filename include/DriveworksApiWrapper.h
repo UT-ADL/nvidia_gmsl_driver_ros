@@ -4,15 +4,14 @@
 #ifndef SEKONIX_CAMERA_UT_DRIVEWORKSAPIWRAPPER_H
 #define SEKONIX_CAMERA_UT_DRIVEWORKSAPIWRAPPER_H
 
-#include <ros/ros.h>
 #include <dw/core/Context.h>
 #include <dw/core/VersionCurrent.h>
 #include <dw/sensors/Sensors.h>
+#include <ros/ros.h>
 
-class DriveworksApiWrapper {
-
+class DriveworksApiWrapper
+{
 public:
-
   /**
    * @brief Constructor, initializes SAL & context handles
    */
@@ -31,4 +30,4 @@ private:
   dwContextParameters sdkParams_ = {};
 };
 
-#endif // SEKONIX_CAMERA_UT_DRIVEWORKSAPIWRAPPER_H
+#endif  // SEKONIX_CAMERA_UT_DRIVEWORKSAPIWRAPPER_H

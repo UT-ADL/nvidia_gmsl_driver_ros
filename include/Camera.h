@@ -4,26 +4,27 @@
 #ifndef SEKONIX_CAMERA_UT_CAMERA_H
 #define SEKONIX_CAMERA_UT_CAMERA_H
 
-#include <ros/ros.h>
+#include <camera_info_manager/camera_info_manager.h>
 #include <ros/package.h>
+#include <ros/ros.h>
 #include <sensor_msgs/CompressedImage.h>
 #include <sensor_msgs/image_encodings.h>
-#include <camera_info_manager/camera_info_manager.h>
 
 #include "yaml-cpp/yaml.h"
 #include <chrono>
-#include <thread>
 #include <sstream>
+#include <thread>
 
-#include <dw/sensors/Sensors.h>
 #include <dw/image/Image.h>
+#include <dw/sensors/Sensors.h>
 #include <dw/sensors/camera/Camera.h>
 #include <nvmedia_ijpe.h>
 
 #include "DriveworksApiWrapper.h"
 #include "framework/Checks.hpp"
 
-class Camera {
+class Camera
+{
 public:
   /**
    * @brief Constructor, initializes the camera handles and ros params.
@@ -33,7 +34,8 @@ public:
    * @param link
    * @param nodehandle
    */
-  Camera(std::shared_ptr<DriveworksApiWrapper> driveworksApiWrapper, const YAML::Node config, const std::string interface, const std::string link, ros::NodeHandle *nodehandle);
+  Camera(std::shared_ptr<DriveworksApiWrapper> driveworksApiWrapper, const YAML::Node config,
+         const std::string interface, const std::string link, ros::NodeHandle* nodehandle);
 
   /**
    * @brief Destructor, releases camera handles
@@ -67,8 +69,8 @@ private:
   dwImageHandle_t imageHandleOriginal_;
   dwImageProperties imageProperties_;
   dwCameraProperties cameraProperties_;
-  NvMediaDevice *nvmediaDevice_ = nullptr;
-  NvMediaIJPE *nvMediaIjpe_ = nullptr;
+  NvMediaDevice* nvmediaDevice_ = nullptr;
+  NvMediaIJPE* nvMediaIjpe_ = nullptr;
   uint32_t countByteJpeg_;
   std::unique_ptr<uint8_t[]> jpegImage_;
   const uint32_t maxJpegBytes_ = 3 * 1290 * 1208;
@@ -96,4 +98,4 @@ private:
   sensor_msgs::CameraInfo camera_info_;
 };
 
-#endif // SEKONIX_CAMERA_UT_CAMERA_H
+#endif  // SEKONIX_CAMERA_UT_CAMERA_H

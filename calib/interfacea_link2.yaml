@@ -1,6 +1,6 @@
 image_width: 1920
 image_height: 1208
-camera_name: interfacea_link1
+camera_name: interfacea_link2
 camera_matrix:
   rows: 3
   cols: 3
