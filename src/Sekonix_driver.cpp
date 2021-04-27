@@ -64,14 +64,14 @@ bool Sekonix_driver::poll_and_process()
         tries_++;
         if (tries_ > MAX_TRIES_)
         {
-          ROS_FATAL_STREAM("Camera unresponsive");
+          ROS_FATAL_STREAM("COULDNT REACH CAMERA AFTER " << MAX_TRIES_ << " TRIALS");
           return false;
         }
       }
     }
     catch (const std::runtime_error)
     {
-      ROS_FATAL_STREAM("COULDNT REACH CAMERA AFTER " << MAX_TRIES_ << " TRIALS");
+      ROS_FATAL_STREAM("FATAL ERROR WHILE POLLING AND PROCESSING");
       return false;
     }
   }
