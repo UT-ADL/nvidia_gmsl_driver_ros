@@ -18,7 +18,6 @@ find_package(catkin REQUIRED COMPONENTS
         geometry_msgs
         image_transport
         camera_info_manager
-        cv_bridge
         )
 
 include_directories(
@@ -47,11 +46,7 @@ target_link_libraries(${NODE_NAME}
         ${catkin_LIBRARIES}
         nvmedia
         driveworks
-        GLESv2
-        EGL
-        drm
         ${CUDA_LIBRARIES}
-        ${OpenCV_LIBS}
         ${YAMLCPP_LIBRARY}
         )
 

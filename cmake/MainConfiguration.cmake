@@ -43,7 +43,6 @@ set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 #-------------------------------------------------------------------------------
 # System packages
 #-------------------------------------------------------------------------------
-find_package(EGL)
 find_package(Threads REQUIRED)
 
 #-------------------------------------------------------------------------------
@@ -70,10 +69,6 @@ set(Driveworks_LIBRARIES
 
 if(VIBRANTE)
     list(APPEND Driveworks_LIBRARIES ${vibrante_LIBRARIES} ${vibrante_Xlibs_LIBRARIES} nvmedia)
-endif()
-
-if (VIBRANTE OR DW_EXPERIMENTAL_FORCE_EGL)
-    list(APPEND Driveworks_LIBRARIES ${EGL_LIBRARIES})
 endif()
 
 #-------------------------------------------------------------------------------
