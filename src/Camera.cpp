@@ -161,16 +161,17 @@ bool Camera::poll()
 
 void Camera::publish()
 {
+  header_.stamp = imageStamp_;
+  header_.frame_id = frame_.str();
+
   sensor_msgs::CompressedImage img_msg_compressed;
   img_msg_compressed.data.resize(countByteJpeg_);
   std::copy(jpegImage_.get(), jpegImage_.get() + countByteJpeg_, img_msg_compressed.data.begin());
-  std_msgs::Header header;
-  header.stamp = imageStamp_;
-  header.frame_id = frame_.str();
-  img_msg_compressed.header = header;
+  img_msg_compressed.header = header_;
   img_msg_compressed.format = "jpeg";
   pub_compressed.publish(img_msg_compressed);
 
+  camera_info_.header = header_;
   pub_info.publish(camera_info_);
 }
 

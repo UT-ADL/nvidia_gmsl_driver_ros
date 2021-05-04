@@ -96,6 +96,7 @@ private:
   std::ostringstream frame_;
   std::ostringstream cam_info_file_;
   sensor_msgs::CameraInfo camera_info_;
+  std_msgs::Header header_;
 };
 
 #endif  // SEKONIX_CAMERA_UT_CAMERA_H
