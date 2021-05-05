@@ -18,3 +18,8 @@ ports:
       parameters:
         camera-name : SF3325
         output-format : processed
+    3:
+      topic: "/interfacea/link3"
+      parameters:
+        camera-name : SF3325
+        output-format : processed
