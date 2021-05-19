@@ -31,13 +31,17 @@ int main(int argc, char** argv)
 
   ros::init(argc, argv, "sekonix_camera_ut");
   ros::NodeHandle nh("~");
-  ros::Rate rate(30);
 
+  double framerate = 0;
+  nh.param<double>("framerate", framerate, 30);
+
+  ros::Rate rate(framerate);
   std::unique_ptr<Sekonix_driver> driver;
   driver = std::make_unique<Sekonix_driver>(&nh);
 
   if (!driver->setup_cameras())
   {
+    ros::shutdown();
     return 1;
   }
 
@@ -45,6 +49,7 @@ int main(int argc, char** argv)
   {
     if (!driver->poll_and_process())
     {
+      ros::shutdown();
       return 1;
     }
     ROS_INFO_ONCE("Driver started !");

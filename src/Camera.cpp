@@ -69,25 +69,28 @@ bool Camera::start()
   dwSensor_start(sensorHandle_);
 }
 
+bool Camera::get_last_frame() {
+  dwStatus status_old = DW_NOT_READY;
+
+  while (true) {
+    status_ = dwSensorCamera_readFrameNew(&cameraFrameHandle_, 0, sensorHandle_);
+
+    if (status_ == DW_NOT_READY) {
+      std::this_thread::sleep_for(std::chrono::milliseconds(5));
+      return false;
+    }
+
+    if (status_ == DW_TIME_OUT && status_old == DW_SUCCESS) {
+      return true;
+    }
+
+    status_old = status_;
+  }
+}
+
 bool Camera::poll()
 {
-  status_ = dwSensorCamera_readFrameNew(&cameraFrameHandle_, 0, sensorHandle_);
-  if (status_ == DW_NOT_READY)
-  {
-    std::this_thread::sleep_for(std::chrono::milliseconds(5));
-    return false;
-  }
-
-  if (status_ == DW_TIME_OUT)
-  {
-    ROS_WARN_STREAM("DROPPED FRAME FOR : " << frame_.str());
-    return false;
-  }
-
-  if (status_ != DW_SUCCESS)
-  {
-    ROS_FATAL_STREAM("FAILED TO READ FRAME FOR : " << frame_.str());
-    CHECK_DW_ERROR_ROS(status_);
+  if (!get_last_frame()) {
     return false;
   }
 
@@ -96,20 +99,6 @@ bool Camera::poll()
   if (status_ != DW_SUCCESS)
   {
     ROS_FATAL_STREAM("dwSensorCamera_getImage() Failed");
-    return false;
-  }
-
-  status_ = dwImage_create(&imageHandle_, imageProperties_, driveworksApiWrapper_->context_handle_);
-  if (status_ != DW_SUCCESS)
-  {
-    ROS_FATAL_STREAM("dwImage_create() Failed");
-    return false;
-  }
-
-  status_ = dwImage_copyConvert(imageHandle_, imageHandleOriginal_, driveworksApiWrapper_->context_handle_);
-  if (status_ != DW_SUCCESS)
-  {
-    ROS_FATAL_STREAM("dwImage_copyConvert() Failed");
     return false;
   }
 
@@ -130,7 +119,7 @@ bool Camera::poll()
   imageStamp_ = ros::Time((double)timestamp_ * 10e-7);
 
   dwImageNvMedia* image_nvmedia;
-  status_ = dwImage_getNvMedia(&image_nvmedia, imageHandle_);
+  status_ = dwImage_getNvMedia(&image_nvmedia, imageHandleOriginal_);
   if (status_ != DW_SUCCESS)
   {
     ROS_FATAL_STREAM("dwImage_getNvMedia() Failed");
@@ -175,11 +164,4 @@ void Camera::publish()
   pub_info.publish(camera_info_);
 }
 
-void Camera::clean()
-{
-  status_ = dwImage_destroy(imageHandle_);
-  if (status_ != DW_SUCCESS)
-  {
-    ROS_ERROR_STREAM("dwImage_destroy imageHandle_ Failed");
-  }
-}
+void Camera::clean() {}

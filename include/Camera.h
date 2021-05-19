@@ -53,6 +53,11 @@ public:
   bool poll();
 
   /**
+   * @brief Polls the camera until the buffer is empty. ensuring the frame is the most recent one.
+   */
+  bool get_last_frame();
+
+  /**
    * @brief Publishes the current jpg data and camera info
    */
   void publish();

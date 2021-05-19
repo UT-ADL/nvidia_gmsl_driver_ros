@@ -31,8 +31,9 @@ bool Sekonix_driver::setup_cameras()
                                                             interface_it->first.as<std::string>(),
                                                             link_it->first.as<std::string>(), &nh_));
         }
-        catch (const std::runtime_error)
+        catch (const std::runtime_error& e)
         {
+          ROS_FATAL_STREAM("FAILED TO SETUP CAMERAS: " << e.what());
           return false;
         }
         camera_count++;
@@ -43,37 +44,49 @@ bool Sekonix_driver::setup_cameras()
   {
     camera->start();
   }
+  pool_ = std::make_unique<ThreadPool>(camera_count);
   ROS_INFO_STREAM(camera_vector_.size() << " cameras initialized.");
   return true;
 }
 
 bool Sekonix_driver::poll_and_process()
 {
-  for (auto& camera : camera_vector_)
+  try
   {
-    try
+    for (auto& camera : camera_vector_)
     {
-      if (camera->poll())
-      {
-        camera->publish();
-        camera->clean();
-        tries_ = 0;
-      }
-      else
-      {
+      future_pool_.emplace_back(pool_->enqueue(
+          [](const std::shared_ptr<Camera>& camera) -> bool {
+            if (camera->poll())
+            {
+              camera->publish();
+              camera->clean();
+              return true;
+            }
+            return false;
+          }, camera));
+    }
+
+    bool valid = true;
+    for (auto& future : future_pool_) {
+      if (!future.get() && valid) {
+        valid = false;
         tries_++;
-        if (tries_ > MAX_TRIES_)
-        {
-          ROS_FATAL_STREAM("COULDNT REACH CAMERA AFTER " << MAX_TRIES_ << " TRIALS");
-          return false;
-        }
       }
     }
-    catch (const std::runtime_error)
+    future_pool_.clear();
+
+    if (tries_ > MAX_TRIES_)
     {
-      ROS_FATAL_STREAM("FATAL ERROR WHILE POLLING AND PROCESSING");
+      ROS_FATAL_STREAM("COULDNT REACH CAMERA AFTER " << MAX_TRIES_ << " TRIALS");
       return false;
     }
   }
+  catch (const std::runtime_error& e)
+  {
+    ROS_FATAL_STREAM("FATAL ERROR WHILE POLLING AND PROCESSING: " << e.what());
+    return false;
+  }
+
   return true;
 }

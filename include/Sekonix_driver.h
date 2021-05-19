@@ -4,13 +4,14 @@
 #ifndef SEKONIX_CAMERA_UT_SEKONIX_DRIVER_H
 #define SEKONIX_CAMERA_UT_SEKONIX_DRIVER_H
 
-#include "yaml-cpp/yaml.h"
+#include <yaml-cpp/yaml.h>
 #include <dw/sensors/Sensors.h>
 #include <ros/package.h>
 #include <ros/ros.h>
 
 #include <Camera.h>
 #include <DriveworksApiWrapper.h>
+#include <ThreadPool.h>
 
 class Sekonix_driver
 {
@@ -32,6 +33,8 @@ public:
   bool poll_and_process();
 
 private:
+  std::unique_ptr<ThreadPool> pool_;
+  std::vector<std::future<bool>> future_pool_;
   const size_t MAX_TRIES_ = 100;
   size_t tries_ = 0;
   ros::NodeHandle nh_;
@@ -42,7 +45,6 @@ private:
   size_t camera_count = 0;
   std::vector<std::shared_ptr<Camera>> camera_vector_;
 
-  //  ---
 public:
   dwContextHandle_t m_context = DW_NULL_HANDLE;
   dwSALHandle_t m_sal = DW_NULL_HANDLE;
