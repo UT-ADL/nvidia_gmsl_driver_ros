@@ -35,7 +35,7 @@ int main(int argc, char** argv)
   double framerate = 0;
   nh.param<double>("framerate", framerate, 30);
 
-  ros::Rate rate(framerate);
+  ros::Rate rate(std::min(framerate, 30.0));
   std::unique_ptr<Sekonix_driver> driver;
   driver = std::make_unique<Sekonix_driver>(&nh);
 
