@@ -22,11 +22,15 @@ find_package(catkin REQUIRED COMPONENTS
 
 include_directories(
         ${catkin_INCLUDE_DIRS}
-        /usr/local/driveworks/targets/aarch64-Linux/include
-        /usr/local/cuda-10.2/targets/aarch64-linux/include
-        $ENV{HOME}/nvidia/nvidia_sdk/DRIVE_OS_5.2.0.0_SDK_Linux_OS_DDPX/DRIVEOS/drive-t186ref-linux/include
+        $ENV{HOME}/nvidia/nvidia_sdk/DRIVE_OS_5.2.0_SDK_Linux_OS_DDPX/DRIVEOS/drive-t186ref-linux/include
         include
 )
+
+if(CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64")
+    include_directories(
+            /usr/local/driveworks/targets/x86_64-Linux/include
+    )
+endif()
 
 catkin_package(
         LIBRARIES ${PROJECT_NAME}
@@ -39,6 +43,7 @@ add_executable(${NODE_NAME}
         src/Sekonix_driver.cpp
         src/Camera.cpp
         src/DriveworksApiWrapper.cpp
+        src/UndistortWrapper.cpp
         src/framework/Log.cpp
         )
 
