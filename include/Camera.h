@@ -21,6 +21,7 @@
 #include <nvmedia_ijpe.h>
 
 #include "DriveworksApiWrapper.h"
+#include "UndistortWrapper.h"
 #include "framework/Checks.hpp"
 #include "exceptions/SekonixDriverFatalException.h"
 #include "exceptions/SekonixDriverMinorException.h"
@@ -76,8 +77,8 @@ public:
 private:
   dwSensorHandle_t sensorHandle_ = DW_NULL_HANDLE;
   dwCameraFrameHandle_t cameraFrameHandle_;
-  dwImageHandle_t imageHandle_;
   dwImageHandle_t imageHandleOriginal_;
+  dwImageHandle_t imageRectHandle_;
   dwImageProperties imageProperties_;
   dwCameraProperties cameraProperties_;
   NvMediaDevice* nvmediaDevice_ = nullptr;
@@ -94,6 +95,7 @@ private:
   std::unique_ptr<camera_info_manager::CameraInfoManager> camera_info_manager_;
 
   std::shared_ptr<DriveworksApiWrapper> driveworksApiWrapper_;
+  std::shared_ptr<UndistortWrapper> undistortWrapper_;
   dwSensorParams sensorParams_;
   dwStatus status_;
   NvMediaStatus nvMediaStatus_;

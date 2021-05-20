@@ -3,6 +3,7 @@ cmake_minimum_required(VERSION 3.14 FATAL_ERROR)
 project(sekonix_camera_ut)
 
 set(CMAKE_WARN_DEPRECATED OFF)
+add_definitions(-DVIBRANTE) #[[fixme: remove]]
 
 #-------------------------------------------------------------------------------
 # Configure project for cross-compilation
@@ -43,6 +44,7 @@ add_executable(${NODE_NAME}
         src/Sekonix_driver.cpp
         src/Camera.cpp
         src/DriveworksApiWrapper.cpp
+        src/UndistortWrapper.cpp
         src/framework/Log.cpp
         )
 

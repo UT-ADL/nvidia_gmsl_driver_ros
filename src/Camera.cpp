@@ -54,6 +54,9 @@ Camera::Camera(std::shared_ptr<DriveworksApiWrapper> driveworksApiWrapper, const
     camera_info_ = camera_info_manager_->getCameraInfo();
   }
 
+  // Rectification
+  undistortWrapper_ = std::make_unique<UndistortWrapper>(driveworksApiWrapper_, &nh_, interface_, link_);
+
   ROS_DEBUG_STREAM("Camera on interface : " << interface_ << ", link : " << link_ << " initialized successfully!");
 }
 
@@ -103,10 +106,14 @@ void Camera::poll()
   CHECK_DW_ERROR_ROS(dwImage_getTimestamp(&timestamp_, imageHandleOriginal_));
   imageStamp_ = ros::Time((double)timestamp_ * 10e-7);
 
-  dwImageNvMedia* image_nvmedia;
-  CHECK_DW_ERROR_ROS(dwImage_getNvMedia(&image_nvmedia, imageHandleOriginal_));
+  // Image rectification
+  dwImageNvMedia* image_nvmedia_rect;
+  CHECK_DW_ERROR_ROS(dwImage_create(&imageRectHandle_, imageProperties_, driveworksApiWrapper_->context_handle_))
+  CHECK_DW_ERROR_ROS(dwImage_getNvMedia(&image_nvmedia_rect, imageRectHandle_))
 
-  CHECK_NVMEDIA_ERROR_ROS_FATAL(NvMediaIJPEFeedFrame(nvMediaIjpe_, image_nvmedia->img, 70));
+  undistortWrapper_->undistortImage(&imageHandleOriginal_, image_nvmedia_rect);
+
+  CHECK_NVMEDIA_ERROR_ROS_FATAL(NvMediaIJPEFeedFrame(nvMediaIjpe_, image_nvmedia_rect->img, 70));
 
   do
   {
