@@ -16,6 +16,9 @@
 #include <time.h>
 
 #include <ros/ros.h>
+#include <nvmedia_core.h>
+#include "exceptions/SekonixDriverMinorException.h"
+#include "exceptions/SekonixDriverFatalException.h"
 
 //------------------------------------------------------------------------------
 // Functions
@@ -84,13 +87,45 @@ inline void getDateString(char* buf, size_t length)
     {                                                                                                                  \
       char buf[80];                                                                                                    \
       getDateString(buf, 80);                                                                                          \
-      ROS_FATAL_STREAM((std::string(buf) + std::string("DW Error ") + dwGetStatusName(result) +                        \
-                        std::string(" executing DW function:\n " #x) + std::string("\n at " __FILE__ ":") +            \
-                        std::to_string(__LINE__)));                                                                    \
-      throw std::runtime_error(std::string(buf) + std::string("DW Error ") + dwGetStatusName(result) +                 \
+      throw SekonixDriverFatalException(std::string(buf) + std::string("DW Error ") + dwGetStatusName(result) +        \
                                std::string(" executing DW function:\n " #x) + std::string("\n at " __FILE__ ":") +     \
                                std::to_string(__LINE__));                                                              \
     }                                                                                                                  \
+  };
+
+#define CHECK_DW_ERROR_ROS_MINOR(x)                                                                                    \
+  {                                                                                                                    \
+    dwStatus result = x;                                                                                               \
+    if (result != DW_SUCCESS)                                                                                          \
+    {                                                                                                                  \
+      char buf[80];                                                                                                    \
+      getDateString(buf, 80);                                                                                          \
+      throw SekonixDriverMinorException(std::string(buf) + std::string("DW Error ") + dwGetStatusName(result) +        \
+                               std::string(" executing DW function:\n " #x) + std::string("\n at " __FILE__ ":") +     \
+                               std::to_string(__LINE__));                                                              \
+    }                                                                                                                  \
+  };
+
+#define CHECK_NVMEDIA_ERROR_ROS_FATAL(x)                                                                               \
+  {                                                                                                                    \
+    NvMediaStatus result = x;                                                                                          \
+    if (result != NVMEDIA_STATUS_OK)                                                                                   \
+    {                                                                                                                  \
+      char buf[80];                                                                                                    \
+      getDateString(buf, 80);                                                                                          \
+      throw SekonixDriverFatalException(std::string(buf) + std::string(" NVMEDIA Fatal Error"));                       \
+      }                                                                                                                \
+  };
+
+#define CHECK_NVMEDIA_ERROR_ROS_MINOR(x)                                                                               \
+  {                                                                                                                    \
+    NvMediaStatus result = x;                                                                                          \
+    if (result != NVMEDIA_STATUS_OK)                                                                                   \
+    {                                                                                                                  \
+      char buf[80];                                                                                                    \
+      getDateString(buf, 80);                                                                                          \
+      throw SekonixDriverErrorException(std::string(buf) + std::string(" NVMEDIA Fatal Error"));                       \
+      }                                                                                                                \
   };
 
 #define CHECK_DW_ERROR_AND_RETURN(x)                                                                                   \

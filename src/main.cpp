@@ -3,6 +3,7 @@
 
 #include "Sekonix_driver.h"
 #include "framework/Log.hpp"
+#include "exceptions/SekonixDriverFatalException.h"
 #include <dw/core/VersionCurrent.h>
 #include <ros/ros.h>
 #include <unistd.h>
@@ -39,19 +40,24 @@ int main(int argc, char** argv)
   std::unique_ptr<Sekonix_driver> driver;
   driver = std::make_unique<Sekonix_driver>(&nh);
 
-  if (!driver->setup_cameras())
-  {
+  try {
+    driver->setup_cameras();
+  } catch (SekonixDriverFatalException &e) {
+    ROS_FATAL_STREAM(e.what());
     ros::shutdown();
     return 1;
   }
 
   while (ros::ok())
   {
-    if (!driver->poll_and_process())
-    {
+    try {
+      driver->poll_and_process();
+    } catch (SekonixDriverFatalException &e) {
+      ROS_FATAL_STREAM(e.what());
       ros::shutdown();
       return 1;
     }
+
     ROS_INFO_ONCE("Driver started !");
     ros::spinOnce();
     rate.sleep();

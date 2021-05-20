@@ -13,6 +13,9 @@
 #include <DriveworksApiWrapper.h>
 #include <ThreadPool.h>
 
+#include "exceptions/SekonixDriverFatalException.h"
+#include "exceptions/SekonixDriverMinorException.h"
+
 class Sekonix_driver
 {
 public:
@@ -25,14 +28,15 @@ public:
   /**
    * @brief Initializes all parameters and config, handles exception.
    */
-  bool setup_cameras();
+  void setup_cameras();
 
   /**
    * @brief Polls camera, publishes images and handles exception.
    */
-  bool poll_and_process();
+  void poll_and_process();
 
 private:
+  bool all_cameras_valid_;
   std::unique_ptr<ThreadPool> pool_;
   std::vector<std::future<bool>> future_pool_;
   const size_t MAX_TRIES_ = 100;
