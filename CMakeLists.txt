@@ -43,7 +43,6 @@ add_executable(${NODE_NAME}
         src/Sekonix_driver.cpp
         src/Camera.cpp
         src/DriveworksApiWrapper.cpp
-        src/UndistortWrapper.cpp
         src/framework/Log.cpp
         )
 
