@@ -39,7 +39,7 @@ Camera::Camera(std::shared_ptr<DriveworksApiWrapper> driveworksApiWrapper, const
   // ROS
   frame_ << "interface" + interface_ + "_link" + link_;
   pub_compressed =
-      nh_.advertise<sensor_msgs::CompressedImage>(config_["topic"].as<std::string>() + "/image_raw/compressed", 1024);
+      nh_.advertise<sensor_msgs::CompressedImage>(config_["topic"].as<std::string>() + "/image/compressed", 1024);
   pub_info = nh_.advertise<sensor_msgs::CameraInfo>(config_["topic"].as<std::string>() + "/camera_info", 1024);
 
   // Calibration
