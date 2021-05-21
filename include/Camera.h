@@ -22,12 +22,15 @@
 
 #include "DriveworksApiWrapper.h"
 #include "framework/Checks.hpp"
+#include "exceptions/SekonixDriverFatalException.h"
+#include "exceptions/SekonixDriverMinorException.h"
 
 class Camera
 {
 public:
   /**
    * @brief Constructor, initializes the camera handles and ros params.
+   * @throws SekonixFatalException
    * @param driveworksApiWrapper
    * @param config
    * @param interface
@@ -44,13 +47,16 @@ public:
 
   /**
    * @brief Starts the sensor
+   * @throws SekonixFatalException
    */
-  bool start();
+  void start();
 
   /**
    * @brief Polls camera for frame, gets jpg data then returns frame to sensor
+   * @throws SekonixFatalException
+   * @throws SekonixMinorException
    */
-  bool poll();
+  void poll();
 
   /**
    * @brief Polls the camera until the buffer is empty. ensuring the frame is the most recent one.

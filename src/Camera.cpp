@@ -39,7 +39,7 @@ Camera::Camera(std::shared_ptr<DriveworksApiWrapper> driveworksApiWrapper, const
   // ROS
   frame_ << "interface" + interface_ + "_link" + link_;
   pub_compressed =
-      nh_.advertise<sensor_msgs::CompressedImage>(config_["topic"].as<std::string>() + "/image_raw/compressed", 1024);
+      nh_.advertise<sensor_msgs::CompressedImage>(config_["topic"].as<std::string>() + "/image/compressed", 1024);
   pub_info = nh_.advertise<sensor_msgs::CameraInfo>(config_["topic"].as<std::string>() + "/camera_info", 1024);
 
   // Calibration
@@ -63,10 +63,10 @@ Camera::~Camera()
   ROS_DEBUG("CAMERA RELEASED !");
 }
 
-bool Camera::start()
+void Camera::start()
 {
   // Start the sensor
-  dwSensor_start(sensorHandle_);
+  CHECK_DW_ERROR_ROS(dwSensor_start(sensorHandle_));
 }
 
 bool Camera::get_last_frame() {
@@ -88,64 +88,32 @@ bool Camera::get_last_frame() {
   }
 }
 
-bool Camera::poll()
+void Camera::poll()
 {
   if (!get_last_frame()) {
-    return false;
+    throw SekonixDriverMinorException("Unable to get frame");
   }
 
   // Get image from cameraFrameHandle
-  status_ = dwSensorCamera_getImage(&imageHandleOriginal_, DW_CAMERA_OUTPUT_NATIVE_PROCESSED, cameraFrameHandle_);
-  if (status_ != DW_SUCCESS)
-  {
-    ROS_FATAL_STREAM("dwSensorCamera_getImage() Failed");
-    return false;
-  }
+  CHECK_DW_ERROR_ROS_MINOR(dwSensorCamera_getImage(&imageHandleOriginal_, DW_CAMERA_OUTPUT_NATIVE_PROCESSED, cameraFrameHandle_));
 
   // Return cameraFrameHandle_ back to sensor
-  status_ = dwSensorCamera_returnFrame(&cameraFrameHandle_);
-  if (status_ != DW_SUCCESS)
-  {
-    std::cout << "dwSensorCamera_returnFrame() Failed" << std::endl;
-    return false;
-  }
+  CHECK_DW_ERROR_ROS(dwSensorCamera_returnFrame(&cameraFrameHandle_));
 
-  status_ = dwImage_getTimestamp(&timestamp_, imageHandleOriginal_);
-  if (status_ != DW_SUCCESS)
-  {
-    ROS_FATAL_STREAM("dwImage_getTimestamp() Failed");
-    return false;
-  }
+  CHECK_DW_ERROR_ROS(dwImage_getTimestamp(&timestamp_, imageHandleOriginal_));
   imageStamp_ = ros::Time((double)timestamp_ * 10e-7);
 
   dwImageNvMedia* image_nvmedia;
-  status_ = dwImage_getNvMedia(&image_nvmedia, imageHandleOriginal_);
-  if (status_ != DW_SUCCESS)
-  {
-    ROS_FATAL_STREAM("dwImage_getNvMedia() Failed");
-    return false;
-  }
+  CHECK_DW_ERROR_ROS(dwImage_getNvMedia(&image_nvmedia, imageHandleOriginal_));
 
-  nvMediaStatus_ = NvMediaIJPEFeedFrame(nvMediaIjpe_, image_nvmedia->img, 70);
-  if (nvMediaStatus_ != NVMEDIA_STATUS_OK)
-  {
-    ROS_FATAL_STREAM("NvMediaIJPEFeedFrame() failed: " << std::to_string(nvMediaStatus_));
-    return false;
-  }
+  CHECK_NVMEDIA_ERROR_ROS_FATAL(NvMediaIJPEFeedFrame(nvMediaIjpe_, image_nvmedia->img, 70));
 
   do
   {
     nvMediaStatus_ = NvMediaIJPEBitsAvailable(nvMediaIjpe_, &countByteJpeg_, NVMEDIA_ENCODE_BLOCKING_TYPE_NEVER, 0);
   } while (nvMediaStatus_ != NVMEDIA_STATUS_OK);
 
-  nvMediaStatus_ = NvMediaIJPEGetBits(nvMediaIjpe_, &countByteJpeg_, jpegImage_.get(), 0);
-  if (nvMediaStatus_ != NVMEDIA_STATUS_OK)
-  {
-    ROS_FATAL_STREAM("NvMediaIJPEGetBits() failed: " << std::to_string(nvMediaStatus_));
-    return false;
-  }
-
-  return true;
+  CHECK_NVMEDIA_ERROR_ROS_FATAL(NvMediaIJPEGetBits(nvMediaIjpe_, &countByteJpeg_, jpegImage_.get(), 0));
 }
 
 void Camera::publish()
