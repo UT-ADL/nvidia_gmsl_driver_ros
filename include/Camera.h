@@ -74,40 +74,43 @@ public:
   void clean();
 
 private:
+  std::shared_ptr<DriveworksApiWrapper> driveworksApiWrapper_;
+
   dwSensorHandle_t sensorHandle_ = DW_NULL_HANDLE;
   dwCameraFrameHandle_t cameraFrameHandle_;
   dwImageHandle_t imageHandle_;
   dwImageHandle_t imageHandleOriginal_;
   dwImageProperties imageProperties_;
   dwCameraProperties cameraProperties_;
+  dwSensorParams sensorParams_;
+  dwStatus status_;
+  dwTime_t timestamp_;
+
   NvMediaDevice* nvmediaDevice_ = nullptr;
   NvMediaIJPE* nvMediaIjpe_ = nullptr;
-  uint32_t countByteJpeg_;
-  std::unique_ptr<uint8_t[]> jpegImage_;
-  const uint32_t maxJpegBytes_ = 3 * 1290 * 1208;
   NvMediaSurfFormatAttr attrs_[7];
   NvMediaSurfaceType surfaceType_;
+  NvMediaStatus nvMediaStatus_;
 
   ros::NodeHandle nh_;
   ros::Publisher pub_compressed;
   ros::Publisher pub_info;
+  ros::Time imageStamp_;
   std::unique_ptr<camera_info_manager::CameraInfoManager> camera_info_manager_;
+  sensor_msgs::CameraInfo camera_info_;
+  std_msgs::Header header_;
 
-  std::shared_ptr<DriveworksApiWrapper> driveworksApiWrapper_;
-  dwSensorParams sensorParams_;
-  dwStatus status_;
-  NvMediaStatus nvMediaStatus_;
+  uint32_t countByteJpeg_;
+  std::unique_ptr<uint8_t[]> jpegImage_;
+  const uint32_t maxJpegBytes_ = 3 * 1290 * 1208;
+
   YAML::Node config_;
   std::string calibDirPath_ = "";
   std::string params_ = "";
   std::string interface_ = "";
   std::string link_ = "";
-  dwTime_t timestamp_;
-  ros::Time imageStamp_;
   std::ostringstream frame_;
   std::ostringstream cam_info_file_;
-  sensor_msgs::CameraInfo camera_info_;
-  std_msgs::Header header_;
 };
 
 #endif  // SEKONIX_CAMERA_UT_CAMERA_H
