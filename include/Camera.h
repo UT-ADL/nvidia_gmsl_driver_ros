@@ -4,6 +4,8 @@
 #ifndef SEKONIX_CAMERA_UT_CAMERA_H
 #define SEKONIX_CAMERA_UT_CAMERA_H
 
+#include <cstdint>
+
 #include <camera_info_manager/camera_info_manager.h>
 #include <ros/package.h>
 #include <ros/ros.h>
@@ -24,6 +26,7 @@
 #include "framework/Checks.hpp"
 #include "exceptions/SekonixDriverFatalException.h"
 #include "exceptions/SekonixDriverMinorException.h"
+#include "NvMediaH264Encoder.h"
 
 class Camera
 {
@@ -75,6 +78,7 @@ public:
 
 private:
   std::shared_ptr<DriveworksApiWrapper> driveworksApiWrapper_;
+  std::unique_ptr<NvMediaH264Encoder> nvMediaH264Encoder_;
 
   dwSensorHandle_t sensorHandle_ = DW_NULL_HANDLE;
   dwCameraFrameHandle_t cameraFrameHandle_;
@@ -105,6 +109,7 @@ private:
   const uint32_t maxJpegBytes_ = 3 * 1290 * 1208;
 
   YAML::Node config_;
+  bool bytes_ready_;
   std::string calibDirPath_ = "";
   std::string params_ = "";
   std::string interface_ = "";

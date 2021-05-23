@@ -54,6 +54,9 @@ Camera::Camera(std::shared_ptr<DriveworksApiWrapper> driveworksApiWrapper, const
     camera_info_ = camera_info_manager_->getCameraInfo();
   }
 
+  // Encoder
+  nvMediaH264Encoder_ = std::make_unique<NvMediaH264Encoder>(surfaceType_);
+
   ROS_DEBUG_STREAM("Camera on interface : " << interface_ << ", link : " << link_ << " initialized successfully!");
 }
 
@@ -106,14 +109,15 @@ void Camera::poll()
   dwImageNvMedia* image_nvmedia;
   CHECK_DW_ERROR_ROS(dwImage_getNvMedia(&image_nvmedia, imageHandleOriginal_));
 
-  CHECK_NVMEDIA_ERROR_ROS_FATAL(NvMediaIJPEFeedFrame(nvMediaIjpe_, image_nvmedia->img, 70));
+  // ----------
 
-  do
-  {
-    nvMediaStatus_ = NvMediaIJPEBitsAvailable(nvMediaIjpe_, &countByteJpeg_, NVMEDIA_ENCODE_BLOCKING_TYPE_NEVER, 0);
-  } while (nvMediaStatus_ != NVMEDIA_STATUS_OK);
+  nvMediaH264Encoder_->feed_frame(image_nvmedia->img);
 
-  CHECK_NVMEDIA_ERROR_ROS_FATAL(NvMediaIJPEGetBits(nvMediaIjpe_, &countByteJpeg_, jpegImage_.get(), 0));
+  do {
+    bytes_ready_ = nvMediaH264Encoder_->bits_available();
+  } while (!bytes_ready_);
+
+  nvMediaH264Encoder_->get_bits();
 }
 
 void Camera::publish()
