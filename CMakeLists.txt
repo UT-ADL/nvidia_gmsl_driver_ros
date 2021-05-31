@@ -44,6 +44,7 @@ add_executable(${NODE_NAME}
         src/Camera.cpp
         src/DriveworksApiWrapper.cpp
         src/framework/Log.cpp
+        src/encoders/NvMediaJPGEncoder.cpp
         )
 
 target_link_libraries(${NODE_NAME}
