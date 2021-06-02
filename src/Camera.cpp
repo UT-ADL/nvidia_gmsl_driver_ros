@@ -50,7 +50,7 @@ Camera::Camera(std::shared_ptr<DriveworksApiWrapper> driveworksApiWrapper, const
   }
 
   // Encoder
-  std::make_unique<NvMediaJPGEncoder>(surfaceType_);
+  nvMediaJPGEncoder_ = std::make_unique<NvMediaJPGEncoder>(&surfaceType_);
 
   ROS_DEBUG_STREAM("Camera on interface : " << interface_ << ", link : " << link_ << " initialized successfully!");
 }
@@ -101,20 +101,24 @@ void Camera::poll()
   CHECK_DW_ERROR_ROS(dwImage_getTimestamp(&timestamp_, imageHandleOriginal_));
   imageStamp_ = ros::Time((double)timestamp_ * 10e-7);
 
-  dwImageNvMedia* image_nvmedia; // todo remove image creation
-  CHECK_DW_ERROR_ROS(dwImage_getNvMedia(&image_nvmedia, imageHandleOriginal_));
+  CHECK_DW_ERROR_ROS(dwImage_getNvMedia(&image_nvmedia_, imageHandleOriginal_));
 
-  nvMediaJPGEncoder->feed_frame(image_nvmedia->img);
+  nvMediaJPGEncoder_->feed_frame(image_nvmedia_);
+  while (!nvMediaJPGEncoder_->bits_available()) {}
+  nvMediaJPGEncoder_->pull_bits();
+}
 
-  while (!nvMediaJPGEncoder->bits_available()) {}
+void Camera::encode() {
+  nvMediaJPGEncoder_->feed_frame(image_nvmedia_);
+  while (!nvMediaJPGEncoder_->bits_available()) {}
+  nvMediaJPGEncoder_->pull_bits();
 }
 
 void Camera::publish()
 {
   header_.stamp = imageStamp_;
   header_.frame_id = frame_.str();
-
-  img_msg_compressed_.data.assign(nvMediaJPGEncoder->get_bits(), nvMediaJPGEncoder->get_bits() + nvMediaJPGEncoder->get_count_bytes());
+  img_msg_compressed_.data.assign(nvMediaJPGEncoder_->get_image().get(), nvMediaJPGEncoder_->get_image().get() + nvMediaJPGEncoder_->get_count_bytes());
   img_msg_compressed_.header = header_;
   img_msg_compressed_.format = "jpeg";
   pub_compressed.publish(img_msg_compressed_);
@@ -122,5 +126,3 @@ void Camera::publish()
   camera_info_.header = header_;
   pub_info.publish(camera_info_);
 }
-
-void Camera::clean() {}

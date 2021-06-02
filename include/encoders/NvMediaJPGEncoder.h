@@ -9,15 +9,44 @@
 
 #include "framework/Checks.hpp"
 #include "exceptions/SekonixDriverFatalException.h"
+#include <dw/image/Image.h>
 
 class NvMediaJPGEncoder
 {
 public:
+  /**
+   * @brief Constructor
+  */
+  NvMediaJPGEncoder(NvMediaSurfaceType* surfaceType);
+
+  /**
+   * @brief Destructor
+   */
   virtual ~NvMediaJPGEncoder();
-  NvMediaJPGEncoder(NvMediaSurfaceType surfaceType);
-  void feed_frame(NvMediaImage* inNvMediaImage);
+
+  /**
+   * @brief Feeds a frame into the encoder
+   */
+  void feed_frame(dwImageNvMedia* inNvMediaImage);
+
+  /**
+   * @brief Returns true if encoded bits are available in the encoder memory
+   */
   bool bits_available();
-  uint8_t* get_bits();
+
+  /**
+   * @brief Pull the bits from the encoder memory to the local image. Must be called if bits are available
+   */
+  void pull_bits();
+
+  /**
+   * @brief Returns a shared ptr to the image bits pulled from the encoder
+   */
+  std::shared_ptr<uint8_t[]> get_image();
+
+  /**
+   * @brief Returns the size in bytes of the current image.
+   */
   uint32_t get_count_bytes();
 
 private:
@@ -25,8 +54,8 @@ private:
   NvMediaIJPE* nvMediaIjpe_ = nullptr;
   NvMediaSurfaceType surfaceType_;
   NvMediaStatus nvMediaStatus_;
-  uint32_t countByteJpeg_;
 
+  uint32_t countByteJpeg_;
   std::shared_ptr<uint8_t[]> jpegImage_;
   const uint32_t maxJpegBytes_ = 3 * 1290 * 1208;
 };

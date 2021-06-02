@@ -3,12 +3,17 @@
 
 #include "encoders/NvMediaJPGEncoder.h"
 
-NvMediaJPGEncoder::NvMediaJPGEncoder(NvMediaSurfaceType surfaceType): surfaceType_(surfaceType)
+NvMediaJPGEncoder::NvMediaJPGEncoder(NvMediaSurfaceType* surfaceType): surfaceType_(*surfaceType)
 {
+  jpegImage_ = std::make_unique<uint8_t[]>(maxJpegBytes_);
+
   // Nvmedia init
   nvmediaDevice_ = NvMediaDeviceCreate();
   nvMediaIjpe_ = NvMediaIJPECreate(nvmediaDevice_, surfaceType_, (uint8_t)1, maxJpegBytes_);
 
+  if (!nvmediaDevice_ || !nvmediaDevice_) {
+    throw SekonixDriverFatalException("Unable to create NvMedia device or Encoder!");
+  }
 }
 
 NvMediaJPGEncoder::~NvMediaJPGEncoder()
@@ -17,14 +22,18 @@ NvMediaJPGEncoder::~NvMediaJPGEncoder()
   NvMediaDeviceDestroy(nvmediaDevice_);
 }
 
-void NvMediaJPGEncoder::feed_frame(NvMediaImage* inNvMediaImage)
+void NvMediaJPGEncoder::feed_frame(dwImageNvMedia* inNvMediaImage)
 {
-  CHECK_NVMEDIA_ERROR_ROS_FATAL(NvMediaIJPEFeedFrame(nvMediaIjpe_, inNvMediaImage, 70))
+  if (!inNvMediaImage) {
+    throw SekonixDriverFatalException("IJPE Feed frame : inNvMediaImage is False");
+  }
+
+  CHECK_NVMEDIA_ERROR_ROS_FATAL(NvMediaIJPEFeedFrame(nvMediaIjpe_, inNvMediaImage->img, 70))
 }
 
 bool NvMediaJPGEncoder::bits_available()
 {
-  nvMediaStatus_ = NvMediaIJPEBitsAvailable(nvMediaIjpe_, &countByteJpeg_, NVMEDIA_ENCODE_BLOCKING_TYPE_NEVER, 0);
+  nvMediaStatus_ = NvMediaIJPEBitsAvailable(nvMediaIjpe_, &countByteJpeg_, NVMEDIA_ENCODE_BLOCKING_TYPE_IF_PENDING, 0);
 
   if (nvMediaStatus_ == NVMEDIA_STATUS_OK) {
     return true;
@@ -37,9 +46,13 @@ bool NvMediaJPGEncoder::bits_available()
   return false;
 }
 
-uint8_t* NvMediaJPGEncoder::get_bits()
+void NvMediaJPGEncoder::pull_bits() {
+  CHECK_NVMEDIA_ERROR_ROS_FATAL(NvMediaIJPEGetBits(nvMediaIjpe_, &countByteJpeg_, jpegImage_.get(), 0));
+}
+
+std::shared_ptr<uint8_t[]> NvMediaJPGEncoder::get_image()
 {
-  return jpegImage_.get();
+  return jpegImage_;
 }
 
 uint32_t NvMediaJPGEncoder::get_count_bytes()

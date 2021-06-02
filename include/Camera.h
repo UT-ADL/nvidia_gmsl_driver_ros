@@ -53,11 +53,17 @@ public:
   void start();
 
   /**
-   * @brief Polls camera for frame, gets jpg data then returns frame to sensor
+   * @brief Polls camera for frame, extracts image, returns frame to sensor
    * @throws SekonixFatalException
    * @throws SekonixMinorException
    */
   void poll();
+
+  /**
+   * @brief Gets jpg data from extracted image.
+   * @throws SekonixFatalException
+   */
+  void encode();
 
   /**
    * @brief Polls the camera until the buffer is empty. ensuring the frame is the most recent one.
@@ -76,7 +82,7 @@ public:
 
 private:
   std::shared_ptr<DriveworksApiWrapper> driveworksApiWrapper_;
-  std::unique_ptr<NvMediaJPGEncoder> nvMediaJPGEncoder;
+  std::unique_ptr<NvMediaJPGEncoder> nvMediaJPGEncoder_;
 
   dwSensorHandle_t sensorHandle_ = DW_NULL_HANDLE;
   dwCameraFrameHandle_t cameraFrameHandle_;
@@ -87,6 +93,7 @@ private:
   dwSensorParams sensorParams_;
   dwStatus status_;
   dwTime_t timestamp_;
+  dwImageNvMedia* image_nvmedia_;
 
   NvMediaSurfFormatAttr attrs_[7];
   NvMediaSurfaceType surfaceType_;

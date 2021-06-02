@@ -113,7 +113,7 @@ inline void getDateString(char* buf, size_t length)
     {                                                                                                                  \
       char buf[80];                                                                                                    \
       getDateString(buf, 80);                                                                                          \
-      throw SekonixDriverFatalException(std::string(buf) + std::string(" NVMEDIA Fatal Error"));                       \
+      throw SekonixDriverFatalException(std::string(buf) + std::string(" NVMEDIA Error id:") + std::to_string(x));     \
       }                                                                                                                \
   };
 
@@ -124,7 +124,7 @@ inline void getDateString(char* buf, size_t length)
     {                                                                                                                  \
       char buf[80];                                                                                                    \
       getDateString(buf, 80);                                                                                          \
-      throw SekonixDriverErrorException(std::string(buf) + std::string(" NVMEDIA Fatal Error"));                       \
+      throw SekonixDriverFatalException(std::string(buf) + std::string(" NVMEDIA Error id:") + std::to_string(x));     \
       }                                                                                                                \
   };
 
