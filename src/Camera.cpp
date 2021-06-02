@@ -27,20 +27,15 @@ Camera::Camera(std::shared_ptr<DriveworksApiWrapper> driveworksApiWrapper, const
       dwSensorCamera_getImageProperties(&imageProperties_, DW_CAMERA_OUTPUT_NATIVE_PROCESSED, sensorHandle_));
   CHECK_DW_ERROR_ROS(dwSensorCamera_getSensorProperties(&cameraProperties_, sensorHandle_));
 
-  // JPG Init
-  jpegImage_ = std::make_unique<uint8_t[]>(maxJpegBytes_);
+  // Surface type init
   NVM_SURF_FMT_SET_ATTR_YUV(attrs_, YUV, 422, PLANAR, UINT, 8, PL);
   surfaceType_ = NvMediaSurfaceFormatGetType(attrs_, 7);
-
-  // Nvmedia init
-  nvmediaDevice_ = NvMediaDeviceCreate();
-  nvMediaIjpe_ = NvMediaIJPECreate(nvmediaDevice_, surfaceType_, (uint8_t)1, maxJpegBytes_);
 
   // ROS
   frame_ << "interface" + interface_ + "_link" + link_;
   pub_compressed =
-      nh_.advertise<sensor_msgs::CompressedImage>(config_["topic"].as<std::string>() + "/image/compressed", 1024);
-  pub_info = nh_.advertise<sensor_msgs::CameraInfo>(config_["topic"].as<std::string>() + "/camera_info", 1024);
+      nh_.advertise<sensor_msgs::CompressedImage>(config_["topic"].as<std::string>() + "/image/compressed", 0);
+  pub_info = nh_.advertise<sensor_msgs::CameraInfo>(config_["topic"].as<std::string>() + "/camera_info", 0);
 
   // Calibration
   nh_.param<std::string>("calib_dir_path", calibDirPath_,
@@ -53,6 +48,9 @@ Camera::Camera(std::shared_ptr<DriveworksApiWrapper> driveworksApiWrapper, const
   {
     camera_info_ = camera_info_manager_->getCameraInfo();
   }
+
+  // Encoder
+  nvMediaJPGEncoder_ = std::make_unique<NvMediaJPGEncoder>(&surfaceType_);
 
   ROS_DEBUG_STREAM("Camera on interface : " << interface_ << ", link : " << link_ << " initialized successfully!");
 }
@@ -103,33 +101,28 @@ void Camera::poll()
   CHECK_DW_ERROR_ROS(dwImage_getTimestamp(&timestamp_, imageHandleOriginal_));
   imageStamp_ = ros::Time((double)timestamp_ * 10e-7);
 
-  dwImageNvMedia* image_nvmedia;
-  CHECK_DW_ERROR_ROS(dwImage_getNvMedia(&image_nvmedia, imageHandleOriginal_));
+  CHECK_DW_ERROR_ROS(dwImage_getNvMedia(&image_nvmedia_, imageHandleOriginal_));
 
-  CHECK_NVMEDIA_ERROR_ROS_FATAL(NvMediaIJPEFeedFrame(nvMediaIjpe_, image_nvmedia->img, 70));
+  nvMediaJPGEncoder_->feed_frame(image_nvmedia_);
+  while (!nvMediaJPGEncoder_->bits_available()) {}
+  nvMediaJPGEncoder_->pull_bits();
+}
 
-  do
-  {
-    nvMediaStatus_ = NvMediaIJPEBitsAvailable(nvMediaIjpe_, &countByteJpeg_, NVMEDIA_ENCODE_BLOCKING_TYPE_NEVER, 0);
-  } while (nvMediaStatus_ != NVMEDIA_STATUS_OK);
-
-  CHECK_NVMEDIA_ERROR_ROS_FATAL(NvMediaIJPEGetBits(nvMediaIjpe_, &countByteJpeg_, jpegImage_.get(), 0));
+void Camera::encode() {
+  nvMediaJPGEncoder_->feed_frame(image_nvmedia_);
+  while (!nvMediaJPGEncoder_->bits_available()) {}
+  nvMediaJPGEncoder_->pull_bits();
 }
 
 void Camera::publish()
 {
   header_.stamp = imageStamp_;
   header_.frame_id = frame_.str();
-
-  sensor_msgs::CompressedImage img_msg_compressed;
-  img_msg_compressed.data.resize(countByteJpeg_);
-  std::copy(jpegImage_.get(), jpegImage_.get() + countByteJpeg_, img_msg_compressed.data.begin());
-  img_msg_compressed.header = header_;
-  img_msg_compressed.format = "jpeg";
-  pub_compressed.publish(img_msg_compressed);
+  img_msg_compressed_.data.assign(nvMediaJPGEncoder_->get_image().get(), nvMediaJPGEncoder_->get_image().get() + nvMediaJPGEncoder_->get_count_bytes());
+  img_msg_compressed_.header = header_;
+  img_msg_compressed_.format = "jpeg";
+  pub_compressed.publish(img_msg_compressed_);
 
   camera_info_.header = header_;
   pub_info.publish(camera_info_);
 }
-
-void Camera::clean() {}

@@ -48,8 +48,8 @@ void Sekonix_driver::poll_and_process()
         [](const std::shared_ptr<Camera>& camera) -> bool {
           try {
             camera->poll();
+            camera->encode();
             camera->publish();
-            camera->clean();
           } catch (SekonixDriverMinorException&) {
             return false;
           }

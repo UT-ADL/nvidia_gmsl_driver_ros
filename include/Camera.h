@@ -24,6 +24,7 @@
 #include "framework/Checks.hpp"
 #include "exceptions/SekonixDriverFatalException.h"
 #include "exceptions/SekonixDriverMinorException.h"
+#include "encoders/NvMediaJPGEncoder.h"
 
 class Camera
 {
@@ -52,11 +53,17 @@ public:
   void start();
 
   /**
-   * @brief Polls camera for frame, gets jpg data then returns frame to sensor
+   * @brief Polls camera for frame, extracts image, returns frame to sensor
    * @throws SekonixFatalException
    * @throws SekonixMinorException
    */
   void poll();
+
+  /**
+   * @brief Gets jpg data from extracted image.
+   * @throws SekonixFatalException
+   */
+  void encode();
 
   /**
    * @brief Polls the camera until the buffer is empty. ensuring the frame is the most recent one.
@@ -75,6 +82,7 @@ public:
 
 private:
   std::shared_ptr<DriveworksApiWrapper> driveworksApiWrapper_;
+  std::unique_ptr<NvMediaJPGEncoder> nvMediaJPGEncoder_;
 
   dwSensorHandle_t sensorHandle_ = DW_NULL_HANDLE;
   dwCameraFrameHandle_t cameraFrameHandle_;
@@ -85,9 +93,8 @@ private:
   dwSensorParams sensorParams_;
   dwStatus status_;
   dwTime_t timestamp_;
+  dwImageNvMedia* image_nvmedia_;
 
-  NvMediaDevice* nvmediaDevice_ = nullptr;
-  NvMediaIJPE* nvMediaIjpe_ = nullptr;
   NvMediaSurfFormatAttr attrs_[7];
   NvMediaSurfaceType surfaceType_;
   NvMediaStatus nvMediaStatus_;
@@ -99,10 +106,7 @@ private:
   std::unique_ptr<camera_info_manager::CameraInfoManager> camera_info_manager_;
   sensor_msgs::CameraInfo camera_info_;
   std_msgs::Header header_;
-
-  uint32_t countByteJpeg_;
-  std::unique_ptr<uint8_t[]> jpegImage_;
-  const uint32_t maxJpegBytes_ = 3 * 1290 * 1208;
+  sensor_msgs::CompressedImage img_msg_compressed_;
 
   YAML::Node config_;
   std::string calibDirPath_ = "";
