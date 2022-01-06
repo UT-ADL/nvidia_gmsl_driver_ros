@@ -101,6 +101,12 @@ rosdep install -si --reinstall --from-path src
 ```
 Install the displayed dependencies on the emulated sysroot with `apt install`.
 
+#### Build dependencies
+
+```bash
+sudo apt install python-numpy libyaml-cpp-dev python-empy
+```
+
 #### Crossbuild ros 
 
 ```bash
@@ -140,7 +146,7 @@ rosdep install --from-paths src --ignore-src -r -y
 #### Remove old library versions\
 *(The detailed reason is detailed in this [post](https://forums.developer.nvidia.com/t/libgdal-so-has-undefined-symbol/110239/5)).*
 ```bash
-rm /usr/lib/libxerces-c*.
+rm /usr/lib/libxerces-c*
 ```
 
 #### Set up ros environment

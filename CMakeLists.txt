@@ -10,7 +10,6 @@ set(CMAKE_WARN_DEPRECATED OFF)
 include(cmake/MainConfiguration.cmake)
 
 find_package(OpenCV REQUIRED)
-find_package(gflags REQUIRED)
 find_package(YAMLCPP REQUIRED)
 
 find_package(catkin REQUIRED COMPONENTS
