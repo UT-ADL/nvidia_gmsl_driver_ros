@@ -1,9 +1,12 @@
-<upper>*Inspired by [NVIDIA dw_ros](https://github.com/NVIDIA/dw-ros) & [leo-drive drivers](https://gitlab.com/leo-drive/Drivers/sekonix_camera).* </upper>
+<upper>*Inspired by [NVIDIA dw_ros](https://github.com/NVIDIA/dw-ros)
+& [leo-drive drivers](https://gitlab.com/leo-drive/Drivers/sekonix_camera).* </upper>
 
 # Nvidia Drive GMSL Sekonix Camera ROS Driver
 
-*Note : In this documentation and in the source 'interface' designates the HFM connector, and 'link' the number of the FAKRA Z. See [here](https://docs.nvidia.com/drive/drive_os_5.1.6.1L/nvvib_docs/index.html#page/DRIVE_OS_Linux_SDK_Development_Guide/Camera/camera_xavier.html).*
-
+*Note : In this documentation and in the source 'interface' designates the HFM connector, and 'link' the number of the
+FAKRA Z.
+See [here](https://docs.nvidia.com/drive/drive_os_5.1.6.1L/nvvib_docs/index.html#page/DRIVE_OS_Linux_SDK_Development_Guide/Camera/camera_xavier.html)
+.*
 
 - Compatible with Driveworks 3.5
 - Compatible with ROS Melodic
@@ -21,26 +24,32 @@
 
 This drivers **doesn't** use the native nvidia RIG calibration file. It uses the ROS ones.  
 To calibrate the cameras :
-- Run the driver with an empty calibration dir. 
+
+- Run the driver with an empty calibration dir.
 - Use ros [camera_calibration](wiki.ros.org/camera_calibration) to calibrate the cameras.
 - Put the camera calibration yaml files in your calib dir.
 
-**Note :** In the calibration dir the calibration files **MUST** have this syntax : `interface<a-d>_link<0-3>.yaml`. For example : `interfacea_link1.yaml`.
+**Note :** In the calibration dir the calibration files **MUST** have this syntax : `interface<a-d>_link<0-3>.yaml`. For
+example : `interfacea_link1.yaml`.
 
 ### Debug
 
-In case of problem you can start the driver in verbose mode :  `rosrun sekonix_camera_ut sekonix_camera_ut_node --verbose`
+In case of problem you can start the driver in verbose
+mode :  `rosrun sekonix_camera_ut sekonix_camera_ut_node --verbose`
 
 ## How to build on host
 
 #### Required steps
+
 - [install NVIDIA DRIVE™ OS 5.2.0 and DriveWorks 3.5 (Linux)](https://github.com/nvidia/dw-ros#install-nvidia-drive-os-520-and-driveworks-35-linux)
 - [cross compile ROS](https://github.com/nvidia/dw-ros#cross-compile-ros)
 - [cross compile nv_sensors](https://github.com/nvidia/dw-ros#cross-compile-nv_sensors)
 - [run on the target system](https://github.com/nvidia/dw-ros#run-on-the-target-system)
 
 #### Install NVIDIA DRIVE™ OS 5.2.0 and DriveWorks 3.5 (Linux)
-- Follow the download [page](https://developer.nvidia.com/drive/downloads) to install NVIDIA DRIVE™ OS 5.2.0 and DriveWorks 3.5 (Linux). Follow the 'DriveWorks 3.5 Installation Guide'.
+
+- Follow the download [page](https://developer.nvidia.com/drive/downloads) to install NVIDIA DRIVE™ OS 5.2.0 and
+  DriveWorks 3.5 (Linux). Follow the 'DriveWorks 3.5 Installation Guide'.
 
 #### Prepare a cross-compilation sysroot
 
@@ -74,6 +83,7 @@ sudo rm -rf tmp/*
 #### Fix broken symlinks
 
 The broken symlinks can be fixed temporarily with overlays, using commands similar to the following:
+
 ```
 sudo mkdir /lib/aarch64-linux-gnu
 sudo mkdir /tmp/ros-cc-overlayfs
@@ -81,7 +91,9 @@ sudo mount -t overlay -o lowerdir=$SYSROOT/lib/aarch64-linux-gnu,upperdir=/lib/a
 ```
 
 #### Ros Prerequisites
-Follow this [page](http://wiki.ros.org/melodic/Installation/Source) to install all prerequisites and then run below commands to download source of ROS Melodic Morenia (Ubuntu 18.04 is the target root file system of DRIVE OS Linux 5.2.0)
+
+Follow this [page](http://wiki.ros.org/melodic/Installation/Source) to install all prerequisites and then run below
+commands to download source of ROS Melodic Morenia (Ubuntu 18.04 is the target root file system of DRIVE OS Linux 5.2.0)
 
 ```
 mkdir -p ~/ros_catkin_ws/src && cd ~/ros_catkin_ws
@@ -90,6 +102,7 @@ vcs import src < melodic-ros_comm.rosinstall
 ```
 
 #### Clone UT Sekonix driver
+
 ```bash
 git clone git@gitlab.cs.ut.ee:autonomous-driving-lab/autoware.ai/local/sekonix_camera_ut.git src/sekonix_camera_ut
 ```
@@ -99,6 +112,7 @@ git clone git@gitlab.cs.ut.ee:autonomous-driving-lab/autoware.ai/local/sekonix_c
 ```bash
 rosdep install -si --reinstall --from-path src
 ```
+
 Install the displayed dependencies on the emulated sysroot with `apt install`.
 
 #### Build dependencies
@@ -107,16 +121,18 @@ Install the displayed dependencies on the emulated sysroot with `apt install`.
 sudo apt install python-numpy libyaml-cpp-dev python-empy
 ```
 
-#### Crossbuild ros 
+#### Crossbuild ros
 
 ```bash
 SYSROOT=~/nvidia/nvidia_sdk/DRIVE_OS_5.2.0_SDK_Linux_OS_DDPX/DRIVEOS/drive-t186ref-linux/targetfs
 ```
+
 ```bash
-src/catkin/bin/catkin_make_isolated -DVIBRANTE_PDK:STRING=$HOME/nvidia/nvidia_sdk/DRIVE_OS_5.2.0_SDK_Linux_OS_DDPX/DRIVEOS/drive-t186ref-linux -DTRT_VERSION:STRING=6.3.1.3 -DCMAKE_TOOLCHAIN_FILE=$HOME/ros_catkin_ws/src/sekonix_camera_ut/Toolchain-V5L.cmake -DCMAKE_EXE_LINKER_FLAGS="${CMAKE_EXE_LINKER_FLAGS} -L/usr/local/driveworks/targets/aarch64-Linux/lib -Wl,-rpath,/usr/local/driveworks/targets/aarch64-Linux/lib -L$SYSROOT/usr/local/cuda-10.2/targets/aarch64-linux/lib -Wl,-rpath,$SYSROOT/usr/local/cuda-10.2/targets/aarch64-linux/lib -L$SYSROOT/usr/lib/aarch64-linux-gnu/openblas -Wl,-rpath,$SYSROOT/usr/lib/aarch64-linux-gnu/openblas"
+src/catkin/bin/catkin_make_isolated -DVIBRANTE_PDK:STRING=$HOME/nvidia/nvidia_sdk/DRIVE_OS_5.2.0_SDK_Linux_OS_DDPX/DRIVEOS/drive-t186ref-linux -DTRT_VERSION:STRING=6.3.1.3 -DCMAKE_TOOLCHAIN_FILE=$HOME/ros_catkin_ws/src/sekonix_camera_ut/Toolchain-V5L.cmake -DCMAKE_EXE_LINKER_FLAGS="${CMAKE_EXE_LINKER_FLAGS} -L/usr/local/driveworks/targets/aarch64-Linux/lib -Wl,-rpath,/usr/local/driveworks/targets/aarch64-Linux/lib -L$SYSROOT/usr/local/cuda-10.2/targets/aarch64-linux/lib -Wl,-rpath,$SYSROOT/usr/local/cuda-10.2/targets/aarch64-linux/lib -L$SYSROOT/usr/lib/aarch64-linux-gnu/openblas -Wl,-rpath,$SYSROOT/usr/lib/aarch64-linux-gnu/openblas --install"
 ```
 
-Replace with the current installation path with the binary installation path so we can run any binary installed packages on the target.
+Replace with the current installation path with the binary installation path so we can run any binary installed packages
+on the target.
 
 ```bash
 sed -i "s#$HOME/ros_catkin_ws/install_isolated#/opt/ros/melodic#g" install_isolated/_setup_util.py
@@ -127,6 +143,7 @@ sed -i "s#$HOME/ros_catkin_ws/install_isolated#/opt/ros/melodic#g" install_isola
 #### Install ROS dependencies and ROS
 
 Follow http://wiki.ros.org/melodic/Installation/Ubuntu to install ROS necessary apt packages via below command
+
 ```
 sudo apt install ros-melodic-ros-base ros-melodic-image-view
 ```
@@ -144,12 +161,16 @@ rosdep install --from-paths src --ignore-src -r -y
 ```
 
 #### Remove old library versions\
-*(The detailed reason is detailed in this [post](https://forums.developer.nvidia.com/t/libgdal-so-has-undefined-symbol/110239/5)).*
+
+*(The detailed reason is detailed in
+this [post](https://forums.developer.nvidia.com/t/libgdal-so-has-undefined-symbol/110239/5)).*
+
 ```bash
 rm /usr/lib/libxerces-c*
 ```
 
 #### Set up ros environment
+
 ```
 source ~/install_isolated/setup.bash
 ```

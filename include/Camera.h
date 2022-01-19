@@ -9,6 +9,7 @@
 #include <ros/ros.h>
 #include <sensor_msgs/CompressedImage.h>
 #include <sensor_msgs/image_encodings.h>
+#include "sekonix_camera_ut/H264Packet.h"
 
 #include "yaml-cpp/yaml.h"
 #include <chrono>
@@ -24,7 +25,9 @@
 #include "framework/Checks.hpp"
 #include "exceptions/SekonixDriverFatalException.h"
 #include "exceptions/SekonixDriverMinorException.h"
-#include "encoders/NvMediaJPGEncoder.h"
+
+#include <sstream>
+#include <dw/sensors/SensorSerializer.h>
 
 class Camera
 {
@@ -38,8 +41,8 @@ public:
    * @param link
    * @param nodehandle
    */
-  Camera(std::shared_ptr<DriveworksApiWrapper> driveworksApiWrapper, const YAML::Node config,
-         const std::string interface, const std::string link, ros::NodeHandle* nodehandle);
+  Camera(std::shared_ptr<DriveworksApiWrapper> driveworksApiWrapper, const YAML::Node& config, std::string interface,
+         std::string link, ros::NodeHandle* nodehandle);
 
   /**
    * @brief Destructor, releases camera handles
@@ -80,41 +83,42 @@ public:
    */
   void clean();
 
+  void start_serializer();
+
 private:
+  struct serializer_user_data_t_
+  {
+    ros::Publisher* publisher;
+    dwTime_t* timestamp;
+    std::string* frame_id;
+  };
+
+  int framerate_;
   std::shared_ptr<DriveworksApiWrapper> driveworksApiWrapper_;
-  std::unique_ptr<NvMediaJPGEncoder> nvMediaJPGEncoder_;
 
   dwSensorHandle_t sensorHandle_ = DW_NULL_HANDLE;
   dwCameraFrameHandle_t cameraFrameHandle_;
-  dwImageHandle_t imageHandle_;
   dwImageHandle_t imageHandleOriginal_;
-  dwImageProperties imageProperties_;
-  dwCameraProperties cameraProperties_;
   dwSensorParams sensorParams_;
   dwStatus status_;
   dwTime_t timestamp_;
-  dwImageNvMedia* image_nvmedia_;
-
-  NvMediaSurfFormatAttr attrs_[7];
-  NvMediaSurfaceType surfaceType_;
-  NvMediaStatus nvMediaStatus_;
 
   ros::NodeHandle nh_;
-  ros::Publisher pub_compressed;
-  ros::Publisher pub_info;
-  ros::Time imageStamp_;
+  ros::Publisher pub_h264;
   std::unique_ptr<camera_info_manager::CameraInfoManager> camera_info_manager_;
-  sensor_msgs::CameraInfo camera_info_;
-  std_msgs::Header header_;
-  sensor_msgs::CompressedImage img_msg_compressed_;
 
   YAML::Node config_;
   std::string calibDirPath_ = "";
   std::string params_ = "";
   std::string interface_ = "";
   std::string link_ = "";
-  std::ostringstream frame_;
+  std::string frame_;
   std::ostringstream cam_info_file_;
+
+  // Serializer
+  dwSensorSerializerHandle_t camera_serializer_ = DW_NULL_HANDLE;
+  std::string serializer_config_string_;
+  serializer_user_data_t_ serializerUserData_{};
 };
 
 #endif  // SEKONIX_CAMERA_UT_CAMERA_H

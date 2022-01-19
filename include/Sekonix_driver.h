@@ -36,10 +36,10 @@ public:
   void poll_and_process();
 
 private:
+  static constexpr size_t MAX_TRIES_ = 100;
   bool all_cameras_valid_;
   std::unique_ptr<ThreadPool> pool_;
   std::vector<std::future<bool>> future_pool_;
-  const size_t MAX_TRIES_ = 100;
   size_t tries_ = 0;
   ros::NodeHandle nh_;
   std::string config_file_path_;

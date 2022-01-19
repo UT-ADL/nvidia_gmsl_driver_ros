@@ -17,14 +17,13 @@ Sekonix_driver::Sekonix_driver(ros::NodeHandle* nodehandle) : nh_(*nodehandle)
 
 void Sekonix_driver::setup_cameras()
 {
-  for (YAML::const_iterator conn_it = config_.begin(); conn_it != config_.end(); ++conn_it)
-  {
-    for (YAML::const_iterator interface_it = conn_it->second.begin(); interface_it != conn_it->second.end(); ++interface_it)
-    {
-      for (YAML::const_iterator link_it = interface_it->second.begin(); link_it != interface_it->second.end(); ++link_it)
-      {
+  for (YAML::const_iterator conn_it = config_.begin(); conn_it != config_.end(); ++conn_it) {
+    for (YAML::const_iterator interface_it = conn_it->second.begin(); interface_it != conn_it->second.end();
+         ++interface_it) {
+      for (YAML::const_iterator link_it = interface_it->second.begin(); link_it != interface_it->second.end();
+           ++link_it) {
         ROS_DEBUG_STREAM("Link " << link_it->first.as<std::string>() << " :  "
-                                      << link_it->second["parameters"]["camera-name"].as<std::string>());
+                                 << link_it->second["parameters"]["camera-name"].as<std::string>());
         camera_vector_.push_back(std::make_shared<Camera>(driveworksApiWrapper_, link_it->second,
                                                           interface_it->first.as<std::string>(),
                                                           link_it->first.as<std::string>(), &nh_));
@@ -32,8 +31,7 @@ void Sekonix_driver::setup_cameras()
       }
     }
   }
-  for (auto& camera : camera_vector_)
-  {
+  for (auto& camera : camera_vector_) {
     camera->start();
   }
   pool_ = std::make_unique<ThreadPool>(camera_count);
@@ -42,19 +40,19 @@ void Sekonix_driver::setup_cameras()
 
 void Sekonix_driver::poll_and_process()
 {
-  for (auto& camera : camera_vector_)
-  {
+  for (auto& camera : camera_vector_) {
     future_pool_.emplace_back(pool_->enqueue(
         [](const std::shared_ptr<Camera>& camera) -> bool {
           try {
             camera->poll();
             camera->encode();
-            camera->publish();
-          } catch (SekonixDriverMinorException&) {
+          }
+          catch (SekonixDriverMinorException&) {
             return false;
           }
           return true;
-        }, camera));
+        },
+        camera));
   }
 
   all_cameras_valid_ = true;
@@ -66,8 +64,7 @@ void Sekonix_driver::poll_and_process()
   }
   future_pool_.clear();
 
-  if (tries_ > MAX_TRIES_)
-  {
+  if (tries_ > MAX_TRIES_) {
     throw SekonixDriverFatalException("COULDNT REACH CAMERA AFTER " + std::to_string(MAX_TRIES_) + " TRIALS");
   }
 
