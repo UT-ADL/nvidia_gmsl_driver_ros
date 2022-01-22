@@ -9,7 +9,7 @@
 #include <ros/ros.h>
 #include <sensor_msgs/CompressedImage.h>
 #include <sensor_msgs/image_encodings.h>
-#include "sekonix_camera_ut/H264Packet.h"
+#include "h264_image_transport_msgs/H264Packet.h"
 
 #include "yaml-cpp/yaml.h"
 #include <chrono>

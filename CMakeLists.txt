@@ -24,7 +24,7 @@ find_package(catkin REQUIRED COMPONENTS
         geometry_msgs
         image_transport
         camera_info_manager
-        message_generation
+        h264_image_transport_msgs
         )
 
 include_directories(
@@ -39,9 +39,6 @@ if (CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64")
             /usr/local/driveworks/targets/x86_64-Linux/include
     )
 endif ()
-
-add_message_files(FILES H264Packet.msg)
-generate_messages(DEPENDENCIES std_msgs)
 
 catkin_package(
         LIBRARIES ${PROJECT_NAME}

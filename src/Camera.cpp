@@ -25,7 +25,8 @@ Camera::Camera(const std::shared_ptr<DriveworksApiWrapper> driveworksApiWrapper,
 
   // ROS
   frame_ = "interface" + interface_ + "_link" + link_;
-  pub_h264 = nh_.advertise<sekonix_camera_ut::H264Packet>(config_["topic"].as<std::string>() + "/image/h264", 0);
+  pub_h264 =
+      nh_.advertise<h264_image_transport_msgs::H264Packet>(config_["topic"].as<std::string>() + "/image/h264", 0);
 
   // Calibration
   nh_.param<std::string>("calib_dir_path", calibDirPath_,
@@ -74,7 +75,7 @@ void Camera::start_serializer()
 
   serializerParams.onData = [](const uint8_t* data, size_t size, void* userData) -> void {
     auto* userDataCast = static_cast<serializer_user_data_t_*>(userData);
-    sekonix_camera_ut::H264Packet msg;
+    h264_image_transport_msgs::H264Packet msg;
     msg.data.assign(data, data + size);
     msg.header.stamp = ros::Time((static_cast<double>(*userDataCast->timestamp) * 10e-7));
     msg.header.frame_id = *userDataCast->frame_id;
