@@ -25,8 +25,7 @@ void DriveworksApiWrapper::InitializeSalHandle()
 {
   dwStatus result;
   result = dwSAL_initialize(&sal_handle_, context_handle_);
-  if (result != DW_SUCCESS)
-  {
+  if (result != DW_SUCCESS) {
     ROS_ERROR_STREAM("Cannot initialize SAL: " << dwGetStatusName(result));
     exit(1);
   }

@@ -49,9 +49,11 @@ set(NODE_NAME ${PROJECT_NAME}_node)
 add_executable(${NODE_NAME}
         src/main.cpp
         src/Sekonix_driver.cpp
-        src/Camera.cpp
+        src/cameras/CameraBase.cpp
+        src/cameras/CameraH264.cpp
         src/DriveworksApiWrapper.cpp
         src/framework/Log.cpp
+        src/encoders/DriveWorksH264Serializer.cpp
         )
 
 target_link_libraries(${NODE_NAME}

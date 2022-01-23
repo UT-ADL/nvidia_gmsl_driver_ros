@@ -9,7 +9,7 @@
 #include <ros/package.h>
 #include <ros/ros.h>
 
-#include <Camera.h>
+#include "cameras/CameraH264.h"
 #include <DriveworksApiWrapper.h>
 #include <ThreadPool.h>
 
@@ -46,7 +46,7 @@ private:
   YAML::Node config_;
   std::shared_ptr<DriveworksApiWrapper> driveworksApiWrapper_;
   size_t camera_count = 0;
-  std::vector<std::shared_ptr<Camera>> camera_vector_;
+  std::vector<std::shared_ptr<CameraH264>> camera_vector_;
 };
 
 #endif  // SEKONIX_CAMERA_UT_SEKONIX_DRIVER_H

@@ -1,8 +1,8 @@
 // Created by Maxandre Ogeret.
 // (c) 2021 University of Tartu - Autonomous Driving Lab.
 
-#ifndef SEKONIX_CAMERA_UT_CAMERA_H
-#define SEKONIX_CAMERA_UT_CAMERA_H
+#ifndef SEKONIX_CAMERA_UT_CAMERA_BASE_H
+#define SEKONIX_CAMERA_UT_CAMERA_BASE_H
 
 #include <camera_info_manager/camera_info_manager.h>
 #include <ros/package.h>
@@ -29,7 +29,10 @@
 #include <sstream>
 #include <dw/sensors/SensorSerializer.h>
 
-class Camera
+/**
+ * Base class for cameras
+ */
+class CameraBase
 {
 public:
   /**
@@ -41,13 +44,13 @@ public:
    * @param link
    * @param nodehandle
    */
-  Camera(std::shared_ptr<DriveworksApiWrapper> driveworksApiWrapper, const YAML::Node& config, std::string interface,
-         std::string link, ros::NodeHandle* nodehandle);
+  CameraBase(std::shared_ptr<DriveworksApiWrapper> driveworksApiWrapper, const YAML::Node& config,
+             std::string interface, std::string link, ros::NodeHandle* nodehandle);
 
   /**
    * @brief Destructor, releases camera handles
    */
-  virtual ~Camera();
+  virtual ~CameraBase();
 
   /**
    * @brief Starts the sensor
@@ -57,42 +60,22 @@ public:
 
   /**
    * @brief Polls camera for frame, extracts image, returns frame to sensor
-   * @throws SekonixFatalException
-   * @throws SekonixMinorException
    */
-  void poll();
+  virtual void poll() = 0;
 
   /**
    * @brief Gets jpg data from extracted image.
-   * @throws SekonixFatalException
    */
-  void encode();
+  virtual void encode() = 0;
 
   /**
    * @brief Polls the camera until the buffer is empty. ensuring the frame is the most recent one.
    */
   bool get_last_frame();
 
-  /**
-   * @brief Publishes the current jpg data and camera info
-   */
-  void publish();
-
-  /**
-   * @brief Destroys image handle. Allows
-   */
-  void clean();
-
   void start_serializer();
 
-private:
-  struct serializer_user_data_t_
-  {
-    ros::Publisher* publisher;
-    dwTime_t* timestamp;
-    std::string* frame_id;
-  };
-
+protected:
   int framerate_;
   std::shared_ptr<DriveworksApiWrapper> driveworksApiWrapper_;
 
@@ -104,7 +87,6 @@ private:
   dwTime_t timestamp_;
 
   ros::NodeHandle nh_;
-  ros::Publisher pub_h264;
   std::unique_ptr<camera_info_manager::CameraInfoManager> camera_info_manager_;
 
   YAML::Node config_;
@@ -114,11 +96,6 @@ private:
   std::string link_ = "";
   std::string frame_;
   std::ostringstream cam_info_file_;
-
-  // Serializer
-  dwSensorSerializerHandle_t camera_serializer_ = DW_NULL_HANDLE;
-  std::string serializer_config_string_;
-  serializer_user_data_t_ serializerUserData_{};
 };
 
-#endif  // SEKONIX_CAMERA_UT_CAMERA_H
+#endif  // SEKONIX_CAMERA_UT_CAMERA_BASE_H

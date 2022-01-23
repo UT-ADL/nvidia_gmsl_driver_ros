@@ -10,19 +10,16 @@
 
 int main(int argc, char** argv)
 {
-  if (!(DW_VERSION.major == 3 && DW_VERSION.minor == 5))
-  {
+  if (!(DW_VERSION.major == 3 && DW_VERSION.minor == 5)) {
     ROS_FATAL("This driver requires Driveworks 3.5 !");
     return 1;
   }
 
   std::vector<std::string> args_out;
   ros::removeROSArgs(argc, argv, args_out);
-  for (auto arg : args_out)
-  {
+  for (auto arg : args_out) {
     std::cout << arg << "\n";
-    if (arg == "--verbose")
-    {
+    if (arg == "--verbose") {
       // initialize loggers
       ros::console::set_logger_level(ROSCONSOLE_DEFAULT_NAME, ros::console::levels::Debug);
       dwLogger_initialize(getConsoleLoggerCallback(true));
@@ -42,17 +39,18 @@ int main(int argc, char** argv)
 
   try {
     driver->setup_cameras();
-  } catch (SekonixDriverFatalException &e) {
+  }
+  catch (SekonixDriverFatalException& e) {
     ROS_FATAL_STREAM(e.what());
     ros::shutdown();
     return 1;
   }
 
-  while (ros::ok())
-  {
+  while (ros::ok()) {
     try {
       driver->poll_and_process();
-    } catch (SekonixDriverFatalException &e) {
+    }
+    catch (SekonixDriverFatalException& e) {
       ROS_FATAL_STREAM(e.what());
       ros::shutdown();
       return 1;

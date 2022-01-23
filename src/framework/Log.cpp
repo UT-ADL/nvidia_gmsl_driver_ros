@@ -72,8 +72,7 @@ bool shouldUseColor(bool streamIsTTY)
 // an invalid input.
 const char* getAnsiColorCode(EConsoleColor color)
 {
-  switch (color)
-  {
+  switch (color) {
     case COLOR_RED:
       return "1";
     case COLOR_GREEN:
@@ -90,8 +89,7 @@ const char* getAnsiColorCode(EConsoleColor color)
 // Returns the character attribute for the given color.
 WORD getColorAttribute(EConsoleColor color)
 {
-  switch (color)
-  {
+  switch (color) {
     case COLOR_RED:
       return FOREGROUND_RED;
     case COLOR_GREEN:
@@ -109,15 +107,13 @@ void printColored(FILE* fd, EConsoleColor color, const char* msg)
 {
   bool useColor = (color != COLOR_DEFAULT);
 
-  if (useColor)
-  {
+  if (useColor) {
     useColor = shouldUseColor(isatty(fileno(fd)) != 0);
   }
 
 #ifdef WINDOWS
   HANDLE fdHandle = 0;
-  if (useColor)
-  {
+  if (useColor) {
     if (fd == stdout)
       fdHandle = GetStdHandle(STD_OUTPUT_HANDLE);
     else if (fd == stderr)
@@ -127,8 +123,7 @@ void printColored(FILE* fd, EConsoleColor color, const char* msg)
   }
 #endif
 
-  if (!useColor)
-  {
+  if (!useColor) {
     fprintf(fd, "%s", msg);
     fflush(fd);
     return;
@@ -173,8 +168,7 @@ dwLogCallback getConsoleLoggerCallback(bool useColors, bool disableBuffering)
     return [](dwContextHandle_t, dwLoggerVerbosity level, const char* msg) {
       EConsoleColor color = COLOR_DEFAULT;
       FILE* fd = stdout;
-      switch (level)
-      {
+      switch (level) {
         case DW_LOG_SILENT:
         case DW_LOG_VERBOSE:
         case DW_LOG_DEBUG:

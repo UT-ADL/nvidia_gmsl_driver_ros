@@ -24,9 +24,9 @@ void Sekonix_driver::setup_cameras()
            ++link_it) {
         ROS_DEBUG_STREAM("Link " << link_it->first.as<std::string>() << " :  "
                                  << link_it->second["parameters"]["camera-name"].as<std::string>());
-        camera_vector_.push_back(std::make_shared<Camera>(driveworksApiWrapper_, link_it->second,
-                                                          interface_it->first.as<std::string>(),
-                                                          link_it->first.as<std::string>(), &nh_));
+        camera_vector_.push_back(std::make_shared<CameraH264>(driveworksApiWrapper_, link_it->second,
+                                                              interface_it->first.as<std::string>(),
+                                                              link_it->first.as<std::string>(), &nh_));
         camera_count++;
       }
     }
@@ -42,7 +42,7 @@ void Sekonix_driver::poll_and_process()
 {
   for (auto& camera : camera_vector_) {
     future_pool_.emplace_back(pool_->enqueue(
-        [](const std::shared_ptr<Camera>& camera) -> bool {
+        [](const std::shared_ptr<CameraH264>& camera) -> bool {
           try {
             camera->poll();
             camera->encode();
@@ -65,7 +65,7 @@ void Sekonix_driver::poll_and_process()
   future_pool_.clear();
 
   if (tries_ > MAX_TRIES_) {
-    throw SekonixDriverFatalException("COULDNT REACH CAMERA AFTER " + std::to_string(MAX_TRIES_) + " TRIALS");
+    throw SekonixDriverFatalException("COULDN'T REACH CAMERA AFTER " + std::to_string(MAX_TRIES_) + " TRIALS");
   }
 
   tries_ = all_cameras_valid_ ? 0 : tries_;
