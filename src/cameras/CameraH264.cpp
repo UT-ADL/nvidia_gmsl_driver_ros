@@ -7,9 +7,11 @@ CameraH264::CameraH264(std::shared_ptr<DriveworksApiWrapper> driveworksApiWrappe
                        std::string interface, std::string link, ros::NodeHandle* nodehandle)
   : CameraBase(driveworksApiWrapper, config, interface, link, nodehandle)
 {
-  serializerUserData_.publisher = &pub_h264_;
+  serializerUserData_.h264_publisher = &pub_h264_;
+  serializerUserData_.info_publisher = &pub_info_;
   serializerUserData_.timestamp = &timestamp_;
   serializerUserData_.frame_id = &frame_;
+  serializerUserData_.camera_info = &camera_info_;
 
   // ROS
   pub_h264_ =

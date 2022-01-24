@@ -19,11 +19,17 @@ DriveWorksH264Serializer::DriveWorksH264Serializer(dwSensorHandle_t* sensorHandl
 
   serializerParams.onData = [](const uint8_t* data, size_t size, void* userData) -> void {
     auto* userDataCast = static_cast<serializer_user_data_t_*>(userData);
+    auto stamp = ros::Time((static_cast<double>(*userDataCast->timestamp) * 10e-7));
+
     h264_image_transport_msgs::H264Packet msg;
     msg.data.assign(data, data + size);
-    msg.header.stamp = ros::Time((static_cast<double>(*userDataCast->timestamp) * 10e-7));
+    msg.header.stamp = stamp;
     msg.header.frame_id = *userDataCast->frame_id;
-    userDataCast->publisher->publish(msg);
+    userDataCast->h264_publisher->publish(msg);
+
+    userDataCast->camera_info->header.stamp = stamp;
+    userDataCast->camera_info->header.frame_id = *userDataCast->frame_id;
+    userDataCast->info_publisher->publish(*userDataCast->camera_info);
   };
 
   CHECK_DW_ERROR_ROS(dwSensorSerializer_initialize(&camera_serializer_, &serializerParams, *sensorHandle_))

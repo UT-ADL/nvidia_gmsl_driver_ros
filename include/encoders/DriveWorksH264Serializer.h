@@ -6,6 +6,7 @@
 
 #include <string>
 #include <ros/ros.h>
+#include <sensor_msgs/CameraInfo.h>
 #include <h264_image_transport_msgs/H264Packet.h>
 
 #include <dw/sensors/SensorSerializer.h>
@@ -17,9 +18,11 @@
  */
 struct serializer_user_data_t_
 {
-  ros::Publisher* publisher;
+  ros::Publisher* h264_publisher;
+  ros::Publisher* info_publisher;
   dwTime_t* timestamp;
   std::string* frame_id;
+  sensor_msgs::CameraInfo* camera_info;
 };
 
 class DriveWorksH264Serializer
