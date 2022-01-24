@@ -1,5 +1,5 @@
 // Created by Maxandre Ogeret.
-// (c) 2021 University of Tartu - Autonomous Driving Lab.
+// (c) 2022 University of Tartu - Autonomous Driving Lab.
 
 #include "Sekonix_driver.h"
 #include "framework/Log.hpp"

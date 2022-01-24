@@ -1,5 +1,5 @@
 // Created by Maxandre Ogeret.
-// (c) 2021 University of Tartu - Autonomous Driving Lab.
+// (c) 2022 University of Tartu - Autonomous Driving Lab.
 
 #ifndef SEKONIX_CAMERA_UT_NVMEDIAJPGENCODER_H
 #define SEKONIX_CAMERA_UT_NVMEDIAJPGENCODER_H
