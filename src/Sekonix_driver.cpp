@@ -5,8 +5,13 @@
 
 Sekonix_driver::Sekonix_driver(ros::NodeHandle* nodehandle) : nh_(*nodehandle)
 {
+  nh_.param<std::string>("encoder", encoder_name_, CameraJpg::ENCODER_TYPE_);
+
   nh_.param<std::string>("config_path", config_file_path_,
                          ros::package::getPath(ros::this_node::getName().substr(1)) + "/config/ports.yaml");
+
+  ROS_INFO_STREAM("encoder: " << encoder_name_);
+  ROS_INFO_STREAM("config_path: " << config_file_path_);
 
   // Parse YAML config.
   config_ = YAML::LoadFile(config_file_path_);
@@ -24,9 +29,17 @@ void Sekonix_driver::setup_cameras()
            ++link_it) {
         ROS_DEBUG_STREAM("Link " << link_it->first.as<std::string>() << " :  "
                                  << link_it->second["parameters"]["camera-name"].as<std::string>());
-        camera_vector_.push_back(std::make_shared<CameraH264>(driveworksApiWrapper_, link_it->second,
-                                                              interface_it->first.as<std::string>(),
-                                                              link_it->first.as<std::string>(), &nh_));
+
+        if (encoder_name_ == CameraH264::ENCODER_TYPE_) {
+          camera_vector_.emplace_back(std::make_shared<CameraH264>(driveworksApiWrapper_, link_it->second,
+                                                                   interface_it->first.as<std::string>(),
+                                                                   link_it->first.as<std::string>(), &nh_));
+        } else if (encoder_name_ == CameraJpg::ENCODER_TYPE_) {
+          camera_vector_.emplace_back(std::make_shared<CameraJpg>(driveworksApiWrapper_, link_it->second,
+                                                                  interface_it->first.as<std::string>(),
+                                                                  link_it->first.as<std::string>(), &nh_));
+        }
+
         camera_count++;
       }
     }
@@ -36,16 +49,19 @@ void Sekonix_driver::setup_cameras()
   }
   pool_ = std::make_unique<ThreadPool>(camera_count);
   ROS_INFO_STREAM(camera_vector_.size() << " cameras initialized.");
+
+  if (camera_vector_.empty()) {
+    throw SekonixDriverFatalException("No cameras were initialized.");
+  }
 }
 
 void Sekonix_driver::poll_and_process()
 {
   for (auto& camera : camera_vector_) {
     future_pool_.emplace_back(pool_->enqueue(
-        [](const std::shared_ptr<CameraH264>& camera) -> bool {
+        [](const std::shared_ptr<CameraBase>& camera) -> bool {
           try {
-            camera->poll();
-            camera->encode();
+            camera->run_pipeline();
           }
           catch (SekonixDriverMinorException&) {
             return false;

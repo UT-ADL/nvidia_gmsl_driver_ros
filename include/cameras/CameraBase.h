@@ -6,31 +6,19 @@
 
 #include <camera_info_manager/camera_info_manager.h>
 #include <ros/package.h>
-#include <ros/ros.h>
-#include <sensor_msgs/CompressedImage.h>
-#include <sensor_msgs/image_encodings.h>
-#include "h264_image_transport_msgs/H264Packet.h"
 
-#include "yaml-cpp/yaml.h"
+#include <yaml-cpp/yaml.h>
 #include <chrono>
-#include <sstream>
 #include <thread>
+#include <memory>
 
-#include <dw/image/Image.h>
-#include <dw/sensors/Sensors.h>
 #include <dw/sensors/camera/Camera.h>
-#include <nvmedia_ijpe.h>
 
 #include "DriveworksApiWrapper.h"
 #include "framework/Checks.hpp"
-#include "exceptions/SekonixDriverFatalException.h"
-#include "exceptions/SekonixDriverMinorException.h"
-
-#include <sstream>
-#include <dw/sensors/SensorSerializer.h>
 
 /**
- * Base class for cameras
+ * Base class for cameras.
  */
 class CameraBase
 {
@@ -58,6 +46,8 @@ public:
    */
   void start();
 
+  virtual void run_pipeline() = 0;
+
   /**
    * @brief Polls camera for frame, extracts image, returns frame to sensor
    */
@@ -73,8 +63,6 @@ public:
    */
   bool get_last_frame();
 
-  void start_serializer();
-
 protected:
   int framerate_;
   std::shared_ptr<DriveworksApiWrapper> driveworksApiWrapper_;
@@ -87,7 +75,9 @@ protected:
   dwTime_t timestamp_;
 
   ros::NodeHandle nh_;
+  ros::Publisher pub_info_;
   std::unique_ptr<camera_info_manager::CameraInfoManager> camera_info_manager_;
+  sensor_msgs::CameraInfo camera_info_;
 
   YAML::Node config_;
   std::string calibDirPath_ = "";

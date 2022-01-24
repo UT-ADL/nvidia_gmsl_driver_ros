@@ -23,6 +23,7 @@ CameraBase::CameraBase(const std::shared_ptr<DriveworksApiWrapper> driveworksApi
 
   // ROS
   frame_ = "interface" + interface_ + "_link" + link_;
+  pub_info_ = nh_.advertise<sensor_msgs::CameraInfo>(config_["topic"].as<std::string>() + "/camera_info", 0);
 
   // Calibration
   nh_.param<std::string>("calib_dir_path", calibDirPath_,
@@ -32,7 +33,7 @@ CameraBase::CameraBase(const std::shared_ptr<DriveworksApiWrapper> driveworksApi
   cam_info_file_ << "file://" << calibDirPath_ << frame_ << ".yaml";
   if (camera_info_manager_->validateURL(cam_info_file_.str()) &&
       camera_info_manager_->loadCameraInfo(cam_info_file_.str())) {
-    //        camera_info_ = camera_info_manager_->getCameraInfo();
+    camera_info_ = camera_info_manager_->getCameraInfo();
   }
 
   ROS_DEBUG_STREAM("CameraH264 on interface : " << interface_ << ", link : " << link_ << " initialized successfully!");
@@ -46,7 +47,6 @@ CameraBase::~CameraBase()
 
 void CameraBase::start()
 {
-  // Start the sensor
   CHECK_DW_ERROR_ROS(dwSensor_start(sensorHandle_))
 }
 

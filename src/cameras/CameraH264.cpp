@@ -19,6 +19,12 @@ CameraH264::CameraH264(std::shared_ptr<DriveworksApiWrapper> driveworksApiWrappe
   encoder_ = std::make_unique<DriveWorksH264Serializer>(&sensorHandle_, framerate_, &serializerUserData_);
 }
 
+void CameraH264::run_pipeline()
+{
+  poll();
+  encode();
+}
+
 void CameraH264::poll()
 {
   if (!get_last_frame()) {
