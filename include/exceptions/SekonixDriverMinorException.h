@@ -15,9 +15,7 @@
 class SekonixDriverMinorException : public std::runtime_error
 {
 public:
-  explicit SekonixDriverMinorException(const std::string& description) : std::runtime_error(description)
-  {
-  }
+  explicit SekonixDriverMinorException(const std::string& description) : std::runtime_error(description) {}
 };
 
 #endif  // SEKONIX_CAMERA_UT_SEKONIXDRIVERMINOREXCEPTION_H

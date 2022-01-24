@@ -15,9 +15,7 @@
 class SekonixDriverFatalException : public std::runtime_error
 {
 public:
-  explicit SekonixDriverFatalException(const std::string& description) : std::runtime_error(description)
-  {
-  }
+  explicit SekonixDriverFatalException(const std::string& description) : std::runtime_error(description) {}
 };
 
 #endif  // SEKONIX_CAMERA_UT_SEKONIXDRIVERFATALEXCEPTION_H

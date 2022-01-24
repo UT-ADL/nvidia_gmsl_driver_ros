@@ -47,7 +47,7 @@ void Sekonix_driver::setup_cameras()
   for (auto& camera : camera_vector_) {
     camera->start();
   }
-  pool_ = std::make_unique<ThreadPool>(camera_count);
+  pool_ = std::make_unique<thread_pool>(camera_count);
   ROS_INFO_STREAM(camera_vector_.size() << " cameras initialized.");
 
   if (camera_vector_.empty()) {
@@ -58,7 +58,7 @@ void Sekonix_driver::setup_cameras()
 void Sekonix_driver::poll_and_process()
 {
   for (auto& camera : camera_vector_) {
-    future_pool_.emplace_back(pool_->enqueue(
+    future_pool_.emplace_back(pool_->submit(
         [](const std::shared_ptr<CameraBase>& camera) -> bool {
           try {
             camera->run_pipeline();

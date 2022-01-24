@@ -12,7 +12,7 @@
 #include "cameras/CameraH264.h"
 #include "cameras/CameraJpg.h"
 #include <DriveworksApiWrapper.h>
-#include <ThreadPool.h>
+#include "thread_pool.hpp"
 
 #include "exceptions/SekonixDriverFatalException.h"
 #include "exceptions/SekonixDriverMinorException.h"
@@ -39,7 +39,7 @@ public:
 private:
   static constexpr size_t MAX_TRIES_ = 100;
   bool all_cameras_valid_;
-  std::unique_ptr<ThreadPool> pool_;
+  std::unique_ptr<thread_pool> pool_;
   std::vector<std::future<bool>> future_pool_;
   size_t tries_ = 0;
   ros::NodeHandle nh_;
