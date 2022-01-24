@@ -3,8 +3,8 @@
 
 #include "cameras/CameraH264.h"
 
-CameraH264::CameraH264(std::shared_ptr<DriveworksApiWrapper> driveworksApiWrapper, const YAML::Node& config,
-                       std::string interface, std::string link, ros::NodeHandle* nodehandle)
+CameraH264::CameraH264(DriveworksApiWrapper* driveworksApiWrapper, const YAML::Node& config, std::string interface,
+                       std::string link, ros::NodeHandle* nodehandle)
   : CameraBase(driveworksApiWrapper, config, interface, link, nodehandle)
 {
   serializerUserData_.h264_publisher = &pub_h264_;

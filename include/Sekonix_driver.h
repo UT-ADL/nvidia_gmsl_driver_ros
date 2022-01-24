@@ -46,9 +46,9 @@ private:
   std::string encoder_name_;
   std::string config_file_path_;
   YAML::Node config_;
-  std::shared_ptr<DriveworksApiWrapper> driveworksApiWrapper_;
+  std::unique_ptr<DriveworksApiWrapper> driveworksApiWrapper_;
   size_t camera_count = 0;
-  std::vector<std::shared_ptr<CameraBase>> camera_vector_;
+  std::vector<std::unique_ptr<CameraBase>> camera_vector_;
 };
 
 #endif  // SEKONIX_CAMERA_UT_SEKONIX_DRIVER_H

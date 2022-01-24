@@ -3,8 +3,8 @@
 
 #include "cameras/CameraJpg.h"
 
-CameraJpg::CameraJpg(std::shared_ptr<DriveworksApiWrapper> driveworksApiWrapper, const YAML::Node& config,
-                     std::string interface, std::string link, ros::NodeHandle* nodehandle)
+CameraJpg::CameraJpg(DriveworksApiWrapper* driveworksApiWrapper, const YAML::Node& config, std::string interface,
+                     std::string link, ros::NodeHandle* nodehandle)
   : CameraBase(driveworksApiWrapper, config, interface, link, nodehandle)
 {
   // Setup image and camera properties

@@ -32,8 +32,8 @@ public:
    * @param link
    * @param nodehandle
    */
-  CameraBase(std::shared_ptr<DriveworksApiWrapper> driveworksApiWrapper, const YAML::Node& config,
-             std::string interface, std::string link, ros::NodeHandle* nodehandle);
+  CameraBase(DriveworksApiWrapper* driveworksApiWrapper, const YAML::Node& config, std::string interface,
+             std::string link, ros::NodeHandle* nodehandle);
 
   /**
    * @brief Destructor, releases camera handles
@@ -65,7 +65,7 @@ public:
 
 protected:
   int framerate_;
-  std::shared_ptr<DriveworksApiWrapper> driveworksApiWrapper_;
+  DriveworksApiWrapper* driveworksApiWrapper_;
 
   dwSensorHandle_t sensorHandle_ = DW_NULL_HANDLE;
   dwCameraFrameHandle_t cameraFrameHandle_;

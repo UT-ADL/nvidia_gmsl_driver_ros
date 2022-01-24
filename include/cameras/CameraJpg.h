@@ -26,7 +26,7 @@ public:
    * @param link
    * @param nodehandle
    */
-  CameraJpg(std::shared_ptr<DriveworksApiWrapper> driveworksApiWrapper, const YAML::Node& config, std::string interface,
+  CameraJpg(DriveworksApiWrapper* driveworksApiWrapper, const YAML::Node& config, std::string interface,
             std::string link, ros::NodeHandle* nodehandle);
 
   void run_pipeline() override;

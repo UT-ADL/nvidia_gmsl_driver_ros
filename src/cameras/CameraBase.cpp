@@ -3,7 +3,7 @@
 
 #include "cameras/CameraBase.h"
 
-CameraBase::CameraBase(const std::shared_ptr<DriveworksApiWrapper> driveworksApiWrapper, const YAML::Node& config,
+CameraBase::CameraBase(DriveworksApiWrapper* driveworksApiWrapper, const YAML::Node& config,
                        const std::string interface, const std::string link, ros::NodeHandle* nodehandle)
   : driveworksApiWrapper_(driveworksApiWrapper), config_(config), interface_(interface), link_(link), nh_(*nodehandle)
 {

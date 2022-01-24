@@ -17,7 +17,7 @@ Sekonix_driver::Sekonix_driver(ros::NodeHandle* nodehandle) : nh_(*nodehandle)
   config_ = YAML::LoadFile(config_file_path_);
 
   // Create API Wrapper
-  driveworksApiWrapper_ = std::make_shared<DriveworksApiWrapper>();
+  driveworksApiWrapper_ = std::make_unique<DriveworksApiWrapper>();
 }
 
 void Sekonix_driver::setup_cameras()
@@ -31,11 +31,11 @@ void Sekonix_driver::setup_cameras()
                                  << link_it->second["parameters"]["camera-name"].as<std::string>());
 
         if (encoder_name_ == CameraH264::ENCODER_TYPE_) {
-          camera_vector_.emplace_back(std::make_shared<CameraH264>(driveworksApiWrapper_, link_it->second,
+          camera_vector_.emplace_back(std::make_unique<CameraH264>(driveworksApiWrapper_.get(), link_it->second,
                                                                    interface_it->first.as<std::string>(),
                                                                    link_it->first.as<std::string>(), &nh_));
         } else if (encoder_name_ == CameraJpg::ENCODER_TYPE_) {
-          camera_vector_.emplace_back(std::make_shared<CameraJpg>(driveworksApiWrapper_, link_it->second,
+          camera_vector_.emplace_back(std::make_unique<CameraJpg>(driveworksApiWrapper_.get(), link_it->second,
                                                                   interface_it->first.as<std::string>(),
                                                                   link_it->first.as<std::string>(), &nh_));
         }
@@ -59,7 +59,7 @@ void Sekonix_driver::poll_and_process()
 {
   for (auto& camera : camera_vector_) {
     future_pool_.emplace_back(pool_->submit(
-        [](const std::shared_ptr<CameraBase>& camera) -> bool {
+        [](CameraBase* camera) -> bool {
           try {
             camera->run_pipeline();
           }
@@ -68,7 +68,7 @@ void Sekonix_driver::poll_and_process()
           }
           return true;
         },
-        camera));
+        camera.get()));
   }
 
   all_cameras_valid_ = true;
