@@ -13,12 +13,15 @@ CameraH264::CameraH264(DriveworksApiWrapper* driveworksApiWrapper, const YAML::N
   serializerUserData_.frame_id = &frame_;
   serializerUserData_.camera_info = &camera_info_;
 
+  nh_.param<int>("h264_bitrate", bitrate_, 80000);
+  ROS_INFO_STREAM("H264 Bitrate: " << bitrate_);
+
   // ROS
   pub_h264_ =
       nh_.advertise<h264_image_transport_msgs::H264Packet>(config_["topic"].as<std::string>() + "/image/h264", 0);
 
   // Encoder
-  encoder_ = std::make_unique<DriveWorksH264Serializer>(&sensorHandle_, framerate_, &serializerUserData_);
+  encoder_ = std::make_unique<DriveWorksH264Serializer>(&sensorHandle_, framerate_, &serializerUserData_, bitrate_);
 }
 
 void CameraH264::run_pipeline()

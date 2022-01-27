@@ -34,8 +34,10 @@ public:
    * @param sensorHandle
    * @param framerate
    * @param user_data
+   * @param bitrate
    */
-  DriveWorksH264Serializer(dwSensorHandle_t* sensorHandle, int framerate, serializer_user_data_t_* user_data);
+  DriveWorksH264Serializer(dwSensorHandle_t* sensorHandle, int framerate, serializer_user_data_t_* user_data,
+                           int bitrate);
 
   /**
    * @brief Destructor

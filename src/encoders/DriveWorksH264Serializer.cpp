@@ -3,14 +3,13 @@
 
 #include "encoders/DriveWorksH264Serializer.h"
 DriveWorksH264Serializer::DriveWorksH264Serializer(dwSensorHandle_t* sensorHandle, int framerate,
-                                                   serializer_user_data_t_* user_data)
+                                                   serializer_user_data_t_* user_data, int bitrate)
   : sensorHandle_(sensorHandle), framerate_(framerate), user_data_(user_data)
 {
-  serializer_config_string_ =
-      "format=h264"
-      ",bitrate=8000000"
-      ",type=user";
+  serializer_config_string_ += "format=h264";
+  serializer_config_string_ += ",bitrate=" + std::to_string(bitrate);
   serializer_config_string_ += ",framerate=" + std::to_string(framerate_);
+  serializer_config_string_ += ",type=user";
 
   dwSerializerParams serializerParams;
 
@@ -20,7 +19,7 @@ DriveWorksH264Serializer::DriveWorksH264Serializer(dwSensorHandle_t* sensorHandl
   /**
    * onData is the callback that will be called once h264 data is ready.
    * It prepares the messages from h264 data and the data passed by userData.
-   * Publishes H264Packet & camera_info msgs via the publishes passed by userData.
+   * Publishes H264Packet & camera_info msgs via the publishers passed by userData.
    * @param data The h264 bytes
    * @param size size in bytes of data
    * @param userData Pointer to a serializer_user_data_t_

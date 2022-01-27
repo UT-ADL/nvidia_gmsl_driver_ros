@@ -50,6 +50,7 @@ private:
   ros::Publisher pub_h264_;
   std::unique_ptr<DriveWorksH264Serializer> encoder_;
 
+  int bitrate_;
   serializer_user_data_t_ serializerUserData_{};
 };
 

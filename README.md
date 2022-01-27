@@ -1,7 +1,9 @@
 <upper>*Inspired by [NVIDIA dw_ros](https://github.com/NVIDIA/dw-ros)
 & [leo-drive drivers](https://gitlab.com/leo-drive/Drivers/sekonix_camera).* </upper>
 
-# Nvidia Drive GMSL Sekonix Camera ROS Driver
+# Nvidia Drive GMSL Camera ROS Driver
+
+## How to build
 
 *Note : In this documentation and in the source 'interface' designates the HFM connector, and 'link' the number of the
 FAKRA Z.
@@ -26,7 +28,7 @@ This drivers **doesn't** use the native nvidia RIG calibration file. It uses the
 To calibrate the cameras :
 
 - Run the driver with an empty calibration dir.
-- Use ros [camera_calibration](wiki.ros.org/camera_calibration) to calibrate the cameras.
+- Use ros [camera_calibration](http://wiki.ros.org/camera_calibration) to calibrate the cameras.
 - Put the camera calibration yaml files in your calib dir.
 
 **Note :** In the calibration dir the calibration files **MUST** have this syntax : `interface<a-d>_link<0-3>.yaml`. For
@@ -160,7 +162,7 @@ Also install the dependancies with rosdep :
 rosdep install --from-paths src --ignore-src -r -y
 ```
 
-#### Remove old library versions\
+#### Remove old library versions
 
 *(The detailed reason is detailed in
 this [post](https://forums.developer.nvidia.com/t/libgdal-so-has-undefined-symbol/110239/5)).*
@@ -174,3 +176,21 @@ rm /usr/lib/libxerces-c*
 ```
 source ~/install_isolated/setup.bash
 ```
+
+#### Run the launchfile
+
+```bash
+roslaunch sekonix_camera_ut sekonix_driver_ut.launch
+```
+
+##### Launchfile parameters
+
+| Parameter        |                           Default |                               Comment |
+|------------------|----------------------------------:|--------------------------------------:|
+| `config_path`    | `$(dirname)/../config/ports.yaml` |               Path to the config file |
+| `calib_dir_path` |            `$(dirname)/../calib/` |   Path to the camera calibration file |
+| `framerate`      |                              `30` |                      Output framerate |
+| `verbose`        |                           `False` |                Enables verbose output | 
+| `encoder`        |                             `jpg` |            Encoder. (`jpg` or `h264`) | 
+| `h264_bitrate`   |                         `8000000` | h264 output bitrate (Minimum `30000`) | 
+ 
