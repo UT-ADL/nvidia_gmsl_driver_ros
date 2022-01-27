@@ -58,8 +58,7 @@ void CameraJpg::publish()
 {
   header_.stamp = ros::Time(static_cast<double>(timestamp_) * 10e-7);
   header_.frame_id = frame_;
-  img_msg_compressed_.data.assign(encoder_->get_image().get(),
-                                  encoder_->get_image().get() + encoder_->get_count_bytes());
+  img_msg_compressed_.data.assign(encoder_->get_image(), encoder_->get_image() + encoder_->get_count_bytes());
   img_msg_compressed_.header = header_;
   img_msg_compressed_.format = "jpeg";
   pub_compressed_.publish(img_msg_compressed_);

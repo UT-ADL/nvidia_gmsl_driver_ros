@@ -10,6 +10,8 @@
 #include "framework/Checks.hpp"
 #include <dw/image/Image.h>
 
+static constexpr uint32_t MAX_JPG_BYTES = 3 * 1290 * 1208;
+
 class NvMediaJpgEncoder
 {
 public:
@@ -41,7 +43,7 @@ public:
   /**
    * @brief Returns a shared ptr to the image bits pulled from the encoder
    */
-  std::shared_ptr<uint8_t[]> get_image();
+  uint8_t* get_image();
 
   /**
    * @brief Returns the size in bytes of the current image.
@@ -55,8 +57,7 @@ private:
   NvMediaStatus nvMediaStatus_;
 
   uint32_t countByteJpeg_;
-  std::shared_ptr<uint8_t[]> jpegImage_;
-  static constexpr uint32_t maxJpegBytes_ = 3 * 1290 * 1208;
+  std::unique_ptr<uint8_t[]> jpegImage_;
 };
 
 #endif  // SEKONIX_CAMERA_UT_NVMEDIAJPGENCODER_H

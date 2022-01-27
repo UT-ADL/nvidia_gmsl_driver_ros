@@ -31,6 +31,8 @@ public:
    */
   void setup_cameras();
 
+  void create_camera(const YAML::Node& config, const std::string& interface, const std::string& link);
+
   /**
    * @brief Polls camera, publishes images and handles exception.
    */

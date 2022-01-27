@@ -29,17 +29,7 @@ void Sekonix_driver::setup_cameras()
            ++link_it) {
         ROS_DEBUG_STREAM("Link " << link_it->first.as<std::string>() << " :  "
                                  << link_it->second["parameters"]["camera-name"].as<std::string>());
-
-        if (encoder_name_ == CameraH264::ENCODER_TYPE_) {
-          camera_vector_.emplace_back(std::make_unique<CameraH264>(driveworksApiWrapper_.get(), link_it->second,
-                                                                   interface_it->first.as<std::string>(),
-                                                                   link_it->first.as<std::string>(), &nh_));
-        } else if (encoder_name_ == CameraJpg::ENCODER_TYPE_) {
-          camera_vector_.emplace_back(std::make_unique<CameraJpg>(driveworksApiWrapper_.get(), link_it->second,
-                                                                  interface_it->first.as<std::string>(),
-                                                                  link_it->first.as<std::string>(), &nh_));
-        }
-
+        create_camera(link_it->second, interface_it->first.as<std::string>(), link_it->first.as<std::string>());
         camera_count++;
       }
     }
@@ -52,6 +42,17 @@ void Sekonix_driver::setup_cameras()
 
   if (camera_vector_.empty()) {
     throw SekonixDriverFatalException("No cameras were initialized.");
+  }
+}
+
+void Sekonix_driver::create_camera(const YAML::Node& config, const std::string& interface, const std::string& link)
+{
+  if (encoder_name_ == CameraH264::ENCODER_TYPE_) {
+    camera_vector_.emplace_back(
+        std::make_unique<CameraH264>(driveworksApiWrapper_.get(), config, interface, link, &nh_));
+  } else if (encoder_name_ == CameraJpg::ENCODER_TYPE_) {
+    camera_vector_.emplace_back(
+        std::make_unique<CameraJpg>(driveworksApiWrapper_.get(), config, interface, link, &nh_));
   }
 }
 
