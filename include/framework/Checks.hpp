@@ -82,6 +82,6 @@ inline void getDateString(char* buf, size_t length)
       getDateString(buf, 80);                                                                                          \
       throw SekonixDriverFatalException(std::string(buf) + std::string(" NVMEDIA Error id:") + std::to_string(x));     \
     }                                                                                                                  \
-  };                                                                                                                   \
+  };
 
 #endif  // SAMPLES_COMMON_CHECKS_HPP_

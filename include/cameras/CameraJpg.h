@@ -18,7 +18,7 @@ class CameraJpg : public CameraBase
 {
 public:
   /**
-   * @brief Constructor, initializes the camera handles and ros params.
+   * @brief Constructor, initializes encoder and jpg image publisher.
    * @throws SekonixFatalException
    * @param driveworksApiWrapper
    * @param config
@@ -29,21 +29,27 @@ public:
   CameraJpg(DriveworksApiWrapper* driveworksApiWrapper, const YAML::Node& config, std::string interface,
             std::string link, ros::NodeHandle* nodehandle);
 
+  /**
+   * @brief Calls poll, encode, publish
+   */
   void run_pipeline() override;
 
   /**
-   * @brief Polls camera for frame, extracts image, returns frame to sensor
+   * @brief Polls camera for frame, extracts image, timestamp and nvmedia image.
    * @throws SekonixFatalException
    * @throws SekonixMinorException
    */
   void poll() override;
 
   /**
-   * @brief Gets jpg data from extracted image.
+   * @brief Pushes polled data to the encoder and pulls jpg bytes.
    * @throws SekonixFatalException
    */
   void encode() override;
 
+  /**
+   * @brief Publishes compressed images and camera info to ROS.
+   */
   void publish();
 
   inline static const std::string ENCODER_TYPE_ = "jpg";

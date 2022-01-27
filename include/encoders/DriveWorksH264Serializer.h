@@ -15,6 +15,7 @@
 
 /**
  * Struct passed to the serializer.
+ * Contains the h264 publisher, the camera_info publisher, the timestamp, the frame id and the camera info msg.
  */
 struct serializer_user_data_t_
 {
@@ -28,8 +29,23 @@ struct serializer_user_data_t_
 class DriveWorksH264Serializer
 {
 public:
+  /**
+   * @brief Constructor. Initializes the serializer and especially it's callback.
+   * @param sensorHandle
+   * @param framerate
+   * @param user_data
+   */
   DriveWorksH264Serializer(dwSensorHandle_t* sensorHandle, int framerate, serializer_user_data_t_* user_data);
+
+  /**
+   * @brief Destructor
+   */
   virtual ~DriveWorksH264Serializer();
+
+  /**
+   * Feed a frame to the serializer.
+   * @param cameraFrameHandle
+   */
   void feed_frame(dwCameraFrameHandle_t& cameraFrameHandle);
 
 private:

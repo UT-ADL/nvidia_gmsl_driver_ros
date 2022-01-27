@@ -31,24 +31,25 @@ public:
   void feed_frame(dwImageNvMedia* inNvMediaImage);
 
   /**
-   * @brief Returns true if encoded bits are available in the encoder memory
+   * @brief Returns true if encoded bits are available in the encoder memory, otherwise waits. Has to be called after
+   * feed_frame
    */
   bool wait_for_bits();
 
   /**
-   * @brief Pull the bits from the encoder memory to the local image. Must be called if bits are available
+   * @brief Pull the bits from the encoder memory to the local image. Must be called after wait_for_bits
    */
   void pull_bits();
 
   /**
-   * @brief Returns a shared ptr to the image bits pulled from the encoder
+   * @brief Returns a ptr to the image bits pulled from the encoder
    */
   uint8_t* get_image();
 
   /**
    * @brief Returns the size in bytes of the current image.
    */
-  uint32_t get_count_bytes() const;
+  [[nodiscard]] uint32_t get_count_bytes() const;
 
 private:
   NvMediaDevice* nvmediaDevice_ = nullptr;

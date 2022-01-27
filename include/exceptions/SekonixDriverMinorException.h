@@ -10,7 +10,7 @@
 
 /**
  * @class SekonixDriverMinorException
- * @brief Thrown when the Sekonix camera UT driver encounters a recoverable error during processing
+ * @brief Thrown when the Sekonix camera UT driver encounters a recoverable error
  */
 class SekonixDriverMinorException : public std::runtime_error
 {

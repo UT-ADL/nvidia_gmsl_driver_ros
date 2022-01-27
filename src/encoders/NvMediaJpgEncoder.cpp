@@ -7,7 +7,6 @@ NvMediaJpgEncoder::NvMediaJpgEncoder(const NvMediaSurfaceType* surfaceType) : su
 {
   jpegImage_ = std::make_unique<uint8_t[]>(MAX_JPG_BYTES);
 
-  // Nvmedia init
   nvmediaDevice_ = NvMediaDeviceCreate();
   nvMediaIjpe_ = NvMediaIJPECreate(nvmediaDevice_, surfaceType_, (uint8_t)1, MAX_JPG_BYTES);
 

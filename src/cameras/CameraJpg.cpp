@@ -37,7 +37,6 @@ void CameraJpg::poll()
     throw SekonixDriverMinorException("Unable to get frame");
   }
 
-  // Get image from cameraFrameHandle
   CHECK_DW_ERROR_ROS_MINOR(
       dwSensorCamera_getImage(&imageHandleOriginal_, DW_CAMERA_OUTPUT_NATIVE_PROCESSED, cameraFrameHandle_));
 

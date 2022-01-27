@@ -48,7 +48,7 @@ int main(int argc, char** argv)
 
   while (ros::ok()) {
     try {
-      driver->poll_and_process();
+      driver->run();
     }
     catch (SekonixDriverFatalException& e) {
       ROS_FATAL_STREAM(e.what());

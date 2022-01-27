@@ -17,6 +17,14 @@ DriveWorksH264Serializer::DriveWorksH264Serializer(dwSensorHandle_t* sensorHandl
   serializerParams.parameters = serializer_config_string_.c_str();
   serializerParams.userData = user_data_;
 
+  /**
+   * onData is the callback that will be called once h264 data is ready.
+   * It prepares the messages from h264 data and the data passed by userData.
+   * Publishes H264Packet & camera_info msgs via the publishes passed by userData.
+   * @param data The h264 bytes
+   * @param size size in bytes of data
+   * @param userData Pointer to a serializer_user_data_t_
+   */
   serializerParams.onData = [](const uint8_t* data, size_t size, void* userData) -> void {
     auto* userDataCast = static_cast<serializer_user_data_t_*>(userData);
     auto stamp = ros::Time((static_cast<double>(*userDataCast->timestamp) * 10e-7));

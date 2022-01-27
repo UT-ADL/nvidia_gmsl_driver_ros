@@ -18,13 +18,13 @@
 #include "framework/Checks.hpp"
 
 /**
- * Base class for cameras.
+ * @brief Base class for cameras.
  */
 class CameraBase
 {
 public:
   /**
-   * @brief Constructor, initializes the camera handles and ros params.
+   * @brief Constructor, initializes the camera handles and ros variables.
    * @throws SekonixFatalException
    * @param driveworksApiWrapper
    * @param config
@@ -46,15 +46,18 @@ public:
    */
   void start();
 
+  /**
+   * @brief Has to be overridden. Executes once all the steps that the camera implements.
+   */
   virtual void run_pipeline() = 0;
 
   /**
-   * @brief Polls camera for frame, extracts image, returns frame to sensor
+   * @brief Has to be overridden. Polls camera for a frame + eventually extra processing.
    */
   virtual void poll() = 0;
 
   /**
-   * @brief Gets jpg data from extracted image.
+   * @brief Has to be overridden. Pushes and pulls polled data to the encoder.
    */
   virtual void encode() = 0;
 
@@ -80,10 +83,10 @@ protected:
   sensor_msgs::CameraInfo camera_info_;
 
   YAML::Node config_;
-  std::string calibDirPath_ = "";
-  std::string params_ = "";
-  std::string interface_ = "";
-  std::string link_ = "";
+  std::string calibDirPath_;
+  std::string params_;
+  std::string interface_;
+  std::string link_;
   std::string frame_;
   std::ostringstream cam_info_file_;
 };

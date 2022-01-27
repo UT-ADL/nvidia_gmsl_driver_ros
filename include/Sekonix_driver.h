@@ -17,6 +17,8 @@
 #include "exceptions/SekonixDriverFatalException.h"
 #include "exceptions/SekonixDriverMinorException.h"
 
+static constexpr size_t MAX_TRIALS_ = 100;
+
 class Sekonix_driver
 {
 public:
@@ -31,19 +33,26 @@ public:
    */
   void setup_cameras();
 
+  /**
+   * @brief Creates one camera.
+   * @param config
+   * @param interface
+   * @param link
+   */
   void create_camera(const YAML::Node& config, const std::string& interface, const std::string& link);
 
   /**
-   * @brief Polls camera, publishes images and handles exception.
+   * @brief Runs the camera pipelines in a loop, one thread per camera.
+   * @throws SekonixDriverFatalException
+   * @throws SekonixDriverMinorException
    */
-  void poll_and_process();
+  void run();
 
 private:
-  static constexpr size_t MAX_TRIES_ = 100;
   bool all_cameras_valid_;
   std::unique_ptr<thread_pool> pool_;
   std::vector<std::future<bool>> future_pool_;
-  size_t tries_ = 0;
+  size_t trials_ = 0;
   ros::NodeHandle nh_;
   std::string encoder_name_;
   std::string config_file_path_;

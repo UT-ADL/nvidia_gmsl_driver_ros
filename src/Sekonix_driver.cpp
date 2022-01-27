@@ -56,7 +56,7 @@ void Sekonix_driver::create_camera(const YAML::Node& config, const std::string& 
   }
 }
 
-void Sekonix_driver::poll_and_process()
+void Sekonix_driver::run()
 {
   for (auto& camera : camera_vector_) {
     future_pool_.emplace_back(pool_->submit(
@@ -76,14 +76,14 @@ void Sekonix_driver::poll_and_process()
   for (auto& future : future_pool_) {
     if (!future.get() && all_cameras_valid_) {
       all_cameras_valid_ = false;
-      tries_++;
+      trials_++;
     }
   }
   future_pool_.clear();
 
-  if (tries_ > MAX_TRIES_) {
-    throw SekonixDriverFatalException("COULDN'T REACH CAMERA AFTER " + std::to_string(MAX_TRIES_) + " TRIALS");
+  if (trials_ > MAX_TRIALS_) {
+    throw SekonixDriverFatalException("COULDN'T REACH CAMERA AFTER " + std::to_string(MAX_TRIALS_) + " TRIALS");
   }
 
-  tries_ = all_cameras_valid_ ? 0 : tries_;
+  trials_ = all_cameras_valid_ ? 0 : trials_;
 }
