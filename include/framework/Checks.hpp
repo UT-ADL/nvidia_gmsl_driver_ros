@@ -2,8 +2,7 @@
 // Edited by Maxandre Ogeret - 2021 - University of Tartu - Autonomous Driving
 // Lab.
 
-#ifndef SAMPLES_COMMON_CHECKS_HPP_
-#define SAMPLES_COMMON_CHECKS_HPP_
+#pragma once
 
 #include <dwvisualization/gl/GL.h>
 
@@ -17,8 +16,8 @@
 
 #include <ros/ros.h>
 #include <nvmedia_core.h>
-#include "exceptions/SekonixDriverMinorException.h"
-#include "exceptions/SekonixDriverFatalException.h"
+#include "exceptions/NvidiaGmslDriverRosMinorException.h"
+#include "exceptions/NvidiaGmslDriverRosFatalException.h"
 
 //------------------------------------------------------------------------------
 // Functions
@@ -56,9 +55,9 @@ inline void getDateString(char* buf, size_t length)
     if (result != DW_SUCCESS) {                                                                                        \
       char buf[80];                                                                                                    \
       getDateString(buf, 80);                                                                                          \
-      throw SekonixDriverFatalException(std::string(buf) + std::string("DW Error ") + dwGetStatusName(result) +        \
-                                        std::string(" executing DW function:\n " #x) +                                 \
-                                        std::string("\n at " __FILE__ ":") + std::to_string(__LINE__));                \
+      throw NvidiaGmslDriverRosFatalException(std::string(buf) + std::string("DW Error ") + dwGetStatusName(result) +  \
+                                              std::string(" executing DW function:\n " #x) +                           \
+                                              std::string("\n at " __FILE__ ":") + std::to_string(__LINE__));          \
     }                                                                                                                  \
   };
 
@@ -68,9 +67,9 @@ inline void getDateString(char* buf, size_t length)
     if (result != DW_SUCCESS) {                                                                                        \
       char buf[80];                                                                                                    \
       getDateString(buf, 80);                                                                                          \
-      throw SekonixDriverMinorException(std::string(buf) + std::string("DW Error ") + dwGetStatusName(result) +        \
-                                        std::string(" executing DW function:\n " #x) +                                 \
-                                        std::string("\n at " __FILE__ ":") + std::to_string(__LINE__));                \
+      throw NvidiaGmslDriverRosMinorException(std::string(buf) + std::string("DW Error ") + dwGetStatusName(result) +  \
+                                              std::string(" executing DW function:\n " #x) +                           \
+                                              std::string("\n at " __FILE__ ":") + std::to_string(__LINE__));          \
     }                                                                                                                  \
   };
 
@@ -80,8 +79,7 @@ inline void getDateString(char* buf, size_t length)
     if (result != NVMEDIA_STATUS_OK) {                                                                                 \
       char buf[80];                                                                                                    \
       getDateString(buf, 80);                                                                                          \
-      throw SekonixDriverFatalException(std::string(buf) + std::string(" NVMEDIA Error id:") + std::to_string(x));     \
+      throw NvidiaGmslDriverRosFatalException(std::string(buf) + std::string(" NVMEDIA Error id:") +                   \
+                                              std::to_string(x));                                                      \
     }                                                                                                                  \
   };
-
-#endif  // SAMPLES_COMMON_CHECKS_HPP_

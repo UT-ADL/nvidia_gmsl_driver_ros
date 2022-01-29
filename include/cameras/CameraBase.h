@@ -1,8 +1,7 @@
 // Created by Maxandre Ogeret.
 // (c) 2022 University of Tartu - Autonomous Driving Lab.
 
-#ifndef SEKONIX_CAMERA_UT_CAMERA_BASE_H
-#define SEKONIX_CAMERA_UT_CAMERA_BASE_H
+#pragma once
 
 #include <camera_info_manager/camera_info_manager.h>
 #include <ros/package.h>
@@ -25,7 +24,7 @@ class CameraBase
 public:
   /**
    * @brief Constructor, initializes the camera handles and ros variables.
-   * @throws SekonixFatalException
+   * @throws NvidiaGmslDriverRosFatalException
    * @param driveworksApiWrapper
    * @param config
    * @param interface
@@ -42,7 +41,7 @@ public:
 
   /**
    * @brief Starts the sensor
-   * @throws SekonixFatalException
+   * @throws NvidiaGmslDriverRosFatalException
    */
   void start();
 
@@ -90,5 +89,3 @@ protected:
   std::string frame_;
   std::ostringstream cam_info_file_;
 };
-
-#endif  // SEKONIX_CAMERA_UT_CAMERA_BASE_H

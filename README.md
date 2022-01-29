@@ -19,7 +19,7 @@ See [here](https://docs.nvidia.com/drive/drive_os_5.1.6.1L/nvvib_docs/index.html
 ### Setup
 
 - Copy the config file `ports.yaml` to your workspace.
-- Copy the launchfile `sekonix_driver_ut.launch` to to your workspace.
+- Copy the launchfile `nvidia_gmsl_driver_ros.launch` to to your workspace.
 - Edit the config file `ports.yaml` to your need.
 
 ### Calibrating the cameras
@@ -37,7 +37,7 @@ example : `interfacea_link1.yaml`.
 ### Debug
 
 In case of problem you can start the driver in verbose
-mode :  `rosrun sekonix_camera_ut sekonix_camera_ut_node --verbose`
+mode :  `rosrun nvidia_gmsl_driver_ros nvidia_gmsl_driver_ros_node --verbose`
 
 ## How to build on host
 
@@ -103,10 +103,10 @@ rosinstall_generator ros_comm sensor_msgs camera_info_manager cv_bridge image_tr
 vcs import src < melodic-ros_comm.rosinstall
 ```
 
-#### Clone UT Sekonix driver and the h264 image transport
+#### Clone nvidia_gmsl_driver_ros and the h264 image transport
 
 ```bash
-git clone git@gitlab.cs.ut.ee:autonomous-driving-lab/autoware.ai/local/sekonix_camera_ut.git src/sekonix_camera_ut
+git clone git@gitlab.cs.ut.ee:autonomous-driving-lab/autoware.ai/local/nvidia_gmsl_driver_ros.git src/nvidia_gmsl_driver_ros
 git clone git@gitlab.cs.ut.ee:autonomous-driving-lab/autoware.ai/local/h264_image_transport.git src/h264_image_transport
 ```
 
@@ -131,7 +131,7 @@ SYSROOT=~/nvidia/nvidia_sdk/DRIVE_OS_5.2.0_SDK_Linux_OS_DDPX/DRIVEOS/drive-t186r
 ```
 
 ```bash
-src/catkin/bin/catkin_make_isolated -DCMAKE_BUILD_TYPE=Release -DVIBRANTE_PDK:STRING=$PDK -DTRT_VERSION:STRING=6.3.1.3 -DCMAKE_TOOLCHAIN_FILE=$HOME/ros_catkin_ws/src/sekonix_camera_ut/Toolchain-V5L.cmake -DCMAKE_EXE_LINKER_FLAGS="${CMAKE_EXE_LINKER_FLAGS} -L/usr/local/driveworks/targets/aarch64-Linux/lib -Wl,-rpath,/usr/local/driveworks/targets/aarch64-Linux/lib -L$SYSROOT/usr/local/cuda-10.2/targets/aarch64-linux/lib -Wl,-rpath,$SYSROOT/usr/local/cuda-10.2/targets/aarch64-linux/lib -L$SYSROOT/usr/lib/aarch64-linux-gnu/openblas -Wl,-rpath,$SYSROOT/usr/lib/aarch64-linux-gnu/openblas" --install --ignore-pkg h264_image_transport
+src/catkin/bin/catkin_make_isolated -DCMAKE_BUILD_TYPE=Release -DVIBRANTE_PDK:STRING=$PDK -DTRT_VERSION:STRING=6.3.1.3 -DCMAKE_TOOLCHAIN_FILE=$HOME/ros_catkin_ws/src/nvidia_gmsl_driver_ros/Toolchain-V5L.cmake -DCMAKE_EXE_LINKER_FLAGS="${CMAKE_EXE_LINKER_FLAGS} -L/usr/local/driveworks/targets/aarch64-Linux/lib -Wl,-rpath,/usr/local/driveworks/targets/aarch64-Linux/lib -L$SYSROOT/usr/local/cuda-10.2/targets/aarch64-linux/lib -Wl,-rpath,$SYSROOT/usr/local/cuda-10.2/targets/aarch64-linux/lib -L$SYSROOT/usr/lib/aarch64-linux-gnu/openblas -Wl,-rpath,$SYSROOT/usr/lib/aarch64-linux-gnu/openblas" --install --ignore-pkg h264_image_transport
 ```
 
 Replace with the current installation path with the binary installation path so we can run any binary installed packages
@@ -181,7 +181,7 @@ source ~/install_isolated/setup.bash
 #### Run the launchfile
 
 ```bash
-roslaunch sekonix_camera_ut sekonix_driver_ut.launch
+roslaunch nvidia_gmsl_driver_ros nvidia_gmsl_driver_ros.launch
 ```
 
 ##### Launchfile parameters

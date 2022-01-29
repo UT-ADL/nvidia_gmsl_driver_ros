@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.14 FATAL_ERROR)
 
-project(sekonix_camera_ut)
+project(nvidia_gmsl_driver_ros)
 
 set(CMAKE_WARN_DEPRECATED OFF)
 set(CMAKE_BUILD_TYPE release)
@@ -48,12 +48,12 @@ set(NODE_NAME ${PROJECT_NAME}_node)
 
 add_executable(${NODE_NAME}
         src/main.cpp
-        src/Sekonix_driver.cpp
+        src/Driver.cpp
         src/cameras/CameraBase.cpp
         src/cameras/CameraH264.cpp
         src/cameras/CameraJpg.cpp
         src/DriveworksApiWrapper.cpp
-        src/framework/Log.cpp
+        src/log.cpp
         src/encoders/DriveWorksH264Serializer.cpp
         src/encoders/NvMediaJpgEncoder.cpp
         )

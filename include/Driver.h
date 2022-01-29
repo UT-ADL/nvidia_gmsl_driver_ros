@@ -1,8 +1,7 @@
 // Created by Maxandre Ogeret.
 // (c) 2022 University of Tartu - Autonomous Driving Lab.
 
-#ifndef SEKONIX_CAMERA_UT_SEKONIX_DRIVER_H
-#define SEKONIX_CAMERA_UT_SEKONIX_DRIVER_H
+#pragma once
 
 #include <yaml-cpp/yaml.h>
 #include <dw/sensors/Sensors.h>
@@ -14,19 +13,19 @@
 #include <DriveworksApiWrapper.h>
 #include "thread_pool.hpp"
 
-#include "exceptions/SekonixDriverFatalException.h"
-#include "exceptions/SekonixDriverMinorException.h"
+#include "exceptions/NvidiaGmslDriverRosFatalException.h"
+#include "exceptions/NvidiaGmslDriverRosMinorException.h"
 
 static constexpr size_t MAX_TRIALS_ = 100;
 
-class Sekonix_driver
+class Driver
 {
 public:
   /**
    * Constructor
    * @param nodehandle
    */
-  Sekonix_driver(ros::NodeHandle* nodehandle);
+  Driver(ros::NodeHandle* nodehandle);
 
   /**
    * @brief Initializes all parameters and config, handles exception.
@@ -43,8 +42,8 @@ public:
 
   /**
    * @brief Runs the camera pipelines in a loop, one thread per camera.
-   * @throws SekonixDriverFatalException
-   * @throws SekonixDriverMinorException
+   * @throws NvidiaGmslDriverRosFatalException
+   * @throws NvidiaGmslDriverRosMinorException
    */
   void run();
 
@@ -61,5 +60,3 @@ private:
   size_t camera_count = 0;
   std::vector<std::unique_ptr<CameraBase>> camera_vector_;
 };
-
-#endif  // SEKONIX_CAMERA_UT_SEKONIX_DRIVER_H

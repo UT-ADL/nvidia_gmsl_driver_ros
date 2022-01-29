@@ -1,8 +1,7 @@
 // Created by Maxandre Ogeret.
 // (c) 2022 University of Tartu - Autonomous Driving Lab.
 
-#ifndef SEKONIX_CAMERA_UT_NVMEDIAJPGENCODER_H
-#define SEKONIX_CAMERA_UT_NVMEDIAJPGENCODER_H
+#pragma once
 
 #include <nvmedia_ijpe.h>
 #include <memory>
@@ -60,5 +59,3 @@ private:
   uint32_t countByteJpeg_;
   std::unique_ptr<uint8_t[]> jpegImage_;
 };
-
-#endif  // SEKONIX_CAMERA_UT_NVMEDIAJPGENCODER_H

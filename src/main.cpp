@@ -1,8 +1,8 @@
 // Created by Maxandre Ogeret.
 // (c) 2022 University of Tartu - Autonomous Driving Lab.
 
-#include "Sekonix_driver.h"
-#include "Log.hpp"
+#include "Driver.h"
+#include "log.hpp"
 #include <dw/core/VersionCurrent.h>
 #include <ros/ros.h>
 
@@ -25,20 +25,20 @@ int main(int argc, char** argv)
     }
   }
 
-  ros::init(argc, argv, "sekonix_camera_ut");
+  ros::init(argc, argv, "nvidia_gmsl_driver_ros");
   ros::NodeHandle nh("~");
 
   double framerate = 0;
   nh.param<double>("framerate", framerate, 30);
 
   ros::Rate rate(std::min(framerate, 30.0));
-  std::unique_ptr<Sekonix_driver> driver;
-  driver = std::make_unique<Sekonix_driver>(&nh);
+  std::unique_ptr<Driver> driver;
+  driver = std::make_unique<Driver>(&nh);
 
   try {
     driver->setup_cameras();
   }
-  catch (SekonixDriverFatalException& e) {
+  catch (NvidiaGmslDriverRosFatalException& e) {
     ROS_FATAL_STREAM(e.what());
     ros::shutdown();
     return 1;
@@ -48,7 +48,7 @@ int main(int argc, char** argv)
     try {
       driver->run();
     }
-    catch (SekonixDriverFatalException& e) {
+    catch (NvidiaGmslDriverRosFatalException& e) {
       ROS_FATAL_STREAM(e.what());
       ros::shutdown();
       return 1;

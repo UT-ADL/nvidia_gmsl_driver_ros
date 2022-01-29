@@ -11,7 +11,7 @@ NvMediaJpgEncoder::NvMediaJpgEncoder(const NvMediaSurfaceType* surfaceType) : su
   nvMediaIjpe_ = NvMediaIJPECreate(nvmediaDevice_, surfaceType_, (uint8_t)1, MAX_JPG_BYTES);
 
   if (!nvmediaDevice_ || !nvmediaDevice_) {
-    throw SekonixDriverFatalException("Unable to create NvMedia device or Encoder!");
+    throw NvidiaGmslDriverRosFatalException("Unable to create NvMedia device or Encoder!");
   }
 }
 
@@ -24,7 +24,7 @@ NvMediaJpgEncoder::~NvMediaJpgEncoder()
 void NvMediaJpgEncoder::feed_frame(dwImageNvMedia* inNvMediaImage)
 {
   if (!inNvMediaImage) {
-    throw SekonixDriverFatalException("IJPE Feed frame : inNvMediaImage is False");
+    throw NvidiaGmslDriverRosFatalException("IJPE Feed frame : inNvMediaImage is False");
   }
 
   CHECK_NVMEDIA_ERROR_ROS_FATAL(NvMediaIJPEFeedFrame(nvMediaIjpe_, inNvMediaImage->img, 70))
@@ -39,7 +39,7 @@ bool NvMediaJpgEncoder::wait_for_bits()
   }
 
   if (nvMediaStatus_ == NVMEDIA_STATUS_BAD_PARAMETER) {
-    throw SekonixDriverFatalException("Bad parameters for NvMediaIJPEBitsAvailable");
+    throw NvidiaGmslDriverRosFatalException("Bad parameters for NvMediaIJPEBitsAvailable");
   }
 
   return wait_for_bits();

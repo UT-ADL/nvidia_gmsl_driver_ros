@@ -1,8 +1,7 @@
 // Created by Maxandre Ogeret.
 // (c) 2022 University of Tartu - Autonomous Driving Lab.
 
-#ifndef SEKONIX_CAMERA_UT_CAMERAH264_H
-#define SEKONIX_CAMERA_UT_CAMERAH264_H
+#pragma once
 
 #include <memory>
 
@@ -16,7 +15,7 @@ class CameraH264 : public CameraBase
 public:
   /**
    * @brief Constructor, initializes encoder and h264 image publisher.
-   * @throws SekonixFatalException
+   * @throws NvidiaGmslDriverRosFatalException
    * @param driveworksApiWrapper
    * @param config
    * @param interface
@@ -33,14 +32,14 @@ public:
 
   /**
    * @brief Polls camera for frame, extracts image and timestamp.
-   * @throws SekonixFatalException
-   * @throws SekonixMinorException
+   * @throws NvidiaGmslDriverRosFatalException
+   * @throws NvidiaGmslDriverRosMinorException
    */
   void poll() override;
 
   /**
    * @brief Pushes polled data to the encoder. The encoder will then call it's own callback.
-   * @throws SekonixFatalException
+   * @throws NvidiaGmslDriverRosFatalException
    */
   void encode() override;
 
@@ -53,5 +52,3 @@ private:
   int bitrate_;
   serializer_user_data_t_ serializerUserData_{};
 };
-
-#endif  // SEKONIX_CAMERA_UT_CAMERAH264_H

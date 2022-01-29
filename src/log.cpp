@@ -1,7 +1,7 @@
 // Created by Maxandre Ogeret.
 // (c) 2022 University of Tartu - Autonomous Driving Lab.
 
-#include "Log.hpp"
+#include "log.hpp"
 
 dwLogCallback colorLogger()
 {

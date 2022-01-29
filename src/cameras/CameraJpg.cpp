@@ -34,7 +34,7 @@ void CameraJpg::run_pipeline()
 void CameraJpg::poll()
 {
   if (!get_last_frame()) {
-    throw SekonixDriverMinorException("Unable to get frame");
+    throw NvidiaGmslDriverRosMinorException("Unable to get frame");
   }
 
   CHECK_DW_ERROR_ROS_MINOR(

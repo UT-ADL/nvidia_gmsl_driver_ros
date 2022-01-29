@@ -1,8 +1,7 @@
 // Created by Maxandre Ogeret.
 // (c) 2022 University of Tartu - Autonomous Driving Lab.
 
-#ifndef SEKONIX_CAMERA_UT_CAMERAJPG_H
-#define SEKONIX_CAMERA_UT_CAMERAJPG_H
+#pragma once
 
 #include "cameras/CameraBase.h"
 
@@ -19,7 +18,7 @@ class CameraJpg : public CameraBase
 public:
   /**
    * @brief Constructor, initializes encoder and jpg image publisher.
-   * @throws SekonixFatalException
+   * @throws NvidiaGmslDriverRosFatalException
    * @param driveworksApiWrapper
    * @param config
    * @param interface
@@ -36,14 +35,14 @@ public:
 
   /**
    * @brief Polls camera for frame, extracts image, timestamp and nvmedia image.
-   * @throws SekonixFatalException
-   * @throws SekonixMinorException
+   * @throws NvidiaGmslDriverRosFatalException
+   * @throws NvidiaGmslDriverRosMinorException
    */
   void poll() override;
 
   /**
    * @brief Pushes polled data to the encoder and pulls jpg bytes.
-   * @throws SekonixFatalException
+   * @throws NvidiaGmslDriverRosFatalException
    */
   void encode() override;
 
@@ -67,5 +66,3 @@ private:
   NvMediaSurfFormatAttr attrs_[7];
   NvMediaSurfaceType surfaceType_;
 };
-
-#endif  // SEKONIX_CAMERA_UT_CAMERAJPG_H

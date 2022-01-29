@@ -1,8 +1,7 @@
 // Created by Maxandre Ogeret.
 // (c) 2022 University of Tartu - Autonomous Driving Lab.
 
-#ifndef SEKONIX_CAMERA_UT_DRIVEWORKSH264SERIALIZER_H
-#define SEKONIX_CAMERA_UT_DRIVEWORKSH264SERIALIZER_H
+#pragma once
 
 #include <string>
 #include <ros/ros.h>
@@ -58,5 +57,3 @@ private:
   int framerate_;
   serializer_user_data_t_* user_data_;
 };
-
-#endif  // SEKONIX_CAMERA_UT_DRIVEWORKSH264SERIALIZER_H

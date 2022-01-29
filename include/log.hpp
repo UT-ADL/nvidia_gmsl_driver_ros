@@ -1,8 +1,7 @@
 // Created by Maxandre Ogeret.
 // (c) 2022 University of Tartu - Autonomous Driving Lab.
 
-#ifndef SEKONIX_CAMERA_UT_LOG_H
-#define SEKONIX_CAMERA_UT_LOG_H
+#pragma once
 
 #include <dw/core/Logger.h>
 
@@ -14,5 +13,3 @@ const std::string ANSI_RED = "\033[0;31m";
 const std::string ANSI_YEL = "\033[0;33m";
 
 dwLogCallback colorLogger();
-
-#endif  // SEKONIX_CAMERA_UT_LOG_H

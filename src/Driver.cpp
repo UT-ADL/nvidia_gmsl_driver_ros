@@ -1,9 +1,9 @@
 // Created by Maxandre Ogeret.
 // (c) 2022 University of Tartu - Autonomous Driving Lab.
 
-#include "Sekonix_driver.h"
+#include "Driver.h"
 
-Sekonix_driver::Sekonix_driver(ros::NodeHandle* nodehandle) : nh_(*nodehandle)
+Driver::Driver(ros::NodeHandle* nodehandle) : nh_(*nodehandle)
 {
   nh_.param<std::string>("encoder", encoder_name_, CameraJpg::ENCODER_TYPE_);
 
@@ -20,7 +20,7 @@ Sekonix_driver::Sekonix_driver(ros::NodeHandle* nodehandle) : nh_(*nodehandle)
   driveworksApiWrapper_ = std::make_unique<DriveworksApiWrapper>();
 }
 
-void Sekonix_driver::setup_cameras()
+void Driver::setup_cameras()
 {
   for (YAML::const_iterator conn_it = config_.begin(); conn_it != config_.end(); ++conn_it) {
     for (YAML::const_iterator interface_it = conn_it->second.begin(); interface_it != conn_it->second.end();
@@ -41,11 +41,11 @@ void Sekonix_driver::setup_cameras()
   ROS_INFO_STREAM(camera_vector_.size() << " cameras initialized.");
 
   if (camera_vector_.empty()) {
-    throw SekonixDriverFatalException("No cameras were initialized.");
+    throw NvidiaGmslDriverRosFatalException("No cameras were initialized.");
   }
 }
 
-void Sekonix_driver::create_camera(const YAML::Node& config, const std::string& interface, const std::string& link)
+void Driver::create_camera(const YAML::Node& config, const std::string& interface, const std::string& link)
 {
   if (encoder_name_ == CameraH264::ENCODER_TYPE_) {
     camera_vector_.emplace_back(
@@ -56,7 +56,7 @@ void Sekonix_driver::create_camera(const YAML::Node& config, const std::string& 
   }
 }
 
-void Sekonix_driver::run()
+void Driver::run()
 {
   for (auto& camera : camera_vector_) {
     future_pool_.emplace_back(pool_->submit(
@@ -64,7 +64,7 @@ void Sekonix_driver::run()
           try {
             camera->run_pipeline();
           }
-          catch (SekonixDriverMinorException&) {
+          catch (NvidiaGmslDriverRosMinorException&) {
             return false;
           }
           return true;
@@ -82,7 +82,7 @@ void Sekonix_driver::run()
   future_pool_.clear();
 
   if (trials_ > MAX_TRIALS_) {
-    throw SekonixDriverFatalException("COULDN'T REACH CAMERA AFTER " + std::to_string(MAX_TRIALS_) + " TRIALS");
+    throw NvidiaGmslDriverRosFatalException("COULDN'T REACH CAMERA AFTER " + std::to_string(MAX_TRIALS_) + " TRIALS");
   }
 
   trials_ = all_cameras_valid_ ? 0 : trials_;
