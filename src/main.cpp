@@ -2,11 +2,9 @@
 // (c) 2022 University of Tartu - Autonomous Driving Lab.
 
 #include "Sekonix_driver.h"
-#include "framework/Log.hpp"
-#include "exceptions/SekonixDriverFatalException.h"
+#include "Log.hpp"
 #include <dw/core/VersionCurrent.h>
 #include <ros/ros.h>
-#include <unistd.h>
 
 int main(int argc, char** argv)
 {
@@ -22,7 +20,7 @@ int main(int argc, char** argv)
     if (arg == "--verbose") {
       // initialize loggers
       ros::console::set_logger_level(ROSCONSOLE_DEFAULT_NAME, ros::console::levels::Debug);
-      dwLogger_initialize(getConsoleLoggerCallback(true));
+      dwLogger_initialize(colorLogger());
       dwLogger_setLogLevel(DW_LOG_VERBOSE);
     }
   }
