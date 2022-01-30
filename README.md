@@ -106,8 +106,8 @@ vcs import src < melodic-ros_comm.rosinstall
 #### Clone nvidia_gmsl_driver_ros and the h264 image transport
 
 ```bash
-git clone git@gitlab.cs.ut.ee:autonomous-driving-lab/autoware.ai/local/nvidia_gmsl_driver_ros.git src/nvidia_gmsl_driver_ros
-git clone git@gitlab.cs.ut.ee:autonomous-driving-lab/autoware.ai/local/h264_image_transport.git src/h264_image_transport
+git clone git@github.com:UT-ADL/nvidia_gmsl_driver_ros.git src/nvidia_gmsl_driver_ros
+git clone git@github.com:UT-ADL/h264_image_transport.git src/h264_image_transport
 ```
 
 #### Extract ros dependencies
@@ -194,4 +194,3 @@ roslaunch nvidia_gmsl_driver_ros nvidia_gmsl_driver_ros.launch
 | `verbose`        |                           `False` |                Enables verbose output | 
 | `encoder`        |                             `jpg` |            Encoder. (`jpg` or `h264`) | 
 | `h264_bitrate`   |                         `8000000` | h264 output bitrate (Minimum `30000`) | 
- 
