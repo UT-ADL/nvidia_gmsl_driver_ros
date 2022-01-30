@@ -4,7 +4,7 @@
     <arg name="framerate" default="30" doc="Camera publishing rate"/>
     <arg name="verbose" default="false" doc="Verbose mode"/>
     <arg name="encoder" default="jpg" doc="{jpg, h264}"/>
-    <arg name="h264_bitrate" default="800000" doc="h264 output bitrate"/>
+    <arg name="h264_bitrate" default="8000000" doc="h264 output bitrate"/>
 
     <node if="$(arg verbose)" pkg="nvidia_gmsl_driver_ros" type="nvidia_gmsl_driver_ros_node"
           name="nvidia_gmsl_driver_ros" args="--verbose" output="screen" required="true">
