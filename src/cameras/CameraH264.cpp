@@ -13,7 +13,7 @@ CameraH264::CameraH264(DriveworksApiWrapper* driveworksApiWrapper, const YAML::N
   serializerUserData_.frame_id = &frame_;
   serializerUserData_.camera_info = &camera_info_;
 
-  nh_.param<int>("h264_bitrate", bitrate_, 80000);
+  nh_.param<int>("h264_bitrate", bitrate_, 800000);
   ROS_INFO_STREAM("H264 Bitrate: " << bitrate_);
 
   // ROS
