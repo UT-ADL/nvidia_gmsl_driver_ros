@@ -3,43 +3,23 @@
 
 # Nvidia Drive GMSL Camera ROS Driver
 
-## How to build
+- *In this documentation and in the source 'interface' designates the HFM connector, and 'link' the number of the FAKRA
+  Z.
+  See [here](https://docs.nvidia.com/drive/drive_os_5.1.6.1L/nvvib_docs/index.html#page/DRIVE_OS_Linux_SDK_Development_Guide/Camera/camera_xavier.html)*
+- In this documentation host relates to the Ubuntu 18.04 computer used to build the driver. Target refers to the nvidia
+  drive system.*
 
-*Note : In this documentation and in the source 'interface' designates the HFM connector, and 'link' the number of the
-FAKRA Z.
-See [here](https://docs.nvidia.com/drive/drive_os_5.1.6.1L/nvvib_docs/index.html#page/DRIVE_OS_Linux_SDK_Development_Guide/Camera/camera_xavier.html)
-.*
+---
 
 - Compatible with Driveworks 3.5
 - Compatible with ROS Melodic
 - Tested with Sekonix GMSL SF3324 and SF3325 cameras.
 
-## How to use
+## How to build
 
-### Setup
+## How to crosscompile on the host
 
-- Copy the config file `ports.yaml` to your workspace.
-- Copy the launchfile `nvidia_gmsl_driver_ros.launch` to to your workspace.
-- Edit the config file `ports.yaml` to your need.
-
-### Calibrating the cameras
-
-This drivers **doesn't** use the native nvidia RIG calibration file. It uses the ROS ones.  
-To calibrate the cameras :
-
-- Run the driver with an empty calibration dir.
-- Use ros [camera_calibration](http://wiki.ros.org/camera_calibration) to calibrate the cameras.
-- Put the camera calibration yaml files in your calib dir.
-
-**Note :** In the calibration dir the calibration files **MUST** have this syntax : `interface<a-d>_link<0-3>.yaml`. For
-example : `interfacea_link1.yaml`.
-
-### Debug
-
-In case of problem you can start the driver in verbose
-mode :  `rosrun nvidia_gmsl_driver_ros nvidia_gmsl_driver_ros_node --verbose`
-
-## How to build on host
+It is not possible to build directly on the target, we must crosscompile the driver on the host for the target.
 
 #### Required steps
 
@@ -157,7 +137,9 @@ Install the same dependancies as we have installed on the emulated sysroot :
 apt install libboost-all-dev libtinyxml-dev libtinyxml2-dev liblz4-dev libbz2-dev libapr1 libaprutil1 libconsole-bridge-dev libpoco-dev libgpgme-dev python-defusedxml python-rospkg python-catkin-pkg python-netifaces liblog4cxx-dev libopenblas-dev libgflags-dev libglew-dev libopencv-dev
 ```
 
-Also install the dependancies with rosdep :
+Transfer the compiled workspace from the host to the target.
+
+Install the dependancies with rosdep :
 
 ```bash
 rosdep install --from-paths src --ignore-src -r -y
@@ -178,7 +160,30 @@ rm /usr/lib/libxerces-c*
 source ~/install_isolated/setup.bash
 ```
 
-#### Run the launchfile
+## How to use
+
+### Setup
+
+In case you need to make changes to `ports.yaml` :
+
+- Copy the config file `ports.yaml` to your workspace.
+- Edit the config file `ports.yaml` to your need.
+- Pass its path to the launchfile into the `config_path` param .
+
+### Calibrating the cameras
+
+This drivers **doesn't** use the native nvidia RIG calibration file. It uses the ROS ones.  
+To calibrate the cameras :
+
+- Run the driver with an empty calibration dir.
+- Use ros [camera_calibration](http://wiki.ros.org/camera_calibration) to calibrate the cameras.
+- Put the camera calibration yaml files in your calib dir. Pass its path to the launchfile into the `calib_dir_path`
+  param .
+
+**Note :** In the calibration dir the calibration files **MUST** have this syntax : `interface<a-d>_link<0-3>.yaml`. For
+example : `interfacea_link1.yaml`.
+
+### Run the launchfile
 
 ```bash
 roslaunch nvidia_gmsl_driver_ros nvidia_gmsl_driver_ros.launch
