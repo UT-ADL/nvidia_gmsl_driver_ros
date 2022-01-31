@@ -19,22 +19,22 @@ set(SDK_BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR})
 # Set CUDA_DIR
 #-------------------------------------------------------------------------------
 if (DEFINED CUDA_DIR)
-    if((DEFINED CUDA_TOOLKIT_ROOT_DIR) AND (NOT CUDA_TOOLKIT_ROOT_DIR STREQUAL CUDA_DIR))
+    if ((DEFINED CUDA_TOOLKIT_ROOT_DIR) AND (NOT CUDA_TOOLKIT_ROOT_DIR STREQUAL CUDA_DIR))
         message(FATAL_ERROR "Cannot set both CUDA_DIR and (legacy) CUDA_TOOLKIT_ROOT_DIR")
-    endif()
+    endif ()
 elseif (DEFINED CUDA_TOOLKIT_ROOT_DIR)
     message(WARNING "Please set CUDA_DIR instead of (legacy) CUDA_TOOLKIT_ROOT_DIR")
-    set(CUDA_DIR  ${CUDA_TOOLKIT_ROOT_DIR} CACHE PATH "CUDA Toolkit location.")
-else()
-    set(CUDA_DIR  "/usr/local/cuda/" CACHE PATH "CUDA Toolkit location.")
-endif()
-if(NOT CMAKE_CUDA_COMPILER)
+    set(CUDA_DIR ${CUDA_TOOLKIT_ROOT_DIR} CACHE PATH "CUDA Toolkit location.")
+else ()
+    set(CUDA_DIR "/usr/local/cuda/" CACHE PATH "CUDA Toolkit location.")
+endif ()
+if (NOT CMAKE_CUDA_COMPILER)
     set(CMAKE_CUDA_COMPILER "${CUDA_DIR}/bin/nvcc")
-endif()
+endif ()
 set(CMAKE_CUDA_HOST_COMPILER ${CMAKE_CXX_COMPILER})
 enable_language(CUDA)
 
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CUDA_STANDARD 11)
 set(CMAKE_C_STANDARD 99)
 
@@ -67,9 +67,9 @@ set(Driveworks_LIBRARIES
         driveworks
         driveworks_visualization)
 
-if(VIBRANTE)
+if (VIBRANTE)
     list(APPEND Driveworks_LIBRARIES ${vibrante_LIBRARIES} ${vibrante_Xlibs_LIBRARIES} nvmedia)
-endif()
+endif ()
 
 #-------------------------------------------------------------------------------
 # END CONFIG

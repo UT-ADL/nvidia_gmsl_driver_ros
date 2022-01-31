@@ -6,20 +6,20 @@ ports:
       topic: "/interfacea/link0"
       parameters:
         # Parameter list, see https://docs.nvidia.com/drive/driveworks-3.5/camera_mainsection.html
-        camera-name : SF3324
-        output-format : processed
+        camera-name: SF3324
+        output-format: processed
     1:
       topic: "/interfacea/link1"
       parameters:
-        camera-name : SF3324
-        output-format : processed
+        camera-name: SF3324
+        output-format: processed
     2:
       topic: "/interfacea/link2"
       parameters:
-        camera-name : SF3325
-        output-format : processed
+        camera-name: SF3324
+        output-format: processed
     3:
       topic: "/interfacea/link3"
       parameters:
-        camera-name : SF3325
-        output-format : processed
+        camera-name: SF3325
+        output-format: processed

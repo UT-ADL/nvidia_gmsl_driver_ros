@@ -1,8 +1,7 @@
 // Created by Maxandre Ogeret.
-// (c) 2021 University of Tartu - Autonomous Driving Lab.
+// (c) 2022 University of Tartu - Autonomous Driving Lab.
 
-#ifndef SEKONIX_CAMERA_UT_DRIVEWORKSAPIWRAPPER_H
-#define SEKONIX_CAMERA_UT_DRIVEWORKSAPIWRAPPER_H
+#pragma once
 
 #include <dw/core/Context.h>
 #include <dw/core/VersionCurrent.h>
@@ -29,5 +28,3 @@ private:
   void InitializeContextHandle();
   dwContextParameters sdkParams_ = {};
 };
-
-#endif  // SEKONIX_CAMERA_UT_DRIVEWORKSAPIWRAPPER_H

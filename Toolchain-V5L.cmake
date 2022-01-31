@@ -96,12 +96,12 @@ endif()
 
 
 # Specify the cross compiler
-set(TOOLCHAIN "$ENV{HOME}/nvidia/nvidia_sdk/DRIVE_OS_5.2.0_SDK_Linux_OS_DDPX/DRIVEOS/toolchains/gcc-linaro-7.3.1-2018.05-x86_64_aarch64-linux-gnu") 
+set(TOOLCHAIN "$ENV{HOME}/nvidia/nvidia_sdk/DRIVE_OS_5.2.0_SDK_Linux_OS_DRIVE_AGX_XAVIER/DRIVEOS/toolchains/gcc-linaro-7.3.1-2018.05-x86_64_aarch64-linux-gnu") 
 set(CMAKE_CXX_COMPILER "${TOOLCHAIN}/bin/aarch64-linux-gnu-g++") 
 set(CMAKE_C_COMPILER "${TOOLCHAIN}/bin/aarch64-linux-gnu-gcc") 
 
 # Targetfs path 
-set(ROS_SYSROOT "$ENV{HOME}/nvidia/nvidia_sdk/DRIVE_OS_5.2.0_SDK_Linux_OS_DDPX/DRIVEOS/drive-t186ref-linux/targetfs") 
+set(ROS_SYSROOT "$ENV{HOME}/nvidia/nvidia_sdk/DRIVE_OS_5.2.0_SDK_Linux_OS_DRIVE_AGX_XAVIER/DRIVEOS/drive-t186ref-linux/targetfs") 
 
 # Library paths 
 set(LD_PATH "${ROS_SYSROOT}/usr/lib/aarch64-linux-gnu") 

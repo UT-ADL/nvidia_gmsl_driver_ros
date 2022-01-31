@@ -1,8 +1,15 @@
 cmake_minimum_required(VERSION 3.14 FATAL_ERROR)
 
-project(sekonix_camera_ut)
+project(nvidia_gmsl_driver_ros)
 
 set(CMAKE_WARN_DEPRECATED OFF)
+set(CMAKE_BUILD_TYPE release)
+
+
+#-------------------------------------------------------------------------------
+# Uncomment to force loading VIBRANTE specific files (Development only).
+#-------------------------------------------------------------------------------
+#add_compile_definitions(VIBRANTE)
 
 #-------------------------------------------------------------------------------
 # Configure project for cross-compilation
@@ -10,7 +17,6 @@ set(CMAKE_WARN_DEPRECATED OFF)
 include(cmake/MainConfiguration.cmake)
 
 find_package(OpenCV REQUIRED)
-find_package(gflags REQUIRED)
 find_package(YAMLCPP REQUIRED)
 
 find_package(catkin REQUIRED COMPONENTS
@@ -18,19 +24,21 @@ find_package(catkin REQUIRED COMPONENTS
         geometry_msgs
         image_transport
         camera_info_manager
+        h264_image_transport_msgs
         )
 
 include_directories(
         ${catkin_INCLUDE_DIRS}
         $ENV{HOME}/nvidia/nvidia_sdk/DRIVE_OS_5.2.0_SDK_Linux_OS_DDPX/DRIVEOS/drive-t186ref-linux/include
+        $ENV{HOME}/nvidia/nvidia_sdk/DRIVE_OS_5.2.0_SDK_Linux_OS_DRIVE_AGX_XAVIER/DRIVEOS/drive-t186ref-linux/include
         include
 )
 
-if(CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64")
+if (CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64")
     include_directories(
             /usr/local/driveworks/targets/x86_64-Linux/include
     )
-endif()
+endif ()
 
 catkin_package(
         LIBRARIES ${PROJECT_NAME}
@@ -40,11 +48,14 @@ set(NODE_NAME ${PROJECT_NAME}_node)
 
 add_executable(${NODE_NAME}
         src/main.cpp
-        src/Sekonix_driver.cpp
-        src/Camera.cpp
+        src/Driver.cpp
+        src/cameras/CameraBase.cpp
+        src/cameras/CameraH264.cpp
+        src/cameras/CameraJpg.cpp
         src/DriveworksApiWrapper.cpp
-        src/framework/Log.cpp
-        src/encoders/NvMediaJPGEncoder.cpp
+        src/log.cpp
+        src/encoders/DriveWorksH264Serializer.cpp
+        src/encoders/NvMediaJpgEncoder.cpp
         )
 
 target_link_libraries(${NODE_NAME}

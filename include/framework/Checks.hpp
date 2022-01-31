@@ -2,8 +2,7 @@
 // Edited by Maxandre Ogeret - 2021 - University of Tartu - Autonomous Driving
 // Lab.
 
-#ifndef SAMPLES_COMMON_CHECKS_HPP_
-#define SAMPLES_COMMON_CHECKS_HPP_
+#pragma once
 
 #include <dwvisualization/gl/GL.h>
 
@@ -17,8 +16,8 @@
 
 #include <ros/ros.h>
 #include <nvmedia_core.h>
-#include "exceptions/SekonixDriverMinorException.h"
-#include "exceptions/SekonixDriverFatalException.h"
+#include "exceptions/NvidiaGmslDriverRosMinorException.h"
+#include "exceptions/NvidiaGmslDriverRosFatalException.h"
 
 //------------------------------------------------------------------------------
 // Functions
@@ -29,8 +28,7 @@
 inline void getGLError(int line, const char* file, const char* function)
 {
   GLenum error = glGetError();
-  if (error != GL_NO_ERROR)
-  {
+  if (error != GL_NO_ERROR) {
     std::cerr << file << " in function " << function << " in line " << line << ": glError: 0x" << std::hex << error
               << std::dec << std::endl;
     exit(1);
@@ -51,139 +49,37 @@ inline void getDateString(char* buf, size_t length)
   strftime(buf, length, "[%Y-%m-%d %X] ", calendar);
 }
 
-//------------------------------------------------------------------------------
-// macro to easily check for dw errors
-#define CHECK_DW_ERROR(x)                                                                                              \
-  {                                                                                                                    \
-    dwStatus result = x;                                                                                               \
-    if (result != DW_SUCCESS)                                                                                          \
-    {                                                                                                                  \
-      char buf[80];                                                                                                    \
-      getDateString(buf, 80);                                                                                          \
-      throw std::runtime_error(std::string(buf) + std::string("DW Error ") + dwGetStatusName(result) +                 \
-                               std::string(" executing DW function:\n " #x) + std::string("\n at " __FILE__ ":") +     \
-                               std::to_string(__LINE__));                                                              \
-    }                                                                                                                  \
-  };
-
-#define CHECK_DW_ERROR_NOTHROW(x)                                                                                      \
-  {                                                                                                                    \
-    dwStatus result = x;                                                                                               \
-    if (result != DW_SUCCESS)                                                                                          \
-    {                                                                                                                  \
-      char buf[80];                                                                                                    \
-      getDateString(buf, 80);                                                                                          \
-      std::cerr << (std::string(buf) + std::string("DW Error ") + dwGetStatusName(result) +                            \
-                    std::string(" executing DW function:\n " #x) + std::string("\n at " __FILE__ ":") +                \
-                    std::to_string(__LINE__))                                                                          \
-                << std::endl;                                                                                          \
-    }                                                                                                                  \
-  };
-
 #define CHECK_DW_ERROR_ROS(x)                                                                                          \
   {                                                                                                                    \
     dwStatus result = x;                                                                                               \
-    if (result != DW_SUCCESS)                                                                                          \
-    {                                                                                                                  \
+    if (result != DW_SUCCESS) {                                                                                        \
       char buf[80];                                                                                                    \
       getDateString(buf, 80);                                                                                          \
-      throw SekonixDriverFatalException(std::string(buf) + std::string("DW Error ") + dwGetStatusName(result) +        \
-                               std::string(" executing DW function:\n " #x) + std::string("\n at " __FILE__ ":") +     \
-                               std::to_string(__LINE__));                                                              \
+      throw NvidiaGmslDriverRosFatalException(std::string(buf) + std::string("DW Error ") + dwGetStatusName(result) +  \
+                                              std::string(" executing DW function:\n " #x) +                           \
+                                              std::string("\n at " __FILE__ ":") + std::to_string(__LINE__));          \
     }                                                                                                                  \
   };
 
 #define CHECK_DW_ERROR_ROS_MINOR(x)                                                                                    \
   {                                                                                                                    \
     dwStatus result = x;                                                                                               \
-    if (result != DW_SUCCESS)                                                                                          \
-    {                                                                                                                  \
+    if (result != DW_SUCCESS) {                                                                                        \
       char buf[80];                                                                                                    \
       getDateString(buf, 80);                                                                                          \
-      throw SekonixDriverMinorException(std::string(buf) + std::string("DW Error ") + dwGetStatusName(result) +        \
-                               std::string(" executing DW function:\n " #x) + std::string("\n at " __FILE__ ":") +     \
-                               std::to_string(__LINE__));                                                              \
+      throw NvidiaGmslDriverRosMinorException(std::string(buf) + std::string("DW Error ") + dwGetStatusName(result) +  \
+                                              std::string(" executing DW function:\n " #x) +                           \
+                                              std::string("\n at " __FILE__ ":") + std::to_string(__LINE__));          \
     }                                                                                                                  \
   };
 
 #define CHECK_NVMEDIA_ERROR_ROS_FATAL(x)                                                                               \
   {                                                                                                                    \
     NvMediaStatus result = x;                                                                                          \
-    if (result != NVMEDIA_STATUS_OK)                                                                                   \
-    {                                                                                                                  \
+    if (result != NVMEDIA_STATUS_OK) {                                                                                 \
       char buf[80];                                                                                                    \
       getDateString(buf, 80);                                                                                          \
-      throw SekonixDriverFatalException(std::string(buf) + std::string(" NVMEDIA Error id:") + std::to_string(x));     \
-      }                                                                                                                \
-  };
-
-#define CHECK_NVMEDIA_ERROR_ROS_MINOR(x)                                                                               \
-  {                                                                                                                    \
-    NvMediaStatus result = x;                                                                                          \
-    if (result != NVMEDIA_STATUS_OK)                                                                                   \
-    {                                                                                                                  \
-      char buf[80];                                                                                                    \
-      getDateString(buf, 80);                                                                                          \
-      throw SekonixDriverFatalException(std::string(buf) + std::string(" NVMEDIA Error id:") + std::to_string(x));     \
-      }                                                                                                                \
-  };
-
-#define CHECK_DW_ERROR_AND_RETURN(x)                                                                                   \
-  {                                                                                                                    \
-    dwStatus result = x;                                                                                               \
-    if (result != DW_SUCCESS)                                                                                          \
-    {                                                                                                                  \
-      char buf[80];                                                                                                    \
-      getDateString(buf, 80);                                                                                          \
-      std::cerr << (std::string(buf) + std::string("DW Error ") + dwGetStatusName(result) +                            \
-                    std::string(" executing DW function:\n " #x) + std::string("\n at " __FILE__ ":") +                \
-                    std::to_string(__LINE__))                                                                          \
-                << std::endl;                                                                                          \
-      return result;                                                                                                   \
+      throw NvidiaGmslDriverRosFatalException(std::string(buf) + std::string(" NVMEDIA Error id:") +                   \
+                                              std::to_string(x));                                                      \
     }                                                                                                                  \
   };
-
-#define CHECK_DW_ERROR_MSG(x, description)                                                                             \
-  {                                                                                                                    \
-    dwStatus result = x;                                                                                               \
-    if (result != DW_SUCCESS)                                                                                          \
-    {                                                                                                                  \
-      char buf[80];                                                                                                    \
-      getDateString(buf, 80);                                                                                          \
-      throw std::runtime_error(std::string(buf) + std::string("DW Error ") + dwGetStatusName(result) +                 \
-                               std::string(" executing DW function:\n " #x) + std::string("\n at " __FILE__ ":") +     \
-                               std::to_string(__LINE__) + std::string(" -> ") + description);                          \
-    }                                                                                                                  \
-  };
-
-#define CHECK_DW_ERROR_MSG_NOTHROW(x, description)                                                                     \
-  {                                                                                                                    \
-    dwStatus result = x;                                                                                               \
-    if (result != DW_SUCCESS)                                                                                          \
-    {                                                                                                                  \
-      char buf[80];                                                                                                    \
-      getDateString(buf, 80);                                                                                          \
-      std::cerr << (std::string(buf) + std::string("DW Error ") + dwGetStatusName(result) +                            \
-                    std::string(" executing DW function:\n " #x) + std::string("\n at " __FILE__ ":") +                \
-                    std::to_string(__LINE__) + std::string(" -> ") + description)                                      \
-                << std::endl;                                                                                          \
-    }                                                                                                                  \
-  };
-
-//------------------------------------------------------------------------------
-// macro to easily check for cuda errors
-#define CHECK_CUDA_ERROR(x)                                                                                            \
-  {                                                                                                                    \
-    x;                                                                                                                 \
-    auto result = cudaGetLastError();                                                                                  \
-    if (result != cudaSuccess)                                                                                         \
-    {                                                                                                                  \
-      char buf[80];                                                                                                    \
-      getDateString(buf, 80);                                                                                          \
-      throw std::runtime_error(std::string(buf) + std::string("CUDA Error ") + cudaGetErrorString(result) +            \
-                               std::string(" executing CUDA function:\n " #x) + std::string("\n at " __FILE__ ":") +   \
-                               std::to_string(__LINE__));                                                              \
-    }                                                                                                                  \
-  };
-
-#endif  // SAMPLES_COMMON_CHECKS_HPP_
