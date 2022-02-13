@@ -18,7 +18,7 @@ CameraJpg::CameraJpg(DriveworksApiWrapper* driveworksApiWrapper, const YAML::Nod
 
   // ROS
   pub_compressed_ =
-      nh_.advertise<sensor_msgs::CompressedImage>(config_["topic"].as<std::string>() + "/image/compressed", 0);
+      nh_.advertise<sensor_msgs::CompressedImage>(config_["topic"].as<std::string>() + "/image/compressed", 1);
 
   // Encoder
   encoder_ = std::make_unique<NvMediaJpgEncoder>(&surfaceType_);
