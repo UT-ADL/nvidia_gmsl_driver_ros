@@ -27,7 +27,7 @@ public:
   /**
    * @brief Feeds a frame into the encoder
    */
-  void feed_frame(dwImageNvMedia* inNvMediaImage);
+  void feed_frame(dwImageNvMedia* inNvMediaImage) const;
 
   /**
    * @brief Returns true if encoded bits are available in the encoder memory, otherwise waits. Has to be called after

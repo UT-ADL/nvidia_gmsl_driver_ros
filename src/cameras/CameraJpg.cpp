@@ -13,7 +13,7 @@ CameraJpg::CameraJpg(DriveworksApiWrapper* driveworksApiWrapper, const YAML::Nod
   CHECK_DW_ERROR_ROS(dwSensorCamera_getSensorProperties(&cameraProperties_, sensorHandle_))
 
   // Surface type init
-  NVM_SURF_FMT_SET_ATTR_YUV(attrs_, YUV, 422, PLANAR, UINT, 8, PL);
+  NVM_SURF_FMT_SET_ATTR_YUV(attrs_, YUV, 422, PLANAR, UINT, 8, PL)
   surfaceType_ = NvMediaSurfaceFormatGetType(attrs_, 7);
 
   // ROS
@@ -38,11 +38,11 @@ void CameraJpg::poll()
   }
 
   CHECK_DW_ERROR_ROS_MINOR(
-      dwSensorCamera_getImage(&imageHandleOriginal_, DW_CAMERA_OUTPUT_NATIVE_PROCESSED, cameraFrameHandle_));
+      dwSensorCamera_getImage(&imageHandleOriginal_, DW_CAMERA_OUTPUT_NATIVE_PROCESSED, cameraFrameHandle_))
 
-  CHECK_DW_ERROR_ROS(dwImage_getTimestamp(&timestamp_, imageHandleOriginal_));
+  CHECK_DW_ERROR_ROS(dwImage_getTimestamp(&timestamp_, imageHandleOriginal_))
 
-  CHECK_DW_ERROR_ROS(dwImage_getNvMedia(&image_nvmedia_, imageHandleOriginal_));
+  CHECK_DW_ERROR_ROS(dwImage_getNvMedia(&image_nvmedia_, imageHandleOriginal_))
 }
 
 void CameraJpg::encode()

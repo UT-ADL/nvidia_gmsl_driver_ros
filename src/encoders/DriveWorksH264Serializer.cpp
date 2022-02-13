@@ -24,9 +24,9 @@ DriveWorksH264Serializer::DriveWorksH264Serializer(dwSensorHandle_t* sensorHandl
    * @param size size in bytes of data
    * @param userData Pointer to a serializer_user_data_t_
    */
-  serializerParams.onData = [](const uint8_t* data, size_t size, void* userData) -> void {
+  serializerParams.onData = [](const uint8_t* data, size_t size, void* userData) {
     auto* userDataCast = static_cast<serializer_user_data_t_*>(userData);
-    auto stamp = ros::Time((static_cast<double>(*userDataCast->timestamp) * 10e-7));
+    auto stamp = ros::Time(static_cast<double>(*userDataCast->timestamp) * 10e-7);
 
     h264_image_transport_msgs::H264Packet msg;
     msg.data.assign(data, data + size);

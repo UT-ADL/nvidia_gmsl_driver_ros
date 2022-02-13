@@ -25,7 +25,7 @@ public:
    * Constructor
    * @param nodehandle
    */
-  Driver(ros::NodeHandle* nodehandle);
+  explicit Driver(const ros::NodeHandle* nodehandle);
 
   /**
    * @brief Initializes all parameters and config, handles exception.

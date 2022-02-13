@@ -15,12 +15,12 @@ int main(int argc, char** argv)
 
   std::vector<std::string> args_out;
   ros::removeROSArgs(argc, argv, args_out);
-  for (auto arg : args_out) {
-    std::cout << arg << "\n";
+  for (auto const& arg : args_out) {
+    ROS_DEBUG_STREAM(arg);
     if (arg == "--verbose") {
       // initialize loggers
       ros::console::set_logger_level(ROSCONSOLE_DEFAULT_NAME, ros::console::levels::Debug);
-      dwLogger_initialize(colorLogger());
+      dwLogger_initialize(rosLogWrapper());
       dwLogger_setLogLevel(DW_LOG_VERBOSE);
     }
   }
@@ -38,7 +38,7 @@ int main(int argc, char** argv)
   try {
     driver->setup_cameras();
   }
-  catch (NvidiaGmslDriverRosFatalException& e) {
+  catch (NvidiaGmslDriverRosFatalException const& e) {
     ROS_FATAL_STREAM(e.what());
     ros::shutdown();
     return 1;
@@ -48,7 +48,7 @@ int main(int argc, char** argv)
     try {
       driver->run();
     }
-    catch (NvidiaGmslDriverRosFatalException& e) {
+    catch (NvidiaGmslDriverRosFatalException const& e) {
       ROS_FATAL_STREAM(e.what());
       ros::shutdown();
       return 1;

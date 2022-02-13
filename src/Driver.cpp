@@ -3,7 +3,7 @@
 
 #include "Driver.h"
 
-Driver::Driver(ros::NodeHandle* nodehandle) : nh_(*nodehandle)
+Driver::Driver(const ros::NodeHandle* nodehandle) : nh_(*nodehandle)
 {
   nh_.param<std::string>("encoder", encoder_name_, CameraJpg::ENCODER_TYPE_);
 
@@ -23,10 +23,8 @@ Driver::Driver(ros::NodeHandle* nodehandle) : nh_(*nodehandle)
 void Driver::setup_cameras()
 {
   for (YAML::const_iterator conn_it = config_.begin(); conn_it != config_.end(); ++conn_it) {
-    for (YAML::const_iterator interface_it = conn_it->second.begin(); interface_it != conn_it->second.end();
-         ++interface_it) {
-      for (YAML::const_iterator link_it = interface_it->second.begin(); link_it != interface_it->second.end();
-           ++link_it) {
+    for (auto interface_it = conn_it->second.begin(); interface_it != conn_it->second.end(); ++interface_it) {
+      for (auto link_it = interface_it->second.begin(); link_it != interface_it->second.end(); ++link_it) {
         ROS_DEBUG_STREAM("Link " << link_it->first.as<std::string>() << " :  "
                                  << link_it->second["parameters"]["camera-name"].as<std::string>());
         create_camera(link_it->second, interface_it->first.as<std::string>(), link_it->first.as<std::string>());
@@ -34,7 +32,7 @@ void Driver::setup_cameras()
       }
     }
   }
-  for (auto& camera : camera_vector_) {
+  for (auto const& camera : camera_vector_) {
     camera->start();
   }
   pool_ = std::make_unique<thread_pool>(camera_count);
@@ -58,18 +56,18 @@ void Driver::create_camera(const YAML::Node& config, const std::string& interfac
 
 void Driver::run()
 {
-  for (auto& camera : camera_vector_) {
+  for (auto const& initialized_camera : camera_vector_) {
     future_pool_.emplace_back(pool_->submit(
-        [](CameraBase* camera) -> bool {
+        [](CameraBase* camera) {
           try {
             camera->run_pipeline();
           }
-          catch (NvidiaGmslDriverRosMinorException&) {
+          catch (NvidiaGmslDriverRosMinorException const&) {
             return false;
           }
           return true;
         },
-        camera.get()));
+        initialized_camera.get()));
   }
 
   all_cameras_valid_ = true;
