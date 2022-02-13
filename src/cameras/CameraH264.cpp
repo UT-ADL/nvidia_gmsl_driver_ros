@@ -18,7 +18,7 @@ CameraH264::CameraH264(DriveworksApiWrapper* driveworksApiWrapper, const YAML::N
 
   // ROS
   pub_h264_ =
-      nh_.advertise<h264_image_transport_msgs::H264Packet>(config_["topic"].as<std::string>() + "/image/h264", 0);
+      nh_.advertise<h264_image_transport_msgs::H264Packet>(config_["topic"].as<std::string>() + "/image/h264", 1);
 
   // Encoder
   encoder_ = std::make_unique<DriveWorksH264Serializer>(&sensorHandle_, framerate_, &serializerUserData_, bitrate_);

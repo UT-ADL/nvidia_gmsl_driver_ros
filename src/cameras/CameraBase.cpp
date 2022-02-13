@@ -23,7 +23,7 @@ CameraBase::CameraBase(DriveworksApiWrapper* driveworksApiWrapper, const YAML::N
 
   // ROS
   frame_ = "interface" + interface_ + "_link" + link_;
-  pub_info_ = nh_.advertise<sensor_msgs::CameraInfo>(config_["topic"].as<std::string>() + "/camera_info", 0);
+  pub_info_ = nh_.advertise<sensor_msgs::CameraInfo>(config_["topic"].as<std::string>() + "/camera_info", 1);
 
   // Calibration
   nh_.param<std::string>("calib_dir_path", calibDirPath_,

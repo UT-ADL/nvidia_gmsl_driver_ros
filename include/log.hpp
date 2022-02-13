@@ -7,9 +7,8 @@
 
 #include <string>
 #include <iostream>
+#include <ros/ros.h>
 
-const std::string ANSI_STD = "\033[0m";
-const std::string ANSI_RED = "\033[0;31m";
-const std::string ANSI_YEL = "\033[0;33m";
+#include "exceptions/NvidiaGmslDriverRosFatalException.h"
 
-dwLogCallback colorLogger();
+dwLogCallback rosLogWrapper();

@@ -10,7 +10,7 @@ NvMediaJpgEncoder::NvMediaJpgEncoder(const NvMediaSurfaceType* surfaceType) : su
   nvmediaDevice_ = NvMediaDeviceCreate();
   nvMediaIjpe_ = NvMediaIJPECreate(nvmediaDevice_, surfaceType_, (uint8_t)1, MAX_JPG_BYTES);
 
-  if (!nvmediaDevice_ || !nvmediaDevice_) {
+  if (!nvmediaDevice_ || !nvMediaIjpe_) {
     throw NvidiaGmslDriverRosFatalException("Unable to create NvMedia device or Encoder!");
   }
 }
@@ -21,7 +21,7 @@ NvMediaJpgEncoder::~NvMediaJpgEncoder()
   NvMediaDeviceDestroy(nvmediaDevice_);
 }
 
-void NvMediaJpgEncoder::feed_frame(dwImageNvMedia* inNvMediaImage)
+void NvMediaJpgEncoder::feed_frame(dwImageNvMedia* inNvMediaImage) const
 {
   if (!inNvMediaImage) {
     throw NvidiaGmslDriverRosFatalException("IJPE Feed frame : inNvMediaImage is False");
@@ -45,10 +45,8 @@ bool NvMediaJpgEncoder::wait_for_bits()
   return wait_for_bits();
 }
 
-void NvMediaJpgEncoder::pull_bits()
-{
-  CHECK_NVMEDIA_ERROR_ROS_FATAL(NvMediaIJPEGetBits(nvMediaIjpe_, &countByteJpeg_, jpegImage_.get(), 0));
-}
+void NvMediaJpgEncoder::pull_bits(){ CHECK_NVMEDIA_ERROR_ROS_FATAL(NvMediaIJPEGetBits(nvMediaIjpe_, &countByteJpeg_,
+                                                                                      jpegImage_.get(), 0)) }
 
 uint8_t* NvMediaJpgEncoder::get_image()
 {
