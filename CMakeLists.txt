@@ -7,9 +7,11 @@ set(CMAKE_BUILD_TYPE release)
 
 
 #-------------------------------------------------------------------------------
-# Uncomment to force loading VIBRANTE specific files (Development only).
+# Force loading VIBRANTE specific files for IDE autocompletion
 #-------------------------------------------------------------------------------
-#add_compile_definitions(VIBRANTE)
+if($ENV{CLION_IDE})
+    add_compile_definitions(VIBRANTE)
+endif()
 
 #-------------------------------------------------------------------------------
 # Configure project for cross-compilation

@@ -5,38 +5,45 @@
 
 - *In this documentation and in the source 'interface' designates the HFM connector, and 'link' the number of the FAKRA
   Z.
-  See [here](https://docs.nvidia.com/drive/drive_os_5.1.6.1L/nvvib_docs/index.html#page/DRIVE_OS_Linux_SDK_Development_Guide/Camera/camera_xavier.html)*
-- In this documentation host relates to the Ubuntu 18.04 computer used to build the driver. Target refers to the nvidia
-  drive system.*
+  See [here](https://docs.nvidia.com/drive/drive_os_5.1.6.1L/nvvib_docs/index.html#page/DRIVE_OS_Linux_SDK_Development_Guide/Camera/camera_xavier.html)*.
+- In this documentation **host** relates to the Ubuntu 18.04 computer used to build the driver. **Target** refers to the 
+  nvidia drive system.
 
 ---
 
-- Compatible with Driveworks 3.5
-- Compatible with ROS Melodic
+- Compatible with Driveworks 3.5.
+- Compatible with ROS Melodic.
 - Tested with Sekonix GMSL SF3324 and SF3325 cameras.
 
 ## How to build
 
-## How to crosscompile on the host
+### Prerequisites on the Host
 
-It is not possible to build directly on the target, we must crosscompile the driver on the host for the target.
+- Ubuntu 18.04.
+- Nvidia GPU drivers:
+  ```bash
+  sudo apt install nvidia-drivers-470
+  ```
+- NVIDIA DRIVE™ OS 5.2.0 and DriveWorks 3.5 (Linux):
+  - Follow the download [page](https://developer.nvidia.com/drive/downloads) to install NVIDIA DRIVE™ OS 5.2.0 and
+    DriveWorks 3.5 (Linux). Follow the 'DriveWorks 3.5 Installation Guide'.
 
-#### Required steps
+### How to crosscompile on the Host
 
-- [install NVIDIA DRIVE™ OS 5.2.0 and DriveWorks 3.5 (Linux)](https://github.com/nvidia/dw-ros#install-nvidia-drive-os-520-and-driveworks-35-linux)
-- [cross compile ROS](https://github.com/nvidia/dw-ros#cross-compile-ros)
-- [cross compile nv_sensors](https://github.com/nvidia/dw-ros#cross-compile-nv_sensors)
-- [run on the target system](https://github.com/nvidia/dw-ros#run-on-the-target-system)
+It is not possible to build directly on the target, we must crosscompile the driver on the host.
 
-#### Install NVIDIA DRIVE™ OS 5.2.0 and DriveWorks 3.5 (Linux)
+#### Prepare system
 
-- Follow the download [page](https://developer.nvidia.com/drive/downloads) to install NVIDIA DRIVE™ OS 5.2.0 and
-  DriveWorks 3.5 (Linux). Follow the 'DriveWorks 3.5 Installation Guide'.
+Export env variables pointing to the PDK and to the built image SYSROOT (These paths might change on your system):
 
-#### Prepare a cross-compilation sysroot
-
+```bash
+PDK=$HOME/nvidia/nvidia_sdk/DRIVE_OS_5.2.0_SDK_Linux_OS_DRIVE_AGX_XAVIER/DRIVEOS/drive-t186ref-linux
+SYSROOT=$PDK/targetfs
 ```
-SYSROOT=~/nvidia/nvidia_sdk/DRIVE_OS_5.2.0_SDK_Linux_OS_DDPX/DRIVEOS/drive-t186ref-linux/targetfs
+
+#### Prepare the cross-compilation sysroot
+
+```bash
 cd $SYSROOT
 
 sudo apt install qemu-user-static
@@ -66,7 +73,7 @@ sudo rm -rf tmp/*
 
 The broken symlinks can be fixed temporarily with overlays, using commands similar to the following:
 
-```
+```bash
 sudo mkdir /lib/aarch64-linux-gnu
 sudo mkdir /tmp/ros-cc-overlayfs
 sudo mount -t overlay -o lowerdir=$SYSROOT/lib/aarch64-linux-gnu,upperdir=/lib/aarch64-linux-gnu,workdir=/tmp/ros-cc-overlayfs overlay /lib/aarch64-linux-gnu
@@ -74,14 +81,14 @@ sudo mount -t overlay -o lowerdir=$SYSROOT/lib/aarch64-linux-gnu,upperdir=/lib/a
 
 #### Ros Prerequisites
 
-Follow this [page](http://wiki.ros.org/melodic/Installation/Source) to install all prerequisites and then run below
-commands to download source of ROS Melodic Morenia (Ubuntu 18.04 is the target root file system of DRIVE OS Linux 5.2.0)
-
-```
-mkdir -p ~/ros_catkin_ws/src && cd ~/ros_catkin_ws
-rosinstall_generator ros_comm sensor_msgs camera_info_manager cv_bridge image_transport nodelet roscpp std_msgs --rosdistro melodic --deps --tar > melodic-ros_comm.rosinstall
-vcs import src < melodic-ros_comm.rosinstall
-```
+- Follow this [page](http://wiki.ros.org/melodic/Installation/Ubuntu) to set up your sources.list and set up your keys. 
+- Follow this [page](http://wiki.ros.org/melodic/Installation/Source) to install bootstrap dependencies and initialize rosdep.
+- Run below commands to download source of ROS Melodic Morenia (Ubuntu 18.04 is the target root file system of DRIVE OS Linux 5.2.0).
+  ```
+  mkdir -p ~/ros_catkin_ws/src && cd ~/ros_catkin_ws
+  rosinstall_generator ros_comm sensor_msgs camera_info_manager cv_bridge image_transport nodelet roscpp std_msgs --rosdistro melodic --deps --tar > melodic-ros_comm.rosinstall
+  vcs import src < melodic-ros_comm.rosinstall
+  ```
 
 #### Clone nvidia_gmsl_driver_ros and the h264 image transport
 
@@ -90,7 +97,12 @@ git clone git@github.com:UT-ADL/nvidia_gmsl_driver_ros.git src/nvidia_gmsl_drive
 git clone git@github.com:UT-ADL/h264_image_transport.git src/h264_image_transport
 ```
 
-#### Extract ros dependencies
+#### Install ROS dependencies
+```bash
+rosdep install --from-paths src --ignore-src -r -y
+```
+
+#### Extract ROS dependencies
 
 ```bash
 rosdep install -si --reinstall --from-path src
@@ -107,11 +119,12 @@ sudo apt install python-numpy libyaml-cpp-dev python-empy
 #### Crossbuild ros
 
 ```bash
-SYSROOT=~/nvidia/nvidia_sdk/DRIVE_OS_5.2.0_SDK_Linux_OS_DDPX/DRIVEOS/drive-t186ref-linux/targetfs
-```
-
-```bash
-src/catkin/bin/catkin_make_isolated -DCMAKE_BUILD_TYPE=Release -DVIBRANTE_PDK:STRING=$PDK -DTRT_VERSION:STRING=6.3.1.3 -DCMAKE_TOOLCHAIN_FILE=$HOME/ros_catkin_ws/src/nvidia_gmsl_driver_ros/Toolchain-V5L.cmake -DCMAKE_EXE_LINKER_FLAGS="${CMAKE_EXE_LINKER_FLAGS} -L/usr/local/driveworks/targets/aarch64-Linux/lib -Wl,-rpath,/usr/local/driveworks/targets/aarch64-Linux/lib -L$SYSROOT/usr/local/cuda-10.2/targets/aarch64-linux/lib -Wl,-rpath,$SYSROOT/usr/local/cuda-10.2/targets/aarch64-linux/lib -L$SYSROOT/usr/lib/aarch64-linux-gnu/openblas -Wl,-rpath,$SYSROOT/usr/lib/aarch64-linux-gnu/openblas" --install --ignore-pkg h264_image_transport
+src/catkin/bin/catkin_make_isolated -DCMAKE_BUILD_TYPE=Release \
+  -DVIBRANTE_PDK:STRING=$PDK 
+  -DTRT_VERSION:STRING=6.3.1.3 \
+  -DCMAKE_TOOLCHAIN_FILE=$HOME/ros_catkin_ws/src/nvidia_gmsl_driver_ros/Toolchain-V5L.cmake -DCMAKE_EXE_LINKER_FLAGS="${CMAKE_EXE_LINKER_FLAGS} -L/usr/local/driveworks/targets/aarch64-Linux/lib -Wl,-rpath,/usr/local/driveworks/targets/aarch64-Linux/lib -L$SYSROOT/usr/local/cuda-10.2/targets/aarch64-linux/lib -Wl,-rpath,$SYSROOT/usr/local/cuda-10.2/targets/aarch64-linux/lib -L$SYSROOT/usr/lib/aarch64-linux-gnu/openblas -Wl,-rpath,$SYSROOT/usr/lib/aarch64-linux-gnu/openblas" \
+  --install \
+  --ignore-pkg h264_image_transport
 ```
 
 Replace with the current installation path with the binary installation path so we can run any binary installed packages
