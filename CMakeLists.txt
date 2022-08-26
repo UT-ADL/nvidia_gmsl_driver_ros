@@ -9,9 +9,9 @@ set(CMAKE_BUILD_TYPE release)
 #-------------------------------------------------------------------------------
 # Force loading VIBRANTE specific files for IDE autocompletion
 #-------------------------------------------------------------------------------
-if($ENV{CLION_IDE})
+if ($ENV{CLION_IDE})
     add_compile_definitions(VIBRANTE)
-endif()
+endif ()
 
 #-------------------------------------------------------------------------------
 # Configure project for cross-compilation
@@ -58,6 +58,7 @@ add_executable(${NODE_NAME}
         src/log.cpp
         src/encoders/DriveWorksH264Serializer.cpp
         src/encoders/NvMediaJpgEncoder.cpp
+        src/encoders/NvMediaH264Encoder.cpp
         )
 
 target_link_libraries(${NODE_NAME}

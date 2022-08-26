@@ -5,8 +5,9 @@
 
 - *In this documentation and in the source 'interface' designates the HFM connector, and 'link' the number of the FAKRA
   Z.
-  See [here](https://docs.nvidia.com/drive/drive_os_5.1.6.1L/nvvib_docs/index.html#page/DRIVE_OS_Linux_SDK_Development_Guide/Camera/camera_xavier.html)*.
-- In this documentation **host** relates to the Ubuntu 18.04 computer used to build the driver. **Target** refers to the 
+  See [here](https://docs.nvidia.com/drive/drive_os_5.1.6.1L/nvvib_docs/index.html#page/DRIVE_OS_Linux_SDK_Development_Guide/Camera/camera_xavier.html)*
+  .
+- In this documentation **host** relates to the Ubuntu 18.04 computer used to build the driver. **Target** refers to the
   nvidia drive system.
 
 ---
@@ -25,8 +26,8 @@
   sudo apt install nvidia-drivers-470
   ```
 - NVIDIA DRIVE™ OS 5.2.0 and DriveWorks 3.5 (Linux):
-  - Follow the download [page](https://developer.nvidia.com/drive/downloads) to install NVIDIA DRIVE™ OS 5.2.0 and
-    DriveWorks 3.5 (Linux). Follow the 'DriveWorks 3.5 Installation Guide'.
+    - Follow the download [page](https://developer.nvidia.com/drive/downloads) to install NVIDIA DRIVE™ OS 5.2.0 and
+      DriveWorks 3.5 (Linux). Follow the 'DriveWorks 3.5 Installation Guide'.
 
 ### How to crosscompile on the Host
 
@@ -81,9 +82,11 @@ sudo mount -t overlay -o lowerdir=$SYSROOT/lib/aarch64-linux-gnu,upperdir=/lib/a
 
 #### Ros Prerequisites
 
-- Follow this [page](http://wiki.ros.org/melodic/Installation/Ubuntu) to set up your sources.list and set up your keys. 
-- Follow this [page](http://wiki.ros.org/melodic/Installation/Source) to install bootstrap dependencies and initialize rosdep.
-- Run below commands to download source of ROS Melodic Morenia (Ubuntu 18.04 is the target root file system of DRIVE OS Linux 5.2.0).
+- Follow this [page](http://wiki.ros.org/melodic/Installation/Ubuntu) to set up your sources.list and set up your keys.
+- Follow this [page](http://wiki.ros.org/melodic/Installation/Source) to install bootstrap dependencies and initialize
+  rosdep.
+- Run below commands to download source of ROS Melodic Morenia (Ubuntu 18.04 is the target root file system of DRIVE OS
+  Linux 5.2.0).
   ```
   mkdir -p ~/ros_catkin_ws/src && cd ~/ros_catkin_ws
   rosinstall_generator ros_comm sensor_msgs camera_info_manager cv_bridge image_transport nodelet roscpp std_msgs --rosdistro melodic --deps --tar > melodic-ros_comm.rosinstall
@@ -98,6 +101,7 @@ git clone git@github.com:UT-ADL/h264_image_transport.git src/h264_image_transpor
 ```
 
 #### Install ROS dependencies
+
 ```bash
 rosdep install --from-paths src --ignore-src -r -y
 ```
@@ -206,9 +210,15 @@ roslaunch nvidia_gmsl_driver_ros nvidia_gmsl_driver_ros.launch
 
 | Parameter        |                           Default |                               Comment |
 |------------------|----------------------------------:|--------------------------------------:|
-| `config_path`    | `$(dirname)/../config/ports.yaml` |               Path to the config file |
-| `calib_dir_path` |            `$(dirname)/../calib/` |   Path to the camera calibration file |
-| `framerate`      |                              `30` |                      Output framerate |
-| `verbose`        |                           `False` |                Enables verbose output | 
+| `config_path`    | `$(dirname)/../config/ports.yaml` |              Path to the config file. |
+| `calib_dir_path` |            `$(dirname)/../calib/` |  Path to the camera calibration file. |
+| `framerate`      |                              `30` |                     Output framerate. |
+| `verbose`        |                           `False` |               Enables verbose output. | 
 | `encoder`        |                             `jpg` |            Encoder. (`jpg` or `h264`) | 
 | `h264_bitrate`   |                         `8000000` | h264 output bitrate (Minimum `30000`) | 
+| `output_width`   |                            `1920` |                         Output width. | 
+| `output_height`  |                            `1208` |                        Output height. | 
+
+### Useful links
+
+- [DriveWorks SDK Reference Documentation](https://docs.nvidia.com/drive/driveworks-3.5/index.html)
