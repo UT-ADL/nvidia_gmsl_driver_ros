@@ -6,7 +6,9 @@
 #include <memory>
 
 #include "encoders/DriveWorksH264Serializer.h"
+#include "encoders/NvMediaH264Encoder.h"
 #include "cameras/CameraBase.h"
+#include "tools/ImageConverter.h"
 
 #include <dw/sensors/SensorSerializer.h>
 
@@ -51,4 +53,10 @@ private:
 
   int bitrate_;
   serializer_user_data_t_ serializerUserData_{};
+
+  // new encoder todo: clean
+  std::unique_ptr<NvMediaH264Encoder> nvmedia_encoder_;
+  NvMediaSurfFormatAttr attrs_[7];
+  NvMediaSurfaceType surfaceType_;
+  std::unique_ptr<ImageConverter> imageConverter_;
 };

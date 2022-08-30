@@ -22,6 +22,15 @@ CameraH264::CameraH264(DriveworksApiWrapper* driveworksApiWrapper, const YAML::N
 
   // Encoder
   encoder_ = std::make_unique<DriveWorksH264Serializer>(&sensorHandle_, framerate_, &serializerUserData_, bitrate_);
+
+  // NvMedia Encoder
+  //  NVM_SURF_FMT_SET_ATTR_YUV(attrs_, YUV, 422, PLANAR, UINT, 8, PL)
+  NVM_SURF_FMT_SET_ATTR_YUV(attrs_, YUV, 420, SEMI_PLANAR, UINT, 8, BL)
+  surfaceType_ = NvMediaSurfaceFormatGetType(attrs_, 7);
+  imageConverter_ =
+      std::make_unique<ImageConverter>(driveworksApiWrapper_, 1920, 1208, DW_IMAGE_NVMEDIA,
+                                       DW_IMAGE_FORMAT_YUV420_UINT8_SEMIPLANAR, DW_IMAGE_MEMORY_TYPE_BLOCK);
+  nvmedia_encoder_ = std::make_unique<NvMediaH264Encoder>(&surfaceType_);
 }
 
 void CameraH264::run_pipeline()
@@ -43,6 +52,9 @@ void CameraH264::poll()
 
 void CameraH264::encode()
 {
-  encoder_->feed_frame(cameraFrameHandle_);
-  CHECK_DW_ERROR_ROS(dwSensorCamera_returnFrame(&cameraFrameHandle_))
+  std::unique_ptr<dwImageHandle_t> converted = imageConverter_->convert(&imageHandleOriginal_);
+
+  dwImageNvMedia* image_nvmedia_;
+  CHECK_DW_ERROR_ROS(dwImage_getNvMedia(&image_nvmedia_, *converted));
+  nvmedia_encoder_->feed_frame(image_nvmedia_);
 }

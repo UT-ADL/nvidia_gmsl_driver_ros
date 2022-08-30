@@ -20,11 +20,11 @@ public:
 private:
   NvMediaVersion nvMediaVersion_;
   NvMediaDevice* nvMediaDevice_;
-  NvMediaEncodeInitializeParamsH264* initializeParams_{};
-  NvMediaEncodeConfigH264* encodeConfig_{};
+  NvMediaEncodeInitializeParamsH264 encodeInitParams_{};
+  NvMediaEncodeConfigH264 encodeConfig_{};
   NvMediaEncodeConfigH264VUIParams* encodeConfigH264VuiParams_{};
-  NvMediaEncodeRCParams* rcParams_{};
-  NvMediaEncodePicParamsH264* encodePicParams_{};
+  NvMediaEncodeRCParams rcParams_{};
+  NvMediaEncodePicParamsH264 encodePicParams_{};
   NvMediaSurfaceType surfaceType_;
   NvMediaIEP* nvMediaIep_;
 

@@ -2,6 +2,7 @@
 // (c) 2022 University of Tartu - Autonomous Driving Lab.
 
 #include "encoders/DriveWorksH264Serializer.h"
+
 DriveWorksH264Serializer::DriveWorksH264Serializer(dwSensorHandle_t* sensorHandle, int framerate,
                                                    serializer_user_data_t_* user_data, int bitrate)
   : sensorHandle_(sensorHandle), framerate_(framerate), user_data_(user_data)

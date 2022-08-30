@@ -17,7 +17,7 @@ Driver::Driver(const ros::NodeHandle* nodehandle) : nh_(*nodehandle)
   config_ = YAML::LoadFile(config_file_path_);
 
   // Create API Wrapper
-  driveworksApiWrapper_ = std::make_unique<DriveworksApiWrapper>();
+  driveworksApiWrapper_ = std::make_shared<DriveworksApiWrapper>();
 }
 
 void Driver::setup_cameras()

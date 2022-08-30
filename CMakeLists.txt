@@ -59,6 +59,7 @@ add_executable(${NODE_NAME}
         src/encoders/DriveWorksH264Serializer.cpp
         src/encoders/NvMediaJpgEncoder.cpp
         src/encoders/NvMediaH264Encoder.cpp
+        src/tools/ImageConverter.cpp
         )
 
 target_link_libraries(${NODE_NAME}
