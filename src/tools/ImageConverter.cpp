@@ -17,7 +17,7 @@ ImageConverter::ImageConverter(std::shared_ptr<DriveworksApiWrapper> driveworksA
 std::unique_ptr<dwImageHandle_t> ImageConverter::convert(dwImageHandle_t* input)
 {
   outputImage_ = std::make_unique<dwImageHandle_t>();
-  CHECK_DW_ERROR_ROS(dwImage_create(outputImage_.get(), imageProperties_, driveworksApiWrapper_->context_handle_));
-  CHECK_DW_ERROR_ROS(dwImage_copyConvert(*outputImage_, *input, driveworksApiWrapper_->context_handle_));
+  CHK_DW(dwImage_create(outputImage_.get(), imageProperties_, driveworksApiWrapper_->context_handle_));
+  CHK_DW(dwImage_copyConvert(*outputImage_, *input, driveworksApiWrapper_->context_handle_));
   return std::move(outputImage_);
 }

@@ -45,9 +45,8 @@ void CameraH264::poll()
     throw NvidiaGmslDriverRosMinorException("Unable to get frame");
   }
 
-  CHECK_DW_ERROR_ROS(
-      dwSensorCamera_getImage(&imageHandleOriginal_, DW_CAMERA_OUTPUT_NATIVE_PROCESSED, cameraFrameHandle_))
-  CHECK_DW_ERROR_ROS(dwImage_getTimestamp(&timestamp_, imageHandleOriginal_))
+  CHK_DW(dwSensorCamera_getImage(&imageHandleOriginal_, DW_CAMERA_OUTPUT_NATIVE_PROCESSED, cameraFrameHandle_));
+  CHK_DW(dwImage_getTimestamp(&timestamp_, imageHandleOriginal_));
 }
 
 void CameraH264::encode()
@@ -55,6 +54,6 @@ void CameraH264::encode()
   std::unique_ptr<dwImageHandle_t> converted = imageConverter_->convert(&imageHandleOriginal_);
 
   dwImageNvMedia* image_nvmedia_;
-  CHECK_DW_ERROR_ROS(dwImage_getNvMedia(&image_nvmedia_, *converted));
+  CHK_DW(dwImage_getNvMedia(&image_nvmedia_, *converted));
   nvmedia_encoder_->feed_frame(image_nvmedia_);
 }

@@ -26,8 +26,8 @@ inline void getDateString(char* buf, size_t length)
   strftime(buf, length, "[%Y-%m-%d %X] ", calendar);
 }
 
-#define CHECK_DW_ERROR_ROS(x)                                                                                          \
-  {                                                                                                                    \
+#define CHK_DW(x)                                                                                                      \
+  do {                                                                                                                 \
     dwStatus result = x;                                                                                               \
     if (result != DW_SUCCESS) {                                                                                        \
       char buf[80];                                                                                                    \
@@ -39,10 +39,10 @@ inline void getDateString(char* buf, size_t length)
                                               std::string(" executing DW function:\n " #x) +                           \
                                               std::string("\n at " __FILE__ ":") + std::to_string(__LINE__));          \
     }                                                                                                                  \
-  };
+  } while (0)
 
-#define CHECK_DW_ERROR_ROS_MINOR(x)                                                                                    \
-  {                                                                                                                    \
+#define CHK_DW_MINOR(x)                                                                                                \
+  do {                                                                                                                 \
     dwStatus result = x;                                                                                               \
     if (result != DW_SUCCESS) {                                                                                        \
       char buf[80];                                                                                                    \
@@ -51,10 +51,10 @@ inline void getDateString(char* buf, size_t length)
                                               std::string(" executing DW function:\n " #x) +                           \
                                               std::string("\n at " __FILE__ ":") + std::to_string(__LINE__));          \
     }                                                                                                                  \
-  };
+  } while (0)
 
-#define CHECK_NVMEDIA_ERROR_ROS(x)                                                                                     \
-  {                                                                                                                    \
+#define CHK_NVM(x)                                                                                                     \
+  do {                                                                                                                 \
     NvMediaStatus result = x;                                                                                          \
     if (result != NVMEDIA_STATUS_OK) {                                                                                 \
       char buf[80];                                                                                                    \
@@ -62,4 +62,4 @@ inline void getDateString(char* buf, size_t length)
       throw NvidiaGmslDriverRosFatalException(std::string(buf) + std::string(" NVMEDIA Error id:") +                   \
                                               std::to_string(x));                                                      \
     }                                                                                                                  \
-  };
+  } while (0)

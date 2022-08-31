@@ -24,7 +24,7 @@ NvMediaH264Encoder::NvMediaH264Encoder(const NvMediaSurfaceType* surfaceType) : 
   SetEncodeConfig();
   SetEncodeConfigRCParam();
 
-  CHECK_NVMEDIA_ERROR_ROS(NvMediaIEPSetConfiguration(nvMediaIep_, &encodeConfig_))
+  CHK_NVM(NvMediaIEPSetConfiguration(nvMediaIep_, &encodeConfig_));
 }
 
 NvMediaH264Encoder::~NvMediaH264Encoder()
@@ -86,13 +86,13 @@ void NvMediaH264Encoder::SetEncodePicParams()
   encodePicParams_.rcParams = encodeConfig_.rcParams;
 }
 
-void NvMediaH264Encoder::feed_frame(dwImageNvMedia* inNvMediaImage)
+void NvMediaH264Encoder::feed_frame(const dwImageNvMedia* inNvMediaImage)
 {
   if (!inNvMediaImage) {
     throw NvidiaGmslDriverRosFatalException("IEP H264 Feed frame : inNvMediaImage is False");
   }
 
   SetEncodePicParams();
-  CHECK_NVMEDIA_ERROR_ROS(
+  CHK_NVM(
       NvMediaIEPFeedFrame(nvMediaIep_, inNvMediaImage->img, nullptr, &encodePicParams_, NVMEDIA_ENCODER_INSTANCE_0));
 }

@@ -40,8 +40,8 @@ DriveWorksH264Serializer::DriveWorksH264Serializer(dwSensorHandle_t* sensorHandl
     userDataCast->info_publisher->publish(*userDataCast->camera_info);
   };
 
-  CHECK_DW_ERROR_ROS(dwSensorSerializer_initialize(&camera_serializer_, &serializerParams, *sensorHandle_))
-  CHECK_DW_ERROR_ROS(dwSensorSerializer_start(camera_serializer_))
+  CHK_DW(dwSensorSerializer_initialize(&camera_serializer_, &serializerParams, *sensorHandle_));
+  CHK_DW(dwSensorSerializer_start(camera_serializer_));
   ROS_DEBUG("INITIALIZED SERIALIZER");
 }
 
@@ -56,5 +56,5 @@ DriveWorksH264Serializer::~DriveWorksH264Serializer()
 
 void DriveWorksH264Serializer::feed_frame(dwCameraFrameHandle_t& cameraFrameHandle)
 {
-  CHECK_DW_ERROR_ROS(dwSensorSerializer_serializeCameraFrameAsync(cameraFrameHandle, camera_serializer_))
+  CHK_DW(dwSensorSerializer_serializeCameraFrameAsync(cameraFrameHandle, camera_serializer_));
 }

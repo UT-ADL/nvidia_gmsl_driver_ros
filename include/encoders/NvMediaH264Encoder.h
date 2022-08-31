@@ -15,7 +15,7 @@ public:
   NvMediaH264Encoder(const NvMediaSurfaceType* surfaceType);
   virtual ~NvMediaH264Encoder();
 
-  void feed_frame(dwImageNvMedia* inNvMediaImage);
+  void feed_frame(const dwImageNvMedia* inNvMediaImage);
 
 private:
   NvMediaVersion nvMediaVersion_;

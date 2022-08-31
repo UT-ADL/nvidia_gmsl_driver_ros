@@ -19,7 +19,7 @@ CameraBase::CameraBase(DriveworksApiWrapper* driveworksApiWrapper, const YAML::N
   params_ += "link=" + link_;
   sensorParams_.parameters = params_.c_str();
   sensorParams_.protocol = "camera.gmsl";
-  CHECK_DW_ERROR_ROS(dwSAL_createSensor(&sensorHandle_, sensorParams_, driveworksApiWrapper_->sal_handle_))
+  CHK_DW(dwSAL_createSensor(&sensorHandle_, sensorParams_, driveworksApiWrapper_->sal_handle_));
 
   // ROS
   frame_ = "interface" + interface_ + "_link" + link_;
@@ -47,7 +47,7 @@ CameraBase::~CameraBase()
 
 void CameraBase::start()
 {
-  CHECK_DW_ERROR_ROS(dwSensor_start(sensorHandle_))
+  CHK_DW(dwSensor_start(sensorHandle_));
 }
 
 bool CameraBase::get_last_frame()

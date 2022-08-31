@@ -27,7 +27,7 @@ void NvMediaJpgEncoder::feed_frame(dwImageNvMedia* inNvMediaImage) const
     throw NvidiaGmslDriverRosFatalException("IJPE Feed frame : inNvMediaImage is False");
   }
 
-  CHECK_NVMEDIA_ERROR_ROS(NvMediaIJPEFeedFrame(nvMediaIjpe_, inNvMediaImage->img, 70))
+  CHK_NVM(NvMediaIJPEFeedFrame(nvMediaIjpe_, inNvMediaImage->img, 70));
 }
 
 bool NvMediaJpgEncoder::wait_for_bits()
@@ -45,8 +45,10 @@ bool NvMediaJpgEncoder::wait_for_bits()
   return wait_for_bits();
 }
 
-void NvMediaJpgEncoder::pull_bits(){ CHECK_NVMEDIA_ERROR_ROS(NvMediaIJPEGetBits(nvMediaIjpe_, &countByteJpeg_,
-                                                                                jpegImage_.get(), 0)) }
+void NvMediaJpgEncoder::pull_bits()
+{
+  CHK_NVM(NvMediaIJPEGetBits(nvMediaIjpe_, &countByteJpeg_, jpegImage_.get(), 0));
+}
 
 uint8_t* NvMediaJpgEncoder::get_image()
 {
