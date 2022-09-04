@@ -44,7 +44,6 @@ CameraBase::CameraBase(DriveworksApiWrapper* driveworksApiWrapper, const YAML::N
 CameraBase::~CameraBase()
 {
   dwSAL_releaseSensor(sensorHandle_);
-  ROS_DEBUG("CAMERA RELEASED !");
 }
 
 void CameraBase::start()

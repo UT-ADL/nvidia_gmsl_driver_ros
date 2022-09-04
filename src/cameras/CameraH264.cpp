@@ -7,21 +7,12 @@ CameraH264::CameraH264(DriveworksApiWrapper* driveworksApiWrapper, const YAML::N
                        std::string link, ros::NodeHandle* nodehandle)
   : CameraBase(driveworksApiWrapper, config, interface, link, nodehandle)
 {
-  serializerUserData_.h264_publisher = &pub_compressed_;
-  serializerUserData_.info_publisher = &pub_info_;
-  serializerUserData_.timestamp = &timestamp_;
-  serializerUserData_.frame_id = &frame_;
-  serializerUserData_.camera_info = &camera_info_;
-
-  nh_.param<int>("h264_bitrate", bitrate_, 8000000);
+  nh_.param<int>("h264_bitrate", bitrate_, DEFAULT_BITRATE_);
   ROS_INFO_STREAM("H264 Bitrate: " << bitrate_);
 
   // ROS
   pub_compressed_ =
       nh_.advertise<h264_image_transport_msgs::H264Packet>(config_["topic"].as<std::string>() + "/image/h264", 1);
-
-  // Encoder
-  encoder_ = std::make_unique<DriveWorksH264Serializer>(&sensorHandle_, framerate_, &serializerUserData_, bitrate_);
 
   // NvMedia Encoder
   NVM_SURF_FMT_SET_ATTR_YUV(attrs_, YUV, 420, SEMI_PLANAR, UINT, 8, BL)

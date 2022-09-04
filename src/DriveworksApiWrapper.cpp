@@ -18,7 +18,6 @@ DriveworksApiWrapper::~DriveworksApiWrapper()
 {
   dwSAL_release(sal_handle_);
   dwRelease(context_handle_);
-  ROS_DEBUG("DRIVEWORKS API HANDLES RELEASED !");
 }
 
 void DriveworksApiWrapper::InitializeSalHandle()

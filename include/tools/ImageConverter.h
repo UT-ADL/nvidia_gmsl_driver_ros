@@ -11,7 +11,7 @@
 class ImageConverter
 {
 public:
-  ImageConverter(std::shared_ptr<DriveworksApiWrapper> driveworksApiWrapper, uint32_t width, uint32_t height,
+  ImageConverter(DriveworksApiWrapper* driveworksApiWrapper, uint32_t width, uint32_t height,
                  dwImageType outputImageType, dwImageFormat outputImageFormat,
                  dwImageMemoryType outputImageMemoryLayout);
 
@@ -23,7 +23,7 @@ public:
   [[nodiscard]] std::unique_ptr<dwImageHandle_t> convert(dwImageHandle_t* input);
 
 private:
-  std::shared_ptr<DriveworksApiWrapper> driveworksApiWrapper_;
+  DriveworksApiWrapper* driveworksApiWrapper_;
   dwImageProperties imageProperties_{};
   std::unique_ptr<dwImageHandle_t> outputImage_;
 };

@@ -2,8 +2,8 @@
 // (c) 2022 University of Tartu - Autonomous Driving Lab.
 
 #include "tools/ImageConverter.h"
-ImageConverter::ImageConverter(std::shared_ptr<DriveworksApiWrapper> driveworksApiWrapper, uint32_t width,
-                               uint32_t height, dwImageType outputImageType, dwImageFormat outputImageFormat,
+ImageConverter::ImageConverter(DriveworksApiWrapper* driveworksApiWrapper, uint32_t width, uint32_t height,
+                               dwImageType outputImageType, dwImageFormat outputImageFormat,
                                dwImageMemoryType outputImageMemoryLayout)
   : driveworksApiWrapper_(driveworksApiWrapper)
 {

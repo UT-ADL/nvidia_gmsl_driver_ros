@@ -58,7 +58,7 @@ void NvMediaH264Encoder::SetEncodeConfig()
   encodeConfig_.disableDeblockingFilterIDC = 0;
   encodeConfig_.enableWeightedPrediction = 0;
   encodeConfig_.entropyCodingMode = NVMEDIA_ENCODE_H264_ENTROPY_CODING_MODE_CAVLC;
-  encodeConfig_.features = 0b0001;
+  encodeConfig_.features = 0;
   encodeConfig_.gopLength = encodeInitParams_.frameRateNum / encodeInitParams_.frameRateDen;
   encodeConfig_.idrPeriod = encodeConfig_.gopLength;
   encodeConfig_.repeatSPSPPS = NVMEDIA_ENCODE_SPSPPS_REPEAT_IDR_FRAMES;
@@ -107,7 +107,6 @@ bool NvMediaH264Encoder::bits_available()
       NvMediaIEPBitsAvailable(nvMediaIep_, &numBytesAvailable_, NVMEDIA_ENCODE_BLOCKING_TYPE_IF_PENDING, 0);
 
   if (nvMediaStatus_ == NVMEDIA_STATUS_OK && numBytesAvailable_ > 0) {
-    std::cout << "numBytesAvailable_ " << (int)numBytesAvailable_ << " \n";
     return true;
   }
 
@@ -122,25 +121,15 @@ void NvMediaH264Encoder::pull_bits()
 {
   nvMediaStatus_ = NvMediaIEPGetBitsEx(nvMediaIep_, &numBytesAvailable_, 1, &nvMediaBitstreamBuffer_, nullptr);
 
-  if (nvMediaStatus_ == NVMEDIA_STATUS_OK) {
-    std::cout << "# pull_bits NVMEDIA_STATUS_OK\n";
-    std::cout << "# pull_bits bitstreamBytes: " << (int)(nvMediaBitstreamBuffer_.bitstreamBytes) << "\n";
-    std::cout << "# pull_bits numBytesAvailable_: " << (int)numBytesAvailable_ << "\n";
-
-    return;
+  switch (nvMediaStatus_) {
+    case NVMEDIA_STATUS_OK:
+    case NVMEDIA_STATUS_INSUFFICIENT_BUFFERING:
+    case NVMEDIA_STATUS_PENDING:
+      return;
+    default:
+      throw NvidiaGmslDriverRosFatalException(
+          "Error while pulling data from h264 encoder. Error ID: " + std::to_string(nvMediaStatus_) + ".");
   }
-
-  if (nvMediaStatus_ == NVMEDIA_STATUS_INSUFFICIENT_BUFFERING) {
-    std::cout << "# pull_bits NVMEDIA_STATUS_INSUFFICIENT_BUFFERING\n";
-    return;
-  }
-
-  if (nvMediaStatus_ == NVMEDIA_STATUS_PENDING) {
-    std::cout << "# pull_bits NVMEDIA_STATUS_PENDING\n";
-    return;
-  }
-
-  std::cout << "# pull_bits OTHER " << (int)nvMediaStatus_ << "\n";
 }
 
 std::array<uint8_t, BUFFER_SIZE>* NvMediaH264Encoder::get_buffer()

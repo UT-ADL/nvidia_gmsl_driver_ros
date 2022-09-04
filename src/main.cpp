@@ -37,8 +37,7 @@ int main(int argc, char** argv)
 
   try {
     driver->setup_cameras();
-  }
-  catch (NvidiaGmslDriverRosFatalException const& e) {
+  } catch (NvidiaGmslDriverRosFatalException const& e) {
     ROS_FATAL_STREAM(e.what());
     ros::shutdown();
     return 1;
@@ -47,8 +46,7 @@ int main(int argc, char** argv)
   while (ros::ok()) {
     try {
       driver->run();
-    }
-    catch (NvidiaGmslDriverRosFatalException const& e) {
+    } catch (NvidiaGmslDriverRosFatalException const& e) {
       ROS_FATAL_STREAM(e.what());
       ros::shutdown();
       return 1;

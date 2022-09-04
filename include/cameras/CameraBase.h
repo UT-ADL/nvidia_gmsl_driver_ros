@@ -76,7 +76,7 @@ protected:
   int framerate_;
   int width_;
   int height_;
-  std::shared_ptr<DriveworksApiWrapper> driveworksApiWrapper_;
+  DriveworksApiWrapper* driveworksApiWrapper_;
 
   dwSensorHandle_t sensorHandle_ = DW_NULL_HANDLE;
   dwCameraFrameHandle_t cameraFrameHandle_;

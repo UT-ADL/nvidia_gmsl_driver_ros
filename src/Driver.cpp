@@ -17,7 +17,7 @@ Driver::Driver(const ros::NodeHandle* nodehandle) : nh_(*nodehandle)
   config_ = YAML::LoadFile(config_file_path_);
 
   // Create API Wrapper
-  driveworksApiWrapper_ = std::make_shared<DriveworksApiWrapper>();
+  driveworksApiWrapper_ = std::make_unique<DriveworksApiWrapper>();
 }
 
 void Driver::setup_cameras()
@@ -61,8 +61,7 @@ void Driver::run()
         [](CameraBase* camera) {
           try {
             camera->run_pipeline();
-          }
-          catch (NvidiaGmslDriverRosMinorException const&) {
+          } catch (NvidiaGmslDriverRosMinorException const&) {
             return false;
           }
           return true;
