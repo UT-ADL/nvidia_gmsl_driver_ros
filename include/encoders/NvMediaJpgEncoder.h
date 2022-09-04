@@ -36,7 +36,7 @@ public:
   bool wait_for_bits();
 
   /**
-   * @brief Pull the bits from the encoder memory to the local image. Must be called after wait_for_bits
+   * @brief Pull the bits from the encoder memory to the local image. Must be called after bits_available
    */
   void pull_bits();
 

@@ -5,6 +5,7 @@
 
 #include <camera_info_manager/camera_info_manager.h>
 #include <ros/package.h>
+#include <sensor_msgs/CompressedImage.h>
 
 #include <yaml-cpp/yaml.h>
 #include <chrono>
@@ -60,13 +61,21 @@ public:
    */
   virtual void encode() = 0;
 
+  virtual void publish() = 0;
+
   /**
    * @brief Polls the camera until the buffer is empty. ensuring the frame is the most recent one.
    */
   bool get_last_frame();
 
 protected:
+  static constexpr int DEFAULT_FRAMERATE_ = 30;
+  static constexpr int DEFAULT_WIDTH_ = 1920;
+  static constexpr int DEFAULT_HEIGHT_ = 1208;
+
   int framerate_;
+  int width_;
+  int height_;
   std::shared_ptr<DriveworksApiWrapper> driveworksApiWrapper_;
 
   dwSensorHandle_t sensorHandle_ = DW_NULL_HANDLE;

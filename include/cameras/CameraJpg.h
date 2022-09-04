@@ -49,7 +49,7 @@ public:
   /**
    * @brief Publishes compressed images and camera info to ROS.
    */
-  void publish();
+  void publish() override;
 
   inline static const std::string ENCODER_TYPE_ = "jpg";
 

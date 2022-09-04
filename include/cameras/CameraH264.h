@@ -5,12 +5,13 @@
 
 #include <memory>
 
+#include <dw/sensors/SensorSerializer.h>
+#include <sensor_msgs/CompressedImage.h>
+
 #include "encoders/DriveWorksH264Serializer.h"
 #include "encoders/NvMediaH264Encoder.h"
 #include "cameras/CameraBase.h"
 #include "tools/ImageConverter.h"
-
-#include <dw/sensors/SensorSerializer.h>
 
 class CameraH264 : public CameraBase
 {
@@ -45,10 +46,15 @@ public:
    */
   void encode() override;
 
+  /**
+   * @brief Publishes compressed images and camera info to ROS.
+   */
+  void publish() override;
+
   inline static const std::string ENCODER_TYPE_ = "h264";
 
 private:
-  ros::Publisher pub_h264_;
+  ros::Publisher pub_compressed_;
   std::unique_ptr<DriveWorksH264Serializer> encoder_;
 
   int bitrate_;
@@ -59,4 +65,6 @@ private:
   NvMediaSurfFormatAttr attrs_[7];
   NvMediaSurfaceType surfaceType_;
   std::unique_ptr<ImageConverter> imageConverter_;
+  std_msgs::Header header_;
+  h264_image_transport_msgs::H264Packet packet_;
 };
