@@ -21,7 +21,7 @@ public:
   bool bits_available();
   void pull_bits();
   std::array<uint8_t, BUFFER_SIZE>* get_buffer();
-  [[nodiscard]] uint32_t getNumBytes_() const;
+  [[nodiscard]] uint32_t get_num_bytes() const;
 
 private:
   NvMediaVersion nvMediaVersion_;
@@ -47,8 +47,8 @@ private:
   int framerate_;
   int bitrate_;
 
-  void SetEncodeInitParams();
-  void SetEncodeConfig();
-  void SetEncodeConfigRCParam();
-  void SetEncodePicParams();
+  void set_encode_init_params();
+  void set_encode_config();
+  void set_encode_config_rcparam();
+  void set_encode_pic_params();
 };

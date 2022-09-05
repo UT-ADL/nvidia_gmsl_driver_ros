@@ -3,7 +3,7 @@
 
 #include "log.hpp"
 
-dwLogCallback rosLogWrapper()
+dwLogCallback ros_log_wrapper()
 {
   return [](dwContextHandle_t, dwLoggerVerbosity level, const char* msg) {
     if (strchr(msg, '[') && strchr(msg, ']') && strlen(msg) == 22) {

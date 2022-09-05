@@ -14,5 +14,5 @@
 class NvidiaGmslDriverRosFatalException : public std::runtime_error
 {
 public:
-  explicit NvidiaGmslDriverRosFatalException(const std::string& description) : std::runtime_error(description) {}
+  using runtime_error::runtime_error;
 };

@@ -20,7 +20,7 @@ int main(int argc, char** argv)
     if (arg == "--verbose") {
       // initialize loggers
       ros::console::set_logger_level(ROSCONSOLE_DEFAULT_NAME, ros::console::levels::Debug);
-      dwLogger_initialize(rosLogWrapper());
+      dwLogger_initialize(ros_log_wrapper());
       dwLogger_setLogLevel(DW_LOG_VERBOSE);
     }
   }

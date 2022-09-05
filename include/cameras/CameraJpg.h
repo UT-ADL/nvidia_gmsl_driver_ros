@@ -51,7 +51,7 @@ public:
    */
   void publish() override;
 
-  inline static const std::string ENCODER_TYPE_ = "jpg";
+  inline static const std::string ENCODER_TYPE = "jpg";
 
 private:
   std::unique_ptr<NvMediaJpgEncoder> encoder_;

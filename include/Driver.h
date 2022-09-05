@@ -16,7 +16,7 @@
 #include "exceptions/NvidiaGmslDriverRosFatalException.h"
 #include "exceptions/NvidiaGmslDriverRosMinorException.h"
 
-static constexpr size_t MAX_TRIALS_ = 100;
+static constexpr size_t MAX_TRIALS = 100;
 
 class Driver
 {
@@ -57,6 +57,6 @@ private:
   std::string config_file_path_;
   YAML::Node config_;
   std::unique_ptr<DriveworksApiWrapper> driveworksApiWrapper_;
-  size_t camera_count = 0;
+  size_t camera_count_ = 0;
   std::vector<std::unique_ptr<CameraBase>> camera_vector_;
 };

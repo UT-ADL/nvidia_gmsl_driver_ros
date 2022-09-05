@@ -11,4 +11,4 @@
 
 #include "exceptions/NvidiaGmslDriverRosFatalException.h"
 
-dwLogCallback rosLogWrapper();
+dwLogCallback ros_log_wrapper();

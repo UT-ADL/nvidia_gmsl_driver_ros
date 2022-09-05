@@ -21,8 +21,8 @@
 
 inline void getDateString(char* buf, size_t length)
 {
-  time_t now = ::time(0);
-  struct tm* calendar = localtime(&now);
+  time_t now = ::time(nullptr);
+  struct tm const* calendar = localtime(&now);
   strftime(buf, length, "[%Y-%m-%d %X] ", calendar);
 }
 

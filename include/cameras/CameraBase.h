@@ -69,9 +69,9 @@ public:
   bool get_last_frame();
 
 protected:
-  static constexpr int DEFAULT_FRAMERATE_ = 30;
-  static constexpr int DEFAULT_WIDTH_ = 1920;
-  static constexpr int DEFAULT_HEIGHT_ = 1208;
+  static constexpr int DEFAULT_FRAMERATE = 30;
+  static constexpr int DEFAULT_WIDTH = 1920;
+  static constexpr int DEFAULT_HEIGHT = 1208;
 
   int framerate_;
   int width_;

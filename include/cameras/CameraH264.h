@@ -50,10 +50,10 @@ public:
    */
   void publish() override;
 
-  inline static const std::string ENCODER_TYPE_ = "h264";
+  inline static const std::string ENCODER_TYPE = "h264";
 
 private:
-  constexpr static int DEFAULT_BITRATE_ = 8000000;
+  constexpr static int DEFAULT_BITRATE = 8000000;
 
   // params
   int bitrate_;

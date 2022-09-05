@@ -7,9 +7,9 @@ CameraBase::CameraBase(DriveworksApiWrapper* driveworksApiWrapper, const YAML::N
                        const std::string interface, const std::string link, ros::NodeHandle* nodehandle)
   : driveworksApiWrapper_(driveworksApiWrapper), config_(config), interface_(interface), link_(link), nh_(*nodehandle)
 {
-  nh_.param<int>("framerate", framerate_, DEFAULT_FRAMERATE_);
-  nh_.param<int>("output_width", width_, DEFAULT_WIDTH_);
-  nh_.param<int>("output_height", height_, DEFAULT_HEIGHT_);
+  nh_.param<int>("framerate", framerate_, DEFAULT_FRAMERATE);
+  nh_.param<int>("output_width", width_, DEFAULT_WIDTH);
+  nh_.param<int>("output_height", height_, DEFAULT_HEIGHT);
 
   // Read params from yaml
   for (YAML::const_iterator param_it = config_["parameters"].begin(); param_it != config_["parameters"].end();

@@ -7,7 +7,7 @@ CameraH264::CameraH264(DriveworksApiWrapper* driveworksApiWrapper, const YAML::N
                        std::string link, ros::NodeHandle* nodehandle)
   : CameraBase(driveworksApiWrapper, config, interface, link, nodehandle)
 {
-  nh_.param<int>("h264_bitrate", bitrate_, DEFAULT_BITRATE_);
+  nh_.param<int>("h264_bitrate", bitrate_, DEFAULT_BITRATE);
   ROS_INFO_STREAM("H264 Bitrate: " << bitrate_);
 
   // ROS
@@ -63,7 +63,7 @@ void CameraH264::publish()
   header_.frame_id = frame_;
 
   packet_.data.assign(nvmedia_encoder_->get_buffer()->data(),
-                      nvmedia_encoder_->get_buffer()->data() + nvmedia_encoder_->getNumBytes_());
+                      nvmedia_encoder_->get_buffer()->data() + nvmedia_encoder_->get_num_bytes());
   packet_.header = header_;
   pub_compressed_.publish(packet_);
 

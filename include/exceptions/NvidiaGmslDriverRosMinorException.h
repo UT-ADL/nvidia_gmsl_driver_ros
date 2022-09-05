@@ -14,5 +14,5 @@
 class NvidiaGmslDriverRosMinorException : public std::runtime_error
 {
 public:
-  explicit NvidiaGmslDriverRosMinorException(const std::string& description) : std::runtime_error(description) {}
+  using runtime_error::runtime_error;
 };

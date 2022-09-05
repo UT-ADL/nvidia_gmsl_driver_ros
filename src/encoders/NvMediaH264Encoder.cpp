@@ -14,7 +14,7 @@ NvMediaH264Encoder::NvMediaH264Encoder(const NvMediaSurfaceType* surfaceType, in
     throw NvidiaGmslDriverRosFatalException("Unable to create NvMedia device.");
   }
 
-  SetEncodeInitParams();
+  set_encode_init_params();
 
   nvMediaIep_ = NvMediaIEPCreate(nvMediaDevice_, NVMEDIA_IMAGE_ENCODE_H264, &encodeInitParams_, surfaceType_, '\0', 16,
                                  NVMEDIA_ENCODER_INSTANCE_0);
@@ -23,8 +23,8 @@ NvMediaH264Encoder::NvMediaH264Encoder(const NvMediaSurfaceType* surfaceType, in
     throw NvidiaGmslDriverRosFatalException("Unable to create NvMedia IEP.");
   }
 
-  SetEncodeConfig();
-  SetEncodeConfigRCParam();
+  set_encode_config();
+  set_encode_config_rcparam();
 
   CHK_NVM(NvMediaIEPSetConfiguration(nvMediaIep_, &encodeConfig_));
 
@@ -36,7 +36,7 @@ NvMediaH264Encoder::~NvMediaH264Encoder()
   NvMediaIEPDestroy(nvMediaIep_);
 }
 
-void NvMediaH264Encoder::SetEncodeInitParams()
+void NvMediaH264Encoder::set_encode_init_params()
 {
   encodeInitParams_.encodeWidth = static_cast<uint16_t>(width_);
   encodeInitParams_.encodeHeight = static_cast<uint16_t>(height_);
@@ -50,7 +50,7 @@ void NvMediaH264Encoder::SetEncodeInitParams()
   encodeInitParams_.enableAllIFrames = 0;
 }
 
-void NvMediaH264Encoder::SetEncodeConfig()
+void NvMediaH264Encoder::set_encode_config()
 {
   encodeConfig_.pocType = NVMEDIA_ENCODE_H264_POC_TYPE_AUTOSELECT;
   encodeConfig_.bdirectMode = NVMEDIA_ENCODE_H264_BDIRECT_MODE_SPATIAL;
@@ -70,7 +70,7 @@ void NvMediaH264Encoder::SetEncodeConfig()
   encodeConfig_.h264VUIParameters = encodeConfigH264VuiParams_;
 }
 
-void NvMediaH264Encoder::SetEncodeConfigRCParam()
+void NvMediaH264Encoder::set_encode_config_rcparam()
 {
   rcParams_.rateControlMode = NVMEDIA_ENCODE_PARAMS_RC_CBR;
   rcParams_.numBFrames = 0;
@@ -80,7 +80,7 @@ void NvMediaH264Encoder::SetEncodeConfigRCParam()
   encodeConfig_.rcParams = rcParams_;
 }
 
-void NvMediaH264Encoder::SetEncodePicParams()
+void NvMediaH264Encoder::set_encode_pic_params()
 {
   encodePicParams_.pictureType = NVMEDIA_ENCODE_PIC_TYPE_AUTOSELECT;
   encodePicParams_.encodePicFlags = 0b0001;
@@ -96,7 +96,7 @@ void NvMediaH264Encoder::feed_frame(const dwImageNvMedia* inNvMediaImage)
     throw NvidiaGmslDriverRosFatalException("IEP H264 Feed frame : inNvMediaImage is False");
   }
 
-  SetEncodePicParams();
+  set_encode_pic_params();
   CHK_NVM(
       NvMediaIEPFeedFrame(nvMediaIep_, inNvMediaImage->img, nullptr, &encodePicParams_, NVMEDIA_ENCODER_INSTANCE_0));
 }
@@ -137,7 +137,7 @@ std::array<uint8_t, BUFFER_SIZE>* NvMediaH264Encoder::get_buffer()
   return &buffer_;
 }
 
-uint32_t NvMediaH264Encoder::getNumBytes_() const
+uint32_t NvMediaH264Encoder::get_num_bytes() const
 {
   return numBytesAvailable_;
 }
