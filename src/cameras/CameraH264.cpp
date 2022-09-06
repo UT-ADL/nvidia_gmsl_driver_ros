@@ -26,23 +26,14 @@ CameraH264::CameraH264(DriveworksApiWrapper* driveworksApiWrapper, const YAML::N
 void CameraH264::run_pipeline()
 {
   poll();
+  preprocess();
   encode();
   publish();
 }
 
-void CameraH264::poll()
-{
-  if (!get_last_frame()) {
-    throw NvidiaGmslDriverRosMinorException("Unable to get frame");
-  }
-
-  CHK_DW(dwSensorCamera_getImage(&imageHandleOriginal_, DW_CAMERA_OUTPUT_NATIVE_PROCESSED, cameraFrameHandle_));
-  CHK_DW(dwImage_getTimestamp(&timestamp_, imageHandleOriginal_));
-}
-
 void CameraH264::encode()
 {
-  std::unique_ptr<dwImageHandle_t> converted = imageConverter_->convert(&imageHandleOriginal_);
+  std::unique_ptr<dwImageHandle_t> converted = imageConverter_->convert(imageHandlePreprocessed_.get());
   CHK_DW(dwSensorCamera_returnFrame(&cameraFrameHandle_));
 
   dwImageNvMedia* image_nvmedia_;

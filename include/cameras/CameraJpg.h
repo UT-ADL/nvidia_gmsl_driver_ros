@@ -34,13 +34,6 @@ public:
   void run_pipeline() override;
 
   /**
-   * @brief Polls camera for frame, extracts image, timestamp and nvmedia image.
-   * @throws NvidiaGmslDriverRosFatalException
-   * @throws NvidiaGmslDriverRosMinorException
-   */
-  void poll() override;
-
-  /**
    * @brief Pushes polled data to the encoder and pulls jpg bytes.
    * @throws NvidiaGmslDriverRosFatalException
    */
@@ -48,6 +41,7 @@ public:
 
   /**
    * @brief Publishes compressed images and camera info to ROS.
+   * @attention Prerequisite : encode()
    */
   void publish() override;
 
@@ -59,8 +53,6 @@ private:
   std_msgs::Header header_;
   sensor_msgs::CompressedImage img_msg_compressed_;
 
-  dwImageProperties imageProperties_;
-  dwCameraProperties cameraProperties_;
   dwImageNvMedia* image_nvmedia_;
 
   NvMediaSurfFormatAttr attrs_[7];

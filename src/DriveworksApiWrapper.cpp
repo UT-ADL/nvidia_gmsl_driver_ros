@@ -5,11 +5,11 @@
 
 DriveworksApiWrapper::DriveworksApiWrapper()
 {
-  InitializeContextHandle();
-  InitializeSalHandle();
+  initialize_context_handle();
+  initialize_sal_handle();
 }
 
-void DriveworksApiWrapper::InitializeContextHandle()
+void DriveworksApiWrapper::initialize_context_handle()
 {
   dwInitialize(&context_handle_, DW_VERSION, &sdkParams_);
 }
@@ -20,7 +20,7 @@ DriveworksApiWrapper::~DriveworksApiWrapper()
   dwRelease(context_handle_);
 }
 
-void DriveworksApiWrapper::InitializeSalHandle()
+void DriveworksApiWrapper::initialize_sal_handle()
 {
   dwStatus result;
   result = dwSAL_initialize(&sal_handle_, context_handle_);

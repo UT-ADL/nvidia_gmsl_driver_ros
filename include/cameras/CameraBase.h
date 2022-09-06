@@ -16,6 +16,7 @@
 
 #include "DriveworksApiWrapper.h"
 #include "framework/Checks.hpp"
+#include "tools/ImageTransformer.h"
 
 /**
  * @brief Base class for cameras.
@@ -52,21 +53,27 @@ public:
   virtual void run_pipeline() = 0;
 
   /**
-   * @brief Has to be overridden. Polls camera for a frame + eventually extra processing.
+   * @brief Polls the camera until the buffer is empty. ensuring the frame is the most recent one.
    */
-  virtual void poll() = 0;
+  bool poll();
+
+  /**
+   * @brief Run any required preprocessing on the polled image. E.g. Image Transformer.
+   * @attention Prerequisite : poll()
+   */
+  void preprocess();
 
   /**
    * @brief Has to be overridden. Pushes and pulls polled data to the encoder.
+   * @attention Prerequisite : preprocess()
    */
   virtual void encode() = 0;
 
-  virtual void publish() = 0;
-
   /**
-   * @brief Polls the camera until the buffer is empty. ensuring the frame is the most recent one.
+   * @brief todo
+   * @attention Prerequisite : encode()
    */
-  bool get_last_frame();
+  virtual void publish() = 0;
 
 protected:
   static constexpr int DEFAULT_FRAMERATE = 30;
@@ -80,10 +87,12 @@ protected:
 
   dwSensorHandle_t sensorHandle_ = DW_NULL_HANDLE;
   dwCameraFrameHandle_t cameraFrameHandle_;
-  dwImageHandle_t imageHandleOriginal_;
+  std::unique_ptr<dwImageHandle_t> imageHandlePreprocessed_;
   dwSensorParams sensorParams_;
   dwStatus status_;
   dwTime_t timestamp_;
+  dwImageProperties imageProperties_;
+  dwCameraProperties cameraProperties_;
 
   ros::NodeHandle nh_;
   ros::Publisher pub_info_;
@@ -97,4 +106,10 @@ protected:
   std::string link_;
   std::string frame_;
   std::ostringstream cam_info_file_;
+
+  std::unique_ptr<ImageTransformer> imageTransformer_;
+
+private:
+  // todo make more private
+  std::unique_ptr<dwImageHandle_t> imageHandleOutOfCamera_;
 };

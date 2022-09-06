@@ -52,6 +52,7 @@ void Driver::create_camera(const YAML::Node& config, const std::string& interfac
     camera_vector_.emplace_back(
         std::make_unique<CameraJpg>(driveworksApiWrapper_.get(), config, interface, link, &nh_));
   }
+  ROS_INFO_STREAM(camera_vector_.size() << " cameras created.");
 }
 
 void Driver::run()
@@ -72,8 +73,10 @@ void Driver::run()
   all_cameras_valid_ = true;
   for (auto& future : future_pool_) {
     if (!future.get() && all_cameras_valid_) {
+      ROS_ERROR_STREAM("Cannot reach the cameras. Will retry. Trial " << trials_ << ".");
       all_cameras_valid_ = false;
       trials_++;
+      std::this_thread::sleep_for(std::chrono::milliseconds(10));
     }
   }
   future_pool_.clear();

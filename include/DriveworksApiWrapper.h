@@ -24,7 +24,7 @@ public:
   dwSALHandle_t sal_handle_ = DW_NULL_HANDLE;
 
 private:
-  void InitializeSalHandle();
-  void InitializeContextHandle();
+  void initialize_sal_handle();
+  void initialize_context_handle();
   dwContextParameters sdkParams_ = {};
 };

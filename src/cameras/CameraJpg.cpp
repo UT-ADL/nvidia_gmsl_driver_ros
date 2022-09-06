@@ -7,10 +7,6 @@ CameraJpg::CameraJpg(DriveworksApiWrapper* driveworksApiWrapper, const YAML::Nod
                      std::string link, ros::NodeHandle* nodehandle)
   : CameraBase(driveworksApiWrapper, config, interface, link, nodehandle)
 {
-  // Setup image and camera properties
-  CHK_DW(dwSensorCamera_getImageProperties(&imageProperties_, DW_CAMERA_OUTPUT_NATIVE_PROCESSED, sensorHandle_));
-  CHK_DW(dwSensorCamera_getSensorProperties(&cameraProperties_, sensorHandle_));
-
   // Surface type init
   NVM_SURF_FMT_SET_ATTR_YUV(attrs_, YUV, 422, PLANAR, UINT, 8, PL)
   surfaceType_ = NvMediaSurfaceFormatGetType(attrs_, 7);
@@ -26,25 +22,14 @@ CameraJpg::CameraJpg(DriveworksApiWrapper* driveworksApiWrapper, const YAML::Nod
 void CameraJpg::run_pipeline()
 {
   poll();
+  preprocess();
   encode();
   publish();
 }
 
-void CameraJpg::poll()
-{
-  if (!get_last_frame()) {
-    throw NvidiaGmslDriverRosMinorException("Unable to get frame");
-  }
-
-  CHK_DW_MINOR(dwSensorCamera_getImage(&imageHandleOriginal_, DW_CAMERA_OUTPUT_NATIVE_PROCESSED, cameraFrameHandle_));
-
-  CHK_DW(dwImage_getTimestamp(&timestamp_, imageHandleOriginal_));
-
-  CHK_DW(dwImage_getNvMedia(&image_nvmedia_, imageHandleOriginal_));
-}
-
 void CameraJpg::encode()
 {
+  CHK_DW(dwImage_getNvMedia(&image_nvmedia_, *imageHandlePreprocessed_));
   encoder_->feed_frame(image_nvmedia_);
   encoder_->wait_for_bits();
   CHK_DW(dwSensorCamera_returnFrame(&cameraFrameHandle_));

@@ -33,20 +33,15 @@ public:
   void run_pipeline() override;
 
   /**
-   * @brief Polls camera for frame, extracts image and timestamp.
-   * @throws NvidiaGmslDriverRosFatalException
-   * @throws NvidiaGmslDriverRosMinorException
-   */
-  void poll() override;
-
-  /**
    * @brief Pushes polled data to the encoder. The encoder will then call it's own callback.
+   * @attention Prerequisite : preprocess()
    * @throws NvidiaGmslDriverRosFatalException
    */
   void encode() override;
 
   /**
    * @brief Publishes compressed images and camera info to ROS.
+   * @attention Prerequisite : encode()
    */
   void publish() override;
 
