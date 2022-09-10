@@ -3,7 +3,8 @@
 
 #include "encoders/NvMediaJpgEncoder.h"
 
-NvMediaJpgEncoder::NvMediaJpgEncoder(const NvMediaSurfaceType* surfaceType) : surfaceType_(*surfaceType)
+NvMediaJpgEncoder::NvMediaJpgEncoder(DriveworksApiWrapper* driveworksApiWrapper, int width, int height)
+  : driveworksApiWrapper_(driveworksApiWrapper), width_(width), height_(height)
 {
   jpegImage_ = std::make_unique<uint8_t[]>(MAX_JPG_BYTES);
 
@@ -13,6 +14,9 @@ NvMediaJpgEncoder::NvMediaJpgEncoder(const NvMediaSurfaceType* surfaceType) : su
   if (!nvmediaDevice_ || !nvMediaIjpe_) {
     throw NvidiaGmslDriverRosFatalException("Unable to create NvMedia device or Encoder!");
   }
+
+  CHK_DW(dwImage_create(&imgYuv420Pi_, camera_common::get_yuv420_pitch_img_prop(width_, height_),
+                        driveworksApiWrapper_->context_handle_));
 }
 
 NvMediaJpgEncoder::~NvMediaJpgEncoder()
@@ -21,13 +25,11 @@ NvMediaJpgEncoder::~NvMediaJpgEncoder()
   NvMediaDeviceDestroy(nvmediaDevice_);
 }
 
-void NvMediaJpgEncoder::feed_frame(dwImageNvMedia* inNvMediaImage) const
+void NvMediaJpgEncoder::feed_frame(const dwImageHandle_t* input)
 {
-  if (!inNvMediaImage) {
-    throw NvidiaGmslDriverRosFatalException("IJPE Feed frame : inNvMediaImage is False");
-  }
-
-  CHK_NVM(NvMediaIJPEFeedFrame(nvMediaIjpe_, inNvMediaImage->img, 70));
+  dwImage_copyConvert(imgYuv420Pi_, *input, driveworksApiWrapper_->context_handle_);
+  CHK_DW(dwImage_getNvMedia(&image_nvmedia_, imgYuv420Pi_));
+  CHK_NVM(NvMediaIJPEFeedFrame(nvMediaIjpe_, image_nvmedia_->img, 70));
 }
 
 bool NvMediaJpgEncoder::wait_for_bits()

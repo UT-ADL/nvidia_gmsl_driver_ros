@@ -17,6 +17,8 @@
 #include "DriveworksApiWrapper.h"
 #include "framework/Checks.hpp"
 #include "tools/ImageTransformer.h"
+#include "tools/ImageConverter.h"
+#include "cameras/CameraCommon.h"
 
 /**
  * @brief Base class for cameras.
@@ -48,9 +50,9 @@ public:
   void start();
 
   /**
-   * @brief Has to be overridden. Executes once all the steps that the camera implements.
+   * @brief Executes once all the steps that the camera implements.
    */
-  virtual void run_pipeline() = 0;
+  void run_pipeline();
 
   /**
    * @brief Polls the camera until the buffer is empty. ensuring the frame is the most recent one.
@@ -76,23 +78,21 @@ public:
   virtual void publish() = 0;
 
 protected:
-  static constexpr int DEFAULT_FRAMERATE = 30;
-  static constexpr int DEFAULT_WIDTH = 1920;
-  static constexpr int DEFAULT_HEIGHT = 1208;
-
   int framerate_;
   int width_;
   int height_;
   DriveworksApiWrapper* driveworksApiWrapper_;
+  std::unique_ptr<ImageTransformer> imageTransformer_;
 
   dwSensorHandle_t sensorHandle_ = DW_NULL_HANDLE;
   dwCameraFrameHandle_t cameraFrameHandle_;
-  std::unique_ptr<dwImageHandle_t> imageHandlePreprocessed_;
   dwSensorParams sensorParams_;
   dwStatus status_;
   dwTime_t timestamp_;
-  dwImageProperties imageProperties_;
+  dwImageProperties cameraImgProps_;
   dwCameraProperties cameraProperties_;
+  dwImageHandle_t imgOutOfCamera_;
+  dwImageHandle_t imgTransformed_;
 
   ros::NodeHandle nh_;
   ros::Publisher pub_info_;
@@ -106,10 +106,4 @@ protected:
   std::string link_;
   std::string frame_;
   std::ostringstream cam_info_file_;
-
-  std::unique_ptr<ImageTransformer> imageTransformer_;
-
-private:
-  // todo make more private
-  std::unique_ptr<dwImageHandle_t> imageHandleOutOfCamera_;
 };

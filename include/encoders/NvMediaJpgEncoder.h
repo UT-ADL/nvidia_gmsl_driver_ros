@@ -3,11 +3,14 @@
 
 #pragma once
 
-#include <nvmedia_ijpe.h>
 #include <memory>
 
-#include "framework/Checks.hpp"
+#include <nvmedia_ijpe.h>
 #include <dw/image/Image.h>
+
+#include "framework/Checks.hpp"
+#include "cameras/CameraCommon.h"
+#include "DriveworksApiWrapper.h"
 
 static constexpr uint32_t MAX_JPG_BYTES = 3 * 1290 * 1208;
 
@@ -17,7 +20,7 @@ public:
   /**
    * @brief Constructor
    */
-  NvMediaJpgEncoder(const NvMediaSurfaceType* surfaceType);
+  NvMediaJpgEncoder(DriveworksApiWrapper* driveworksApiWrapper, int width, int height);
 
   /**
    * @brief Destructor
@@ -27,7 +30,7 @@ public:
   /**
    * @brief Feeds a frame into the encoder
    */
-  void feed_frame(dwImageNvMedia* inNvMediaImage) const;
+  void feed_frame(const dwImageHandle_t* input);
 
   /**
    * @brief Returns true if encoded bits are available in the encoder memory, otherwise waits. Has to be called after
@@ -51,11 +54,18 @@ public:
   [[nodiscard]] uint32_t get_count_bytes() const;
 
 private:
+  DriveworksApiWrapper* driveworksApiWrapper_;
+
   NvMediaDevice* nvmediaDevice_ = nullptr;
   NvMediaIJPE* nvMediaIjpe_ = nullptr;
-  NvMediaSurfaceType surfaceType_;
+  NvMediaSurfaceType surfaceType_ = camera_common::get_yuv420_pitch_img_surface();
   NvMediaStatus nvMediaStatus_;
+
+  dwImageHandle_t imgYuv420Pi_ = DW_NULL_HANDLE;
+  dwImageNvMedia* image_nvmedia_ = nullptr;
 
   uint32_t countByteJpeg_;
   std::unique_ptr<uint8_t[]> jpegImage_;
+  int width_;
+  int height_;
 };

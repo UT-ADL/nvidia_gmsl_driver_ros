@@ -7,32 +7,18 @@ CameraJpg::CameraJpg(DriveworksApiWrapper* driveworksApiWrapper, const YAML::Nod
                      std::string link, ros::NodeHandle* nodehandle)
   : CameraBase(driveworksApiWrapper, config, interface, link, nodehandle)
 {
-  // Surface type init
-  NVM_SURF_FMT_SET_ATTR_YUV(attrs_, YUV, 422, PLANAR, UINT, 8, PL)
-  surfaceType_ = NvMediaSurfaceFormatGetType(attrs_, 7);
-
   // ROS
   pub_compressed_ =
       nh_.advertise<sensor_msgs::CompressedImage>(config_["topic"].as<std::string>() + "/image/compressed", 1);
 
   // Encoder
-  encoder_ = std::make_unique<NvMediaJpgEncoder>(&surfaceType_);
-}
-
-void CameraJpg::run_pipeline()
-{
-  poll();
-  preprocess();
-  encode();
-  publish();
+  encoder_ = std::make_unique<NvMediaJpgEncoder>(driveworksApiWrapper_, width_, height_);
 }
 
 void CameraJpg::encode()
 {
-  CHK_DW(dwImage_getNvMedia(&image_nvmedia_, *imageHandlePreprocessed_));
-  encoder_->feed_frame(image_nvmedia_);
+  encoder_->feed_frame(&imgTransformed_);
   encoder_->wait_for_bits();
-  CHK_DW(dwSensorCamera_returnFrame(&cameraFrameHandle_));
   encoder_->pull_bits();
 }
 

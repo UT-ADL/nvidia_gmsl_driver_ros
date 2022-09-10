@@ -3,9 +3,13 @@
 
 #include "encoders/NvMediaH264Encoder.h"
 
-NvMediaH264Encoder::NvMediaH264Encoder(const NvMediaSurfaceType* surfaceType, int width, int height, int framerate,
+NvMediaH264Encoder::NvMediaH264Encoder(DriveworksApiWrapper* driveworksApiWrapper, int width, int height, int framerate,
                                        int bitrate)
-  : surfaceType_(*surfaceType), width_(width), height_(height), framerate_(framerate), bitrate_(bitrate)
+  : driveworksApiWrapper_(driveworksApiWrapper)
+  , width_(width)
+  , height_(height)
+  , framerate_(framerate)
+  , bitrate_(bitrate)
 {
   NvMediaIEPGetVersion(&nvMediaVersion_);
   nvMediaDevice_ = NvMediaDeviceCreate();
@@ -29,11 +33,15 @@ NvMediaH264Encoder::NvMediaH264Encoder(const NvMediaSurfaceType* surfaceType, in
   CHK_NVM(NvMediaIEPSetConfiguration(nvMediaIep_, &encodeConfig_));
 
   nvMediaBitstreamBuffer_.bitstream = buffer_.data();
+
+  dwImage_create(&imgYuv420Bl_, camera_common::get_yuv420_block_img_prop(width_, height_),
+                 driveworksApiWrapper_->context_handle_);
 }
 
 NvMediaH264Encoder::~NvMediaH264Encoder()
 {
   NvMediaIEPDestroy(nvMediaIep_);
+  dwImage_destroy(imgYuv420Bl_);
 }
 
 void NvMediaH264Encoder::set_encode_init_params()
@@ -90,15 +98,13 @@ void NvMediaH264Encoder::set_encode_pic_params()
   encodePicParams_.rcParams = encodeConfig_.rcParams;
 }
 
-void NvMediaH264Encoder::feed_frame(const dwImageNvMedia* inNvMediaImage)
+void NvMediaH264Encoder::feed_frame(const dwImageHandle_t* input)
 {
-  if (!inNvMediaImage) {
-    throw NvidiaGmslDriverRosFatalException("IEP H264 Feed frame : inNvMediaImage is False");
-  }
-
   set_encode_pic_params();
+  dwImage_copyConvert(imgYuv420Bl_, *input, driveworksApiWrapper_->context_handle_);
+  CHK_DW(dwImage_getNvMedia(&image_nvmedia_, imgYuv420Bl_));
   CHK_NVM(
-      NvMediaIEPFeedFrame(nvMediaIep_, inNvMediaImage->img, nullptr, &encodePicParams_, NVMEDIA_ENCODER_INSTANCE_0));
+      NvMediaIEPFeedFrame(nvMediaIep_, image_nvmedia_->img, nullptr, &encodePicParams_, NVMEDIA_ENCODER_INSTANCE_0));
 }
 
 bool NvMediaH264Encoder::bits_available()

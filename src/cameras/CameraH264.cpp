@@ -11,36 +11,18 @@ CameraH264::CameraH264(DriveworksApiWrapper* driveworksApiWrapper, const YAML::N
   ROS_INFO_STREAM("H264 Bitrate: " << bitrate_);
 
   // ROS
-  pub_compressed_ =
-      nh_.advertise<h264_image_transport_msgs::H264Packet>(config_["topic"].as<std::string>() + "/image/h264", 1);
+  pub_compressed_ = nh_.advertise<h264_image_transport_msgs::H264Packet>(
+      config_["topic"].as<std::string>() + "/image/" + ENCODER_TYPE, 1);
 
   // NvMedia Encoder
-  NVM_SURF_FMT_SET_ATTR_YUV(attrs_, YUV, 420, SEMI_PLANAR, UINT, 8, BL)
-  surfaceType_ = NvMediaSurfaceFormatGetType(attrs_, 7);
-  imageConverter_ =
-      std::make_unique<ImageConverter>(driveworksApiWrapper_, 1920, 1208, DW_IMAGE_NVMEDIA,
-                                       DW_IMAGE_FORMAT_YUV420_UINT8_SEMIPLANAR, DW_IMAGE_MEMORY_TYPE_BLOCK);
-  nvmedia_encoder_ = std::make_unique<NvMediaH264Encoder>(&surfaceType_, width_, height_, framerate_, bitrate_);
+  nvmedia_encoder_ = std::make_unique<NvMediaH264Encoder>(driveworksApiWrapper_, width_, height_, framerate_, bitrate_);
 }
 
-void CameraH264::run_pipeline()
-{
-  poll();
-  preprocess();
-  encode();
-  publish();
-}
+CameraH264::~CameraH264() {}
 
 void CameraH264::encode()
 {
-  std::unique_ptr<dwImageHandle_t> converted = imageConverter_->convert(imageHandlePreprocessed_.get());
-  CHK_DW(dwSensorCamera_returnFrame(&cameraFrameHandle_));
-
-  dwImageNvMedia* image_nvmedia_;
-  CHK_DW(dwImage_getNvMedia(&image_nvmedia_, *converted));
-  nvmedia_encoder_->feed_frame(image_nvmedia_);
-
-  dwImage_destroy(*converted);
+  nvmedia_encoder_->feed_frame(&imgTransformed_);
 
   if (!nvmedia_encoder_->bits_available()) {
     return;

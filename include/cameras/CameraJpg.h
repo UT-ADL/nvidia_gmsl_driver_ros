@@ -13,6 +13,8 @@
 #include "DriveworksApiWrapper.h"
 #include "encoders/NvMediaJpgEncoder.h"
 
+#include "tools/ImageConverter.h"
+
 class CameraJpg : public CameraBase
 {
 public:
@@ -27,11 +29,6 @@ public:
    */
   CameraJpg(DriveworksApiWrapper* driveworksApiWrapper, const YAML::Node& config, std::string interface,
             std::string link, ros::NodeHandle* nodehandle);
-
-  /**
-   * @brief Calls poll, encode, publish
-   */
-  void run_pipeline() override;
 
   /**
    * @brief Pushes polled data to the encoder and pulls jpg bytes.
@@ -55,6 +52,6 @@ private:
 
   dwImageNvMedia* image_nvmedia_;
 
-  NvMediaSurfFormatAttr attrs_[7];
-  NvMediaSurfaceType surfaceType_;
+  std::unique_ptr<ImageConverter> imageConverter_;
+  std::unique_ptr<ImageConverter> imageConverterYuv420_;
 };

@@ -26,12 +26,7 @@ public:
    */
   CameraH264(DriveworksApiWrapper* driveworksApiWrapper, const YAML::Node& config, std::string interface,
              std::string link, ros::NodeHandle* nodehandle);
-
-  /**
-   * @brief Calls poll, encode. Doesn't call publish as it is part of the encoder's callback.
-   */
-  void run_pipeline() override;
-
+  
   /**
    * @brief Pushes polled data to the encoder. The encoder will then call it's own callback.
    * @attention Prerequisite : preprocess()
@@ -44,6 +39,7 @@ public:
    * @attention Prerequisite : encode()
    */
   void publish() override;
+  ~CameraH264() override;
 
   inline static const std::string ENCODER_TYPE = "h264";
 
@@ -52,9 +48,6 @@ private:
 
   // params
   int bitrate_;
-
-  NvMediaSurfFormatAttr attrs_[7];
-  NvMediaSurfaceType surfaceType_;
 
   ros::Publisher pub_compressed_;
   std_msgs::Header header_;

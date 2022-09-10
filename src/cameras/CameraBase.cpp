@@ -7,9 +7,12 @@ CameraBase::CameraBase(DriveworksApiWrapper* driveworksApiWrapper, const YAML::N
                        const std::string interface, const std::string link, ros::NodeHandle* nodehandle)
   : driveworksApiWrapper_(driveworksApiWrapper), config_(config), interface_(interface), link_(link), nh_(*nodehandle)
 {
-  nh_.param<int>("framerate", framerate_, DEFAULT_FRAMERATE);
-  nh_.param<int>("output_width", width_, DEFAULT_WIDTH);
-  nh_.param<int>("output_height", height_, DEFAULT_HEIGHT);
+  nh_.param<int>("framerate", framerate_, camera_common::DEFAULT_FRAMERATE);
+  nh_.param<int>("output_width", width_, camera_common::DEFAULT_WIDTH);
+  nh_.param<int>("output_height", height_, camera_common::DEFAULT_HEIGHT);
+
+  width_ = 800;
+  height_ = 600;
 
   // Read params from yaml.
   for (YAML::const_iterator param_it = config_["parameters"].begin(); param_it != config_["parameters"].end();
@@ -38,14 +41,19 @@ CameraBase::CameraBase(DriveworksApiWrapper* driveworksApiWrapper, const YAML::N
     camera_info_ = camera_info_manager_->getCameraInfo();
   }
 
-  // Setup image and camera properties.
+  // Setup images and camera properties.
   CHK_DW(dwSensorCamera_getSensorProperties(&cameraProperties_, sensorHandle_));
-  CHK_DW(dwSensorCamera_getImageProperties(&imageProperties_, DW_CAMERA_OUTPUT_NATIVE_PROCESSED, sensorHandle_));
+  CHK_DW(dwSensorCamera_getImageProperties(&cameraImgProps_, DW_CAMERA_OUTPUT_NATIVE_PROCESSED, sensorHandle_));
 
   // Image transformer not needed if output image dimensions the same as camera.
-  if (width_ != DEFAULT_WIDTH || height_ != DEFAULT_HEIGHT) {
-    imageTransformer_ = std::make_unique<ImageTransformer>(driveworksApiWrapper_, width_, height_, imageProperties_);
+  if (true || width_ != cameraImgProps_.width || height_ != cameraImgProps_.width) {
+    imageTransformer_ = std::make_unique<ImageTransformer>(driveworksApiWrapper_, width_, height_);
+    CHK_DW(dwImage_create(&imgTransformed_, camera_common::get_rgba_pitch_img_prop(width_, height_),
+                          driveworksApiWrapper_->context_handle_));
   }
+
+  // Create camera image
+  CHK_DW(dwImage_create(&imgOutOfCamera_, cameraImgProps_, driveworksApiWrapper_->context_handle_));
 
   ROS_DEBUG_STREAM("CameraH264 on interface : " << interface_ << ", link : " << link_ << " initialized successfully!");
 }
@@ -53,6 +61,8 @@ CameraBase::CameraBase(DriveworksApiWrapper* driveworksApiWrapper, const YAML::N
 CameraBase::~CameraBase()
 {
   dwSAL_releaseSensor(sensorHandle_);
+  dwImage_destroy(imgOutOfCamera_);
+  dwImage_destroy(imgTransformed_);
 }
 
 void CameraBase::start()
@@ -79,18 +89,24 @@ bool CameraBase::poll()
   }
 }
 
+void CameraBase::run_pipeline()
+{
+  poll();
+  preprocess();
+  encode();
+  CHK_DW(dwSensorCamera_returnFrame(&cameraFrameHandle_));
+  publish();
+}
+
 void CameraBase::preprocess()
 {
-  imageHandleOutOfCamera_ = std::make_unique<dwImageHandle_t>();
+  CHK_DW(dwSensorCamera_getImage(&imgOutOfCamera_, DW_CAMERA_OUTPUT_NATIVE_PROCESSED, cameraFrameHandle_));
+  CHK_DW(dwImage_getTimestamp(&timestamp_, imgOutOfCamera_));
 
-  CHK_DW(dwSensorCamera_getImage(imageHandleOutOfCamera_.get(), DW_CAMERA_OUTPUT_NATIVE_PROCESSED, cameraFrameHandle_));
-  CHK_DW(dwImage_getTimestamp(&timestamp_, *imageHandleOutOfCamera_));
-
-  if (width_ != DEFAULT_WIDTH || height_ != DEFAULT_HEIGHT) {
-    imageHandlePreprocessed_ = imageTransformer_->transform_image(std::move(imageHandleOutOfCamera_));
+  // todo clean condition
+  if (true || width_ != cameraImgProps_.width || height_ != cameraImgProps_.height) {
+    // requires transformation
+    imageTransformer_->transform_image(&imgOutOfCamera_, &imgTransformed_);
     return;
   }
-
-  // no preprocessing needed
-  imageHandlePreprocessed_ = std::move(imageHandleOutOfCamera_);
 }

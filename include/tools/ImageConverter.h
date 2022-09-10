@@ -16,11 +16,9 @@ public:
                  dwImageMemoryType outputImageMemoryLayout);
 
   /**
-   * Converts an image according to the initialization parameters.
-   * @param input Ptr to the input dwImageHandle_t.
-   * @return std::unique_ptr<dwImageHandle_t>.
+   * todo
    */
-  [[nodiscard]] std::unique_ptr<dwImageHandle_t> convert(dwImageHandle_t* input);
+  dwImageHandle_t* convert(dwImageHandle_t* input, dwImageHandle_t* output);
 
 private:
   DriveworksApiWrapper* driveworksApiWrapper_;
