@@ -11,9 +11,6 @@ CameraBase::CameraBase(DriveworksApiWrapper* driveworksApiWrapper, const YAML::N
   nh_.param<int>("output_width", width_, camera_common::DEFAULT_WIDTH);
   nh_.param<int>("output_height", height_, camera_common::DEFAULT_HEIGHT);
 
-  width_ = 800;
-  height_ = 600;
-
   // Read params from yaml.
   for (YAML::const_iterator param_it = config_["parameters"].begin(); param_it != config_["parameters"].end();
        ++param_it) {
@@ -46,13 +43,15 @@ CameraBase::CameraBase(DriveworksApiWrapper* driveworksApiWrapper, const YAML::N
   CHK_DW(dwSensorCamera_getImageProperties(&cameraImgProps_, DW_CAMERA_OUTPUT_NATIVE_PROCESSED, sensorHandle_));
 
   // Image transformer not needed if output image dimensions the same as camera.
-  if (true || width_ != cameraImgProps_.width || height_ != cameraImgProps_.width) {
-    imageTransformer_ = std::make_unique<ImageTransformer>(driveworksApiWrapper_, width_, height_);
+  transformation_needed_ = width_ != cameraImgProps_.width || height_ != cameraImgProps_.height;
+  if (transformation_needed_) {
+    ROS_INFO_STREAM_ONCE("Transformation requested " << cameraImgProps_.width << "x" << cameraImgProps_.height << " -> "
+                                                     << width_ << "x" << height_ << ".\n");
+    imageTransformer_ = std::make_unique<ImageTransformer>(driveworksApiWrapper_);
     CHK_DW(dwImage_create(&imgTransformed_, camera_common::get_rgba_pitch_img_prop(width_, height_),
                           driveworksApiWrapper_->context_handle_));
   }
 
-  // Create camera image
   CHK_DW(dwImage_create(&imgOutOfCamera_, cameraImgProps_, driveworksApiWrapper_->context_handle_));
 
   ROS_DEBUG_STREAM("CameraH264 on interface : " << interface_ << ", link : " << link_ << " initialized successfully!");
@@ -103,9 +102,7 @@ void CameraBase::preprocess()
   CHK_DW(dwSensorCamera_getImage(&imgOutOfCamera_, DW_CAMERA_OUTPUT_NATIVE_PROCESSED, cameraFrameHandle_));
   CHK_DW(dwImage_getTimestamp(&timestamp_, imgOutOfCamera_));
 
-  // todo clean condition
-  if (true || width_ != cameraImgProps_.width || height_ != cameraImgProps_.height) {
-    // requires transformation
+  if (transformation_needed_) {
     imageTransformer_->transform_image(&imgOutOfCamera_, &imgTransformed_);
     return;
   }

@@ -3,7 +3,7 @@
 
 #include "tools/ImageTransformer.h"
 
-ImageTransformer::ImageTransformer(DriveworksApiWrapper* driveworksApiWrapper, int outputWidth, int outputHeight)
+ImageTransformer::ImageTransformer(DriveworksApiWrapper* driveworksApiWrapper)
   : driveworksApiWrapper_(driveworksApiWrapper)
 {
   CHK_DW(dwImage_create(&imgRgb8_, camera_common::get_rgba_pitch_img_prop(), driveworksApiWrapper_->context_handle_));

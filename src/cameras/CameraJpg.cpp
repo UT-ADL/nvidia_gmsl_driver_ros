@@ -7,17 +7,15 @@ CameraJpg::CameraJpg(DriveworksApiWrapper* driveworksApiWrapper, const YAML::Nod
                      std::string link, ros::NodeHandle* nodehandle)
   : CameraBase(driveworksApiWrapper, config, interface, link, nodehandle)
 {
-  // ROS
   pub_compressed_ =
       nh_.advertise<sensor_msgs::CompressedImage>(config_["topic"].as<std::string>() + "/image/compressed", 1);
 
-  // Encoder
   encoder_ = std::make_unique<NvMediaJpgEncoder>(driveworksApiWrapper_, width_, height_);
 }
 
 void CameraJpg::encode()
 {
-  encoder_->feed_frame(&imgTransformed_);
+  encoder_->feed_frame(transformation_needed_ ? &imgTransformed_ : &imgOutOfCamera_);
   encoder_->wait_for_bits();
   encoder_->pull_bits();
 }

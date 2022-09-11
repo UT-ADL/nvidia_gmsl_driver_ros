@@ -53,6 +53,6 @@ private:
   std_msgs::Header header_;
   h264_image_transport_msgs::H264Packet packet_;
 
-  std::unique_ptr<NvMediaH264Encoder> nvmedia_encoder_;
+  std::unique_ptr<NvMediaH264Encoder> encoder_;
   std::unique_ptr<ImageConverter> imageConverter_;
 };

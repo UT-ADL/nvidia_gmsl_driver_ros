@@ -29,6 +29,7 @@ NvMediaH264Encoder::NvMediaH264Encoder(DriveworksApiWrapper* driveworksApiWrappe
 
   set_encode_config();
   set_encode_config_rcparam();
+  set_encode_pic_params();
 
   CHK_NVM(NvMediaIEPSetConfiguration(nvMediaIep_, &encodeConfig_));
 
@@ -100,7 +101,6 @@ void NvMediaH264Encoder::set_encode_pic_params()
 
 void NvMediaH264Encoder::feed_frame(const dwImageHandle_t* input)
 {
-  set_encode_pic_params();
   dwImage_copyConvert(imgYuv420Bl_, *input, driveworksApiWrapper_->context_handle_);
   CHK_DW(dwImage_getNvMedia(&image_nvmedia_, imgYuv420Bl_));
   CHK_NVM(

@@ -78,6 +78,7 @@ public:
   virtual void publish() = 0;
 
 protected:
+  bool transformation_needed_ = false;
   int framerate_;
   int width_;
   int height_;

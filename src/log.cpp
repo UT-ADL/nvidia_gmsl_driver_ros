@@ -10,7 +10,7 @@ dwLogCallback ros_log_wrapper()
       // Removing redundant date messages.
       return;
     }
-
+    
     std::string to_print(msg);
     to_print.erase(std::remove(to_print.begin(), to_print.end(), '\n'), to_print.cend());
 
@@ -21,9 +21,17 @@ dwLogCallback ros_log_wrapper()
         ROS_INFO_STREAM(to_print);
         break;
       case DW_LOG_WARN:
+        if (to_print.find("CameraClient: Camera client cannot read processed frame") != std::string::npos) {
+          ROS_WARN_STREAM_THROTTLE(5, to_print);
+          break;
+        }
         ROS_WARN_STREAM(to_print);
         break;
       case DW_LOG_ERROR:
+        if (to_print.find("CameraClient: Readframe timeout") != std::string::npos) {
+          ROS_ERROR_STREAM_THROTTLE(5, to_print);
+          break;
+        }
         ROS_ERROR_STREAM(to_print);
         break;
       default:

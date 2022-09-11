@@ -15,7 +15,7 @@
 class ImageTransformer
 {
 public:
-  ImageTransformer(DriveworksApiWrapper* driveworksApiWrapper, int outputWidth, int outputHeight);
+  ImageTransformer(DriveworksApiWrapper* driveworksApiWrapper);
 
   /**
    * todo
@@ -26,9 +26,6 @@ public:
 
 private:
   DriveworksApiWrapper* driveworksApiWrapper_;
-  dwImageProperties rgb8ImageProperties_{ DW_IMAGE_NVMEDIA, camera_common::DEFAULT_WIDTH, camera_common::DEFAULT_HEIGHT,
-                                          DW_IMAGE_FORMAT_RGBA_UINT8, DW_IMAGE_MEMORY_TYPE_PITCH };
-
   dwImageTransformationHandle_t ImageTransformationEngine_ = DW_NULL_HANDLE;
   std::unique_ptr<ImageConverter> imageConverterRgba_;
 
