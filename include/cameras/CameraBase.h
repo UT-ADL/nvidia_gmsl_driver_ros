@@ -66,13 +66,13 @@ public:
   void preprocess();
 
   /**
-   * @brief Has to be overridden. Pushes and pulls polled data to the encoder.
+   * @brief Has to be overridden. Pushes the polled data (preprocessed or not) to the encoder, then fetches the data.
    * @attention Prerequisite : preprocess()
    */
   virtual void encode() = 0;
 
   /**
-   * @brief todo
+   * @brief Has to be overridden. Publishes to ROS the data pulled in the encode() function.
    * @attention Prerequisite : encode()
    */
   virtual void publish() = 0;
@@ -92,8 +92,8 @@ protected:
   dwTime_t timestamp_;
   dwImageProperties cameraImgProps_;
   dwCameraProperties cameraProperties_;
-  dwImageHandle_t imgOutOfCamera_;
-  dwImageHandle_t imgTransformed_;
+  dwImageHandle_t imgOutOfCamera_ = DW_NULL_HANDLE;
+  dwImageHandle_t imgTransformed_ = DW_NULL_HANDLE;
 
   ros::NodeHandle nh_;
   ros::Publisher pub_info_;

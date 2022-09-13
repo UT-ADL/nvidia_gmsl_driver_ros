@@ -19,8 +19,3 @@ dwImageHandle_t* ImageConverter::convert(dwImageHandle_t* input, dwImageHandle_t
 {
   CHK_DW(dwImage_copyConvert(*output, *input, driveworksApiWrapper_->context_handle_));
 }
-
-// const dwImageProperties& ImageConverter::getOuputImageProperties() const
-//{
-//   return imageProperties_;
-// }

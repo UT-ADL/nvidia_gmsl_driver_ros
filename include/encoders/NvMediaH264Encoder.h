@@ -11,11 +11,11 @@
 #include "cameras/CameraCommon.h"
 #include "DriveworksApiWrapper.h"
 
-constexpr int BUFFER_SIZE = 1048576;  // 1 MiB
-
 class NvMediaH264Encoder
 {
 public:
+  static constexpr int BUFFER_SIZE = 1048576;  // 1 MiB
+
   NvMediaH264Encoder(DriveworksApiWrapper* driveworksApiWrapper, int width, int height, int framerate, int bitrate);
   virtual ~NvMediaH264Encoder();
 

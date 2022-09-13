@@ -109,8 +109,8 @@ void NvMediaH264Encoder::feed_frame(const dwImageHandle_t* input)
 
 bool NvMediaH264Encoder::bits_available()
 {
-  nvMediaStatus_ =
-      NvMediaIEPBitsAvailable(nvMediaIep_, &numBytesAvailable_, NVMEDIA_ENCODE_BLOCKING_TYPE_IF_PENDING, 0);
+  nvMediaStatus_ = NvMediaIEPBitsAvailable(nvMediaIep_, &numBytesAvailable_, NVMEDIA_ENCODE_BLOCKING_TYPE_IF_PENDING,
+                                           std::ceil(1000.0 / framerate_));
 
   if (nvMediaStatus_ == NVMEDIA_STATUS_OK && numBytesAvailable_ > 0) {
     return true;
@@ -138,7 +138,7 @@ void NvMediaH264Encoder::pull_bits()
   }
 }
 
-std::array<uint8_t, BUFFER_SIZE>* NvMediaH264Encoder::get_buffer()
+std::array<uint8_t, NvMediaH264Encoder::BUFFER_SIZE>* NvMediaH264Encoder::get_buffer()
 {
   return &buffer_;
 }

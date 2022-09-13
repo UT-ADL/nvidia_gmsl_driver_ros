@@ -4,7 +4,7 @@
     <arg name="framerate" default="30" doc="Camera publishing rate."/>
     <arg name="verbose" default="false" doc="Verbose mode."/>
     <arg name="encoder" default="jpg" doc="{jpg, h264}"/>
-    <arg name="h264_bitrate" default="8000000" doc="h264 output bitrate."/>
+    <arg name="bitrate" default="8000000" doc="Output bitrate."/>
     <arg name="output_width" default="1920" doc="Desired output width."/>
     <arg name="output_height" default="1208" doc="Desired output height."/>
 
