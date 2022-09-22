@@ -19,20 +19,22 @@
 #include "exceptions/NvidiaGmslDriverRosMinorException.h"
 #include "exceptions/NvidiaGmslDriverRosFatalException.h"
 
-inline std::map<int, std::string> NVMEDIA_ERROR_TO_STRING = { { 0, "NVMEDIA_STATUS_OK" },
-                                                              { 1, "NVMEDIA_STATUS_BAD_PARAMETER" },
-                                                              { 2, "NVMEDIA_STATUS_PENDING" },
-                                                              { 3, "NVMEDIA_STATUS_TIMED_OUT" },
-                                                              { 4, "NVMEDIA_STATUS_OUT_OF_MEMORY" },
-                                                              { 5, "NVMEDIA_STATUS_NOT_INITIALIZED" },
-                                                              { 6, "NVMEDIA_STATUS_NOT_SUPPORTED" },
-                                                              { 7, "NVMEDIA_STATUS_ERROR" },
-                                                              { 8, "NVMEDIA_STATUS_NONE_PENDING" },
-                                                              { 9, "NVMEDIA_STATUS_INSUFFICIENT_BUFFERING" },
-                                                              { 10, "NVMEDIA_STATUS_INVALID_SIZE" },
-                                                              { 11, "NVMEDIA_STATUS_INCOMPATIBLE_VERSION" },
-                                                              { 13, "NVMEDIA_STATUS_UNDEFINED_STATE" },
-                                                              { 14, "NVMEDIA_STATUS_PFSD_ERROR" } };
+inline const std::unordered_map<int, std::string> NVMEDIA_ERROR_TO_STRING = {
+  { 0, "NVMEDIA_STATUS_OK" },
+  { 1, "NVMEDIA_STATUS_BAD_PARAMETER" },
+  { 2, "NVMEDIA_STATUS_PENDING" },
+  { 3, "NVMEDIA_STATUS_TIMED_OUT" },
+  { 4, "NVMEDIA_STATUS_OUT_OF_MEMORY" },
+  { 5, "NVMEDIA_STATUS_NOT_INITIALIZED" },
+  { 6, "NVMEDIA_STATUS_NOT_SUPPORTED" },
+  { 7, "NVMEDIA_STATUS_ERROR" },
+  { 8, "NVMEDIA_STATUS_NONE_PENDING" },
+  { 9, "NVMEDIA_STATUS_INSUFFICIENT_BUFFERING" },
+  { 10, "NVMEDIA_STATUS_INVALID_SIZE" },
+  { 11, "NVMEDIA_STATUS_INCOMPATIBLE_VERSION" },
+  { 13, "NVMEDIA_STATUS_UNDEFINED_STATE" },
+  { 14, "NVMEDIA_STATUS_PFSD_ERROR" }
+};
 
 inline void getDateString(char* buf, size_t length)
 {
@@ -47,9 +49,6 @@ inline void getDateString(char* buf, size_t length)
     if (result != DW_SUCCESS) {                                                                                        \
       char buf[80];                                                                                                    \
       getDateString(buf, 80);                                                                                          \
-      std::cout << std::string(buf) + std::string("DW Error ") + dwGetStatusName(result) +                             \
-                       std::string(" executing DW function:\n " #x) + std::string("\n at " __FILE__ ":") +             \
-                       std::to_string(__LINE__);                                                                       \
       throw NvidiaGmslDriverRosFatalException(std::string(buf) + std::string("DW Error ") + dwGetStatusName(result) +  \
                                               std::string(" executing DW function:\n " #x) +                           \
                                               std::string("\n at " __FILE__ ":") + std::to_string(__LINE__));          \
@@ -75,6 +74,6 @@ inline void getDateString(char* buf, size_t length)
       char buf[80];                                                                                                    \
       getDateString(buf, 80);                                                                                          \
       throw NvidiaGmslDriverRosFatalException(std::string(buf) + std::string(" NVMEDIA Error id: ") +                  \
-                                              std::to_string(x) + " : " + NVMEDIA_ERROR_TO_STRING[x] + ".");           \
+                                              std::to_string(x) + " : " + NVMEDIA_ERROR_TO_STRING.at(x) + ".");        \
     }                                                                                                                  \
   } while (0)

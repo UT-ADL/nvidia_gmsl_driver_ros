@@ -20,9 +20,8 @@ include(cmake/MainConfiguration.cmake)
 find_package(OpenCV REQUIRED)
 find_package(YAMLCPP REQUIRED)
 
-find_package(
-  catkin REQUIRED COMPONENTS roscpp geometry_msgs image_transport
-                             camera_info_manager h264_image_transport_msgs)
+find_package(catkin REQUIRED COMPONENTS roscpp geometry_msgs image_transport
+                                        camera_info_manager)
 
 include_directories(
   ${catkin_INCLUDE_DIRS}
@@ -49,7 +48,6 @@ add_executable(
   src/log.cpp
   src/encoders/NvMediaJpgEncoder.cpp
   src/encoders/NvMediaH264Encoder.cpp
-  src/tools/ImageConverter.cpp
   src/tools/ImageTransformer.cpp)
 
 target_link_libraries(${NODE_NAME} ${catkin_LIBRARIES} nvmedia driveworks

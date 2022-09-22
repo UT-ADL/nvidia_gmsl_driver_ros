@@ -6,10 +6,8 @@
 NvMediaJpgEncoder::NvMediaJpgEncoder(DriveworksApiWrapper* driveworksApiWrapper, int width, int height)
   : driveworksApiWrapper_(driveworksApiWrapper), width_(width), height_(height)
 {
-  jpegImage_ = std::make_unique<uint8_t[]>(MAX_JPG_BYTES);
-
   nvmediaDevice_ = NvMediaDeviceCreate();
-  nvMediaIjpe_ = NvMediaIJPECreate(nvmediaDevice_, surfaceType_, (uint8_t)1, MAX_JPG_BYTES);
+  nvMediaIjpe_ = NvMediaIJPECreate(nvmediaDevice_, surfaceType_, (uint8_t)1, BUFFER_SIZE);
 
   if (!nvmediaDevice_ || !nvMediaIjpe_) {
     throw NvidiaGmslDriverRosFatalException("Unable to create NvMedia device or Encoder!");
@@ -34,7 +32,8 @@ void NvMediaJpgEncoder::feed_frame(const dwImageHandle_t* input)
 
 bool NvMediaJpgEncoder::wait_for_bits()
 {
-  nvMediaStatus_ = NvMediaIJPEBitsAvailable(nvMediaIjpe_, &countByteJpeg_, NVMEDIA_ENCODE_BLOCKING_TYPE_IF_PENDING, 0);
+  nvMediaStatus_ =
+      NvMediaIJPEBitsAvailable(nvMediaIjpe_, &numBytesAvailable_, NVMEDIA_ENCODE_BLOCKING_TYPE_IF_PENDING, 0);
 
   if (nvMediaStatus_ == NVMEDIA_STATUS_OK) {
     return true;
@@ -49,15 +48,15 @@ bool NvMediaJpgEncoder::wait_for_bits()
 
 void NvMediaJpgEncoder::pull_bits()
 {
-  CHK_NVM(NvMediaIJPEGetBits(nvMediaIjpe_, &countByteJpeg_, jpegImage_.get(), 0));
+  CHK_NVM(NvMediaIJPEGetBits(nvMediaIjpe_, &numBytesAvailable_, buffer_.data(), 0));
 }
 
-uint8_t* NvMediaJpgEncoder::get_image()
+uint8_t* NvMediaJpgEncoder::get_buffer()
 {
-  return jpegImage_.get();
+  return buffer_.data();
 }
 
-uint32_t NvMediaJpgEncoder::get_count_bytes() const
+uint32_t NvMediaJpgEncoder::get_num_bytes_available() const
 {
-  return countByteJpeg_;
+  return numBytesAvailable_;
 }

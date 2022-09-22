@@ -21,7 +21,5 @@ ImageTransformer::~ImageTransformer()
 void ImageTransformer::transform_image(dwImageHandle_t* input, dwImageHandle_t* output)
 {
   CHK_DW(dwImage_copyConvert(imgRgb8_, *input, driveworksApiWrapper_->context_handle_));
-  ROS_INFO_STREAM_ONCE("Transformer convert OK");
   CHK_DW(dwImageTransformation_copyFullImage(*output, imgRgb8_, ImageTransformationEngine_));
-  ROS_INFO_STREAM_ONCE("Transformer transform OK");
 }

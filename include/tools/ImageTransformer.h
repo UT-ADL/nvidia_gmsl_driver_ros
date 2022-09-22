@@ -9,16 +9,20 @@
 
 #include "DriveworksApiWrapper.h"
 #include "framework/Checks.hpp"
-#include "tools/ImageConverter.h"
 #include "cameras/CameraCommon.h"
 
+/**
+ * Wrapper class around the Nvidia DriveWorks Image Transformation Interface.
+ * The Image Transformation Interface API is used to transform (resize) images.
+ * https://docs.nvidia.com/drive/driveworks-3.5/group__imagetransformation__group.html
+ */
 class ImageTransformer
 {
 public:
   ImageTransformer(DriveworksApiWrapper* driveworksApiWrapper);
 
   /**
-   * todo
+   * @brief Transforms (resizes) the input image. The transformed image is copied to output.
    */
   void transform_image(dwImageHandle_t* input, dwImageHandle_t* output);
 
@@ -27,7 +31,6 @@ public:
 private:
   DriveworksApiWrapper* driveworksApiWrapper_;
   dwImageTransformationHandle_t ImageTransformationEngine_ = DW_NULL_HANDLE;
-  std::unique_ptr<ImageConverter> imageConverterRgba_;
 
   dwImageHandle_t imgRgb8_ = DW_NULL_HANDLE;
 };

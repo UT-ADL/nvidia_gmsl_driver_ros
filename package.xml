@@ -5,12 +5,12 @@
     <description>GMSL Driver for Nvidia Platform</description>
 
     <maintainer email="adl@ut.ee">University of Tartu Autonomous Driving Lab</maintainer>
+    <author email="maxandre.ogeret@mogrobotics.com">Maxandre Ogeret</author>
     <license>MIT</license>
 
     <buildtool_depend>catkin</buildtool_depend>
 
     <build_depend>camera_info_manager</build_depend>
-    <build_depend>h264_image_transport_msgs</build_depend>
     <build_depend>image_transport</build_depend>
     <build_depend>roscpp</build_depend>
     <build_depend>sensor_msgs</build_depend>

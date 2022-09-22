@@ -17,7 +17,6 @@
 #include "DriveworksApiWrapper.h"
 #include "framework/Checks.hpp"
 #include "tools/ImageTransformer.h"
-#include "tools/ImageConverter.h"
 #include "cameras/CameraCommon.h"
 
 /**
@@ -57,7 +56,7 @@ public:
   /**
    * @brief Polls the camera until the buffer is empty. ensuring the frame is the most recent one.
    */
-  bool poll();
+  void poll();
 
   /**
    * @brief Run any required preprocessing on the polled image. E.g. Image Transformer.

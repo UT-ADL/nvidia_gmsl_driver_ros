@@ -3,8 +3,6 @@
 
 #pragma once
 
-#include "cameras/CameraBase.h"
-
 #include <memory>
 #include <sensor_msgs/CompressedImage.h>
 #include <std_msgs/Header.h>
@@ -12,8 +10,7 @@
 
 #include "DriveworksApiWrapper.h"
 #include "encoders/NvMediaJpgEncoder.h"
-
-#include "tools/ImageConverter.h"
+#include "cameras/CameraBase.h"
 
 class CameraJpg : public CameraBase
 {
@@ -49,9 +46,4 @@ private:
   ros::Publisher pub_compressed_;
   std_msgs::Header header_;
   sensor_msgs::CompressedImage img_msg_compressed_;
-
-  dwImageNvMedia* image_nvmedia_;
-
-  std::unique_ptr<ImageConverter> imageConverter_;
-  std::unique_ptr<ImageConverter> imageConverterYuv420_;
 };

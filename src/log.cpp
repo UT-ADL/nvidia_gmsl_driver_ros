@@ -1,7 +1,7 @@
 // Created by Maxandre Ogeret.
 // (c) 2022 University of Tartu - Autonomous Driving Lab.
 
-#include "log.hpp"
+#include "framework/log.hpp"
 
 dwLogCallback ros_log_wrapper()
 {
@@ -10,7 +10,7 @@ dwLogCallback ros_log_wrapper()
       // Removing redundant date messages.
       return;
     }
-    
+
     std::string to_print(msg);
     to_print.erase(std::remove(to_print.begin(), to_print.end(), '\n'), to_print.cend());
 

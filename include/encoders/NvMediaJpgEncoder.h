@@ -12,7 +12,7 @@
 #include "cameras/CameraCommon.h"
 #include "DriveworksApiWrapper.h"
 
-static constexpr uint32_t MAX_JPG_BYTES = 3 * 1290 * 1208;
+static constexpr int BUFFER_SIZE = 3 * 1290 * 1208;
 
 class NvMediaJpgEncoder
 {
@@ -46,12 +46,12 @@ public:
   /**
    * @brief Returns a ptr to the image bits pulled from the encoder
    */
-  uint8_t* get_image();
+  [[nodiscard]] uint8_t* get_buffer();
 
   /**
    * @brief Returns the size in bytes of the current image.
    */
-  [[nodiscard]] uint32_t get_count_bytes() const;
+  [[nodiscard]] uint32_t get_num_bytes_available() const;
 
 private:
   DriveworksApiWrapper* driveworksApiWrapper_;
@@ -64,8 +64,9 @@ private:
   dwImageHandle_t imgYuv420Pi_ = DW_NULL_HANDLE;
   dwImageNvMedia* image_nvmedia_ = nullptr;
 
-  uint32_t countByteJpeg_;
-  std::unique_ptr<uint8_t[]> jpegImage_;
+  uint32_t numBytesAvailable_;
+  std::array<uint8_t, BUFFER_SIZE> buffer_;
+
   int width_;
   int height_;
 };

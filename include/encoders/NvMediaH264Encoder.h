@@ -22,10 +22,12 @@ public:
   void feed_frame(const dwImageHandle_t* input);
   bool bits_available();
   void pull_bits();
-  std::array<uint8_t, BUFFER_SIZE>* get_buffer();
-  [[nodiscard]] uint32_t get_num_bytes() const;
+  [[nodiscard]] uint8_t* get_buffer();
+  [[nodiscard]] uint32_t get_num_bytes_available() const;
 
 private:
+  const uint32_t MILLISECOND_TIMEOUT_ = static_cast<uint32_t>(std::ceil(1000.0 / framerate_));
+
   DriveworksApiWrapper* driveworksApiWrapper_;
 
   NvMediaVersion nvMediaVersion_;

@@ -8,7 +8,7 @@
   See [here](https://docs.nvidia.com/drive/drive_os_5.1.6.1L/nvvib_docs/index.html#page/DRIVE_OS_Linux_SDK_Development_Guide/Camera/camera_xavier.html)*
   .
 - In this documentation **host** relates to the Ubuntu 18.04 computer used to build the driver. **Target** refers to the
-  nvidia drive system.
+  Nvidia Drive system.
 
 ---
 
@@ -80,7 +80,7 @@ sudo mkdir /tmp/ros-cc-overlayfs
 sudo mount -t overlay -o lowerdir=$SYSROOT/lib/aarch64-linux-gnu,upperdir=/lib/aarch64-linux-gnu,workdir=/tmp/ros-cc-overlayfs overlay /lib/aarch64-linux-gnu
 ```
 
-#### Ros Prerequisites
+#### ROS Prerequisites
 
 - Follow this [page](http://wiki.ros.org/melodic/Installation/Ubuntu) to set up your sources.list and set up your keys.
 - Follow this [page](http://wiki.ros.org/melodic/Installation/Source) to install bootstrap dependencies and initialize
@@ -92,13 +92,6 @@ sudo mount -t overlay -o lowerdir=$SYSROOT/lib/aarch64-linux-gnu,upperdir=/lib/a
   rosinstall_generator ros_comm sensor_msgs camera_info_manager cv_bridge image_transport nodelet roscpp std_msgs --rosdistro melodic --deps --tar > melodic-ros_comm.rosinstall
   vcs import src < melodic-ros_comm.rosinstall
   ```
-
-#### Clone nvidia_gmsl_driver_ros and the h264 image transport
-
-```bash
-git clone git@github.com:UT-ADL/nvidia_gmsl_driver_ros.git src/nvidia_gmsl_driver_ros
-git clone git@github.com:UT-ADL/h264_image_transport.git src/h264_image_transport
-```
 
 #### Install ROS dependencies
 
@@ -120,15 +113,14 @@ Install the displayed dependencies on the emulated sysroot with `apt install`.
 sudo apt install python-numpy libyaml-cpp-dev python-empy
 ```
 
-#### Crossbuild ros
+#### Crossbuild ROS
 
 ```bash
 src/catkin/bin/catkin_make_isolated -DCMAKE_BUILD_TYPE=Release \
   -DVIBRANTE_PDK:STRING=$PDK 
   -DTRT_VERSION:STRING=6.3.1.3 \
   -DCMAKE_TOOLCHAIN_FILE=$HOME/ros_catkin_ws/src/nvidia_gmsl_driver_ros/Toolchain-V5L.cmake -DCMAKE_EXE_LINKER_FLAGS="${CMAKE_EXE_LINKER_FLAGS} -L/usr/local/driveworks/targets/aarch64-Linux/lib -Wl,-rpath,/usr/local/driveworks/targets/aarch64-Linux/lib -L$SYSROOT/usr/local/cuda-10.2/targets/aarch64-linux/lib -Wl,-rpath,$SYSROOT/usr/local/cuda-10.2/targets/aarch64-linux/lib -L$SYSROOT/usr/lib/aarch64-linux-gnu/openblas -Wl,-rpath,$SYSROOT/usr/lib/aarch64-linux-gnu/openblas" \
-  --install \
-  --ignore-pkg h264_image_transport
+  --install
 ```
 
 Replace with the current installation path with the binary installation path so we can run any binary installed packages
@@ -171,7 +163,7 @@ this [post](https://forums.developer.nvidia.com/t/libgdal-so-has-undefined-symbo
 rm /usr/lib/libxerces-c*
 ```
 
-#### Set up ros environment
+#### Set up ROS environment
 
 ```
 source ~/install_isolated/setup.bash
@@ -189,11 +181,11 @@ In case you need to make changes to `ports.yaml` :
 
 ### Calibrating the cameras
 
-This drivers **doesn't** use the native nvidia RIG calibration file. It uses the ROS ones.  
+This driver **doesn't** use the native nvidia RIG calibration file. It uses the ROS ones.  
 To calibrate the cameras :
 
 - Run the driver with an empty calibration dir.
-- Use ros [camera_calibration](http://wiki.ros.org/camera_calibration) to calibrate the cameras.
+- Use ROS [camera_calibration](http://wiki.ros.org/camera_calibration) to calibrate the cameras.
 - Put the camera calibration yaml files in your calib dir. Pass its path to the launchfile into the `calib_dir_path`
   param .
 

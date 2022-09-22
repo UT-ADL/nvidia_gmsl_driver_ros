@@ -69,7 +69,7 @@ void CameraBase::start()
   CHK_DW(dwSensor_start(sensorHandle_));
 }
 
-bool CameraBase::poll()
+void CameraBase::poll()
 {
   dwStatus status_old = DW_NOT_READY;
 
@@ -81,7 +81,7 @@ bool CameraBase::poll()
     }
 
     if (status_ == DW_TIME_OUT && status_old == DW_SUCCESS) {
-      return true;
+      return;
     }
 
     status_old = status_;

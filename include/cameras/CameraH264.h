@@ -6,11 +6,9 @@
 #include <memory>
 
 #include <sensor_msgs/CompressedImage.h>
-#include <h264_image_transport_msgs/H264Packet.h>
 
 #include "encoders/NvMediaH264Encoder.h"
 #include "cameras/CameraBase.h"
-#include "tools/ImageConverter.h"
 
 class CameraH264 : public CameraBase
 {
@@ -26,7 +24,7 @@ public:
    */
   CameraH264(DriveworksApiWrapper* driveworksApiWrapper, const YAML::Node& config, std::string interface,
              std::string link, ros::NodeHandle* nodehandle);
-  
+
   /**
    * @brief Pushes polled data to the encoder. The encoder will then call it's own callback.
    * @attention Prerequisite : preprocess()
@@ -51,8 +49,7 @@ private:
 
   ros::Publisher pub_compressed_;
   std_msgs::Header header_;
-  h264_image_transport_msgs::H264Packet packet_;
+  sensor_msgs::CompressedImage packet_;
 
   std::unique_ptr<NvMediaH264Encoder> encoder_;
-  std::unique_ptr<ImageConverter> imageConverter_;
 };
