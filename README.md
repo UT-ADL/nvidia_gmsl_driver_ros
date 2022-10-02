@@ -200,16 +200,16 @@ roslaunch nvidia_gmsl_driver_ros nvidia_gmsl_driver_ros.launch
 
 ##### Launchfile parameters
 
-| Parameter        |                           Default |                               Comment |
-|------------------|----------------------------------:|--------------------------------------:|
-| `config_path`    | `$(dirname)/../config/ports.yaml` |              Path to the config file. |
-| `calib_dir_path` |            `$(dirname)/../calib/` |  Path to the camera calibration file. |
-| `framerate`      |                              `30` |                     Output framerate. |
-| `verbose`        |                           `False` |               Enables verbose output. | 
-| `encoder`        |                             `jpg` |            Encoder. (`jpg` or `h264`) | 
-| `h264_bitrate`   |                         `8000000` | h264 output bitrate (Minimum `30000`) | 
-| `output_width`   |                            `1920` |                         Output width. | 
-| `output_height`  |                            `1208` |                        Output height. | 
+| Parameter        |                           Default |                                                       Comment |
+|------------------|----------------------------------:|--------------------------------------------------------------:|
+| `config_path`    | `$(dirname)/../config/ports.yaml` |                                      Path to the config file. |
+| `calib_dir_path` |            `$(dirname)/../calib/` |                          Path to the camera calibration file. |
+| `framerate`      |                              `30` |                                             Output framerate. |
+| `verbose`        |                           `False` |                                       Enables verbose output. | 
+| `encoder`        |                             `jpg` |                                    Encoder. (`jpg` or `h264`) | 
+| `bitrate`        |                         `8000000` | Output bitrate (Minimum `30000`).<br>Only for `encoder=h264`. | 
+| `output_width`   |                            `1920` |                                                 Output width. | 
+| `output_height`  |                            `1208` |                                                Output height. | 
 
 ### Useful links
 
