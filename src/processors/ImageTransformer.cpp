@@ -1,7 +1,7 @@
 // Created by Maxandre Ogeret.
 // (c) 2022 University of Tartu - Autonomous Driving Lab.
 
-#include "tools/ImageTransformer.h"
+#include "processors/ImageTransformer.h"
 
 ImageTransformer::ImageTransformer(DriveworksApiWrapper* driveworksApiWrapper)
   : driveworksApiWrapper_(driveworksApiWrapper)

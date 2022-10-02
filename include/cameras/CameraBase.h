@@ -16,7 +16,7 @@
 
 #include "DriveworksApiWrapper.h"
 #include "framework/Checks.hpp"
-#include "tools/ImageTransformer.h"
+#include "processors/ImageTransformer.h"
 #include "cameras/CameraCommon.h"
 
 /**

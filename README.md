@@ -82,7 +82,8 @@ sudo mount -t overlay -o lowerdir=$SYSROOT/lib/aarch64-linux-gnu,upperdir=/lib/a
 
 #### ROS Prerequisites
 
-- Follow this [page](http://wiki.ros.org/melodic/Installation/Ubuntu) to set up your sources.list and set up your keys.
+- Follow this [page](http://wiki.ros.org/melodic/Installation/Ubuntu) to set up your `sources.list` and set up your
+  keys.
 - Follow this [page](http://wiki.ros.org/melodic/Installation/Source) to install bootstrap dependencies and initialize
   rosdep.
 - Run below commands to download source of ROS Melodic Morenia (Ubuntu 18.04 is the target root file system of DRIVE OS
@@ -92,6 +93,12 @@ sudo mount -t overlay -o lowerdir=$SYSROOT/lib/aarch64-linux-gnu,upperdir=/lib/a
   rosinstall_generator ros_comm sensor_msgs camera_info_manager cv_bridge image_transport nodelet roscpp std_msgs --rosdistro melodic --deps --tar > melodic-ros_comm.rosinstall
   vcs import src < melodic-ros_comm.rosinstall
   ```
+
+#### Clone the driver in the `src` directory
+
+```bash
+git clone https://github.com/UT-ADL/nvidia_gmsl_driver_ros.git src/nvidia_gmsl_driver_ros
+```
 
 #### Install ROS dependencies
 
@@ -113,18 +120,20 @@ Install the displayed dependencies on the emulated sysroot with `apt install`.
 sudo apt install python-numpy libyaml-cpp-dev python-empy
 ```
 
-#### Crossbuild ROS
+#### Crossbuild the ROS workspace
 
 ```bash
-src/catkin/bin/catkin_make_isolated -DCMAKE_BUILD_TYPE=Release \
-  -DVIBRANTE_PDK:STRING=$PDK 
+src/catkin/bin/catkin_make_isolated \
+  -DCMAKE_BUILD_TYPE=Release \
+  -DVIBRANTE_PDK:STRING=$PDK \
   -DTRT_VERSION:STRING=6.3.1.3 \
-  -DCMAKE_TOOLCHAIN_FILE=$HOME/ros_catkin_ws/src/nvidia_gmsl_driver_ros/Toolchain-V5L.cmake -DCMAKE_EXE_LINKER_FLAGS="${CMAKE_EXE_LINKER_FLAGS} -L/usr/local/driveworks/targets/aarch64-Linux/lib -Wl,-rpath,/usr/local/driveworks/targets/aarch64-Linux/lib -L$SYSROOT/usr/local/cuda-10.2/targets/aarch64-linux/lib -Wl,-rpath,$SYSROOT/usr/local/cuda-10.2/targets/aarch64-linux/lib -L$SYSROOT/usr/lib/aarch64-linux-gnu/openblas -Wl,-rpath,$SYSROOT/usr/lib/aarch64-linux-gnu/openblas" \
+  -DCMAKE_TOOLCHAIN_FILE="$HOME/ros_catkin_ws/src/nvidia_gmsl_driver_ros/Toolchain-V5L.cmake" \
+  -DCMAKE_EXE_LINKER_FLAGS="${CMAKE_EXE_LINKER_FLAGS} -L/usr/local/driveworks/targets/aarch64-Linux/lib -Wl,-rpath,/usr/local/driveworks/targets/aarch64-Linux/lib -L$SYSROOT/usr/local/cuda-10.2/targets/aarch64-linux/lib -Wl,-rpath,$SYSROOT/usr/local/cuda-10.2/targets/aarch64-linux/lib -L$SYSROOT/usr/lib/aarch64-linux-gnu/openblas -Wl,-rpath,$SYSROOT/usr/lib/aarch64-linux-gnu/openblas" \
   --install
 ```
 
-Replace with the current installation path with the binary installation path so we can run any binary installed packages
-on the target.
+Replace with the current installation path with the binary installation path, so we can run any binary installed
+packages on the target.
 
 ```bash
 sed -i "s#$HOME/ros_catkin_ws/install_isolated#/opt/ros/melodic#g" install_isolated/_setup_util.py
@@ -140,7 +149,7 @@ Follow http://wiki.ros.org/melodic/Installation/Ubuntu to install ROS necessary 
 sudo apt install ros-melodic-ros-base ros-melodic-image-view
 ```
 
-Install the same dependancies as we have installed on the emulated sysroot :
+Install the same dependencies as we have installed on the emulated sysroot :
 
 ```
 apt install libboost-all-dev libtinyxml-dev libtinyxml2-dev liblz4-dev libbz2-dev libapr1 libaprutil1 libconsole-bridge-dev libpoco-dev libgpgme-dev python-defusedxml python-rospkg python-catkin-pkg python-netifaces liblog4cxx-dev libopenblas-dev libgflags-dev libglew-dev libopencv-dev

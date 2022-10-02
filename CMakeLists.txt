@@ -48,7 +48,7 @@ add_executable(
   src/log.cpp
   src/encoders/NvMediaJpgEncoder.cpp
   src/encoders/NvMediaH264Encoder.cpp
-  src/tools/ImageTransformer.cpp)
+  src/processors/ImageTransformer.cpp)
 
 target_link_libraries(${NODE_NAME} ${catkin_LIBRARIES} nvmedia driveworks
                       ${CUDA_LIBRARIES} ${YAMLCPP_LIBRARY})
