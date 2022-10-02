@@ -16,7 +16,7 @@ CameraJpg::CameraJpg(DriveworksApiWrapper* driveworksApiWrapper, const YAML::Nod
 void CameraJpg::encode()
 {
   encoder_->feed_frame(transformation_needed_ ? &imgTransformed_ : &imgOutOfCamera_);
-  encoder_->wait_for_bits();
+  encoder_->bits_available();
   encoder_->pull_bits();
 }
 

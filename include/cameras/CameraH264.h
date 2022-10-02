@@ -10,6 +10,9 @@
 #include "encoders/NvMediaH264Encoder.h"
 #include "cameras/CameraBase.h"
 
+/**
+ * @brief Camera publishing H264 frames.
+ */
 class CameraH264 : public CameraBase
 {
 public:
@@ -26,6 +29,11 @@ public:
              std::string link, ros::NodeHandle* nodehandle);
 
   /**
+   * @brief Default constructor.
+   */
+  ~CameraH264() override = default;
+
+  /**
    * @brief Pushes polled data to the encoder. The encoder will then call it's own callback.
    * @attention Prerequisite : preprocess()
    * @throws NvidiaGmslDriverRosFatalException
@@ -37,7 +45,6 @@ public:
    * @attention Prerequisite : encode()
    */
   void publish() override;
-  ~CameraH264() override;
 
   inline static const std::string ENCODER_TYPE = "h264";
 

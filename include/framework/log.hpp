@@ -11,4 +11,8 @@
 
 #include "exceptions/NvidiaGmslDriverRosFatalException.h"
 
+/**
+ * @brief NvMedia logger wrapper for ROS.
+ * @throws NvidiaGmslDriverRosFatalException
+ */
 dwLogCallback ros_log_wrapper();

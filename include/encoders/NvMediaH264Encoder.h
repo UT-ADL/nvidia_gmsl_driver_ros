@@ -11,21 +11,58 @@
 #include "cameras/CameraCommon.h"
 #include "DriveworksApiWrapper.h"
 
+/**
+ * @brief Wrapper around NVIDIA Media Interface: NvMedia Image Encode Processing API for H264.
+ * @see
+ * https://docs.nvidia.com/drive/drive-os-5.2.0.0L/drive-os/DRIVE_OS_Linux_SDK_Development_Guide/baggage/nvmedia__iep_8h.html
+ */
 class NvMediaH264Encoder
 {
 public:
-  static constexpr int BUFFER_SIZE = 1048576;  // 1 MiB
-
+  /**
+   * @brief Constructor.
+   * @throws NvidiaGmslDriverRosFatalException
+   */
   NvMediaH264Encoder(DriveworksApiWrapper* driveworksApiWrapper, int width, int height, int framerate, int bitrate);
+
+  /**
+   * @brief Destructor.
+   */
   virtual ~NvMediaH264Encoder();
 
+  /**
+   * @brief Feeds a frame into the encoder.
+   */
   void feed_frame(const dwImageHandle_t* input);
+
+  /**
+   * @brief Polls the encoder and waits for encoded bits availability. Has a 1 frame timeout.
+   * @attention Prerequisite : feed_frame()
+   * @throws NvidiaGmslDriverRosFatalException
+   */
   bool bits_available();
+
+  /**
+   * @brief Pull the bits from the encoder memory to the local image.
+   * @attention Prerequisite : bits_available()
+   * @throws NvidiaGmslDriverRosFatalException
+   */
   void pull_bits();
+
+  /**
+   * @brief Returns a ptr to the image bits pulled from the encoder.
+   */
   [[nodiscard]] uint8_t* get_buffer();
+
+  /**
+   * @brief Returns the size in bytes of the data stored in the buffer.
+   */
   [[nodiscard]] uint32_t get_num_bytes_available() const;
 
 private:
+  /** 1 MiB buffer. */
+  static constexpr int BUFFER_SIZE = 1048576;  //
+  /** bits_available timeout (1 frame worth of time). */
   const uint32_t MILLISECOND_TIMEOUT_ = static_cast<uint32_t>(std::ceil(1000.0 / framerate_));
 
   DriveworksApiWrapper* driveworksApiWrapper_;
@@ -56,8 +93,23 @@ private:
   int framerate_;
   int bitrate_;
 
+  /**
+   * @brief Sets the encoder initialization parameters.
+   */
   void set_encode_init_params();
+
+  /**
+   * @brief Sets the encoder configuration.
+   */
   void set_encode_config();
+
+  /**
+   * @brief Sets the encoder rate control parameters to use constant bitrate.
+   */
   void set_encode_config_rcparam();
+
+  /**
+   * @brief Sets the encoder picture parameters.
+   */
   void set_encode_pic_params();
 };

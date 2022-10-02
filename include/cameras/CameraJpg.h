@@ -12,6 +12,9 @@
 #include "encoders/NvMediaJpgEncoder.h"
 #include "cameras/CameraBase.h"
 
+/**
+ * @brief Camera publishing jpg images.
+ */
 class CameraJpg : public CameraBase
 {
 public:
@@ -26,6 +29,11 @@ public:
    */
   CameraJpg(DriveworksApiWrapper* driveworksApiWrapper, const YAML::Node& config, std::string interface,
             std::string link, ros::NodeHandle* nodehandle);
+
+  /**
+   * @brief Default constructor.
+   */
+  ~CameraJpg() override = default;
 
   /**
    * @brief Pushes polled data to the encoder and pulls jpg bytes.

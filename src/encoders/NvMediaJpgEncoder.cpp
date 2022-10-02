@@ -30,7 +30,7 @@ void NvMediaJpgEncoder::feed_frame(const dwImageHandle_t* input)
   CHK_NVM(NvMediaIJPEFeedFrame(nvMediaIjpe_, image_nvmedia_->img, 70));
 }
 
-bool NvMediaJpgEncoder::wait_for_bits()
+bool NvMediaJpgEncoder::bits_available()
 {
   nvMediaStatus_ =
       NvMediaIJPEBitsAvailable(nvMediaIjpe_, &numBytesAvailable_, NVMEDIA_ENCODE_BLOCKING_TYPE_IF_PENDING, 0);
@@ -43,7 +43,7 @@ bool NvMediaJpgEncoder::wait_for_bits()
     throw NvidiaGmslDriverRosFatalException("Bad parameters for NvMediaIJPEBitsAvailable");
   }
 
-  return wait_for_bits();
+  return bits_available();
 }
 
 void NvMediaJpgEncoder::pull_bits()

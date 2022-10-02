@@ -12,48 +12,56 @@
 #include "cameras/CameraCommon.h"
 #include "DriveworksApiWrapper.h"
 
-static constexpr int BUFFER_SIZE = 3 * 1290 * 1208;
-
+/**
+ * @brief Wrapper around NVIDIA Media Interface: Image JPEG Encode Processing API.
+ * @see
+ * https://docs.nvidia.com/drive/drive-os-5.2.0.0L/drive-os/DRIVE_OS_Linux_SDK_Development_Guide/baggage/nvmedia__ijpe_8h.html
+ */
 class NvMediaJpgEncoder
 {
 public:
   /**
-   * @brief Constructor
+   * @brief Constructor.
+   * @throws NvidiaGmslDriverRosFatalException
    */
   NvMediaJpgEncoder(DriveworksApiWrapper* driveworksApiWrapper, int width, int height);
 
   /**
-   * @brief Destructor
+   * @brief Destructor.
    */
   virtual ~NvMediaJpgEncoder();
 
   /**
-   * @brief Feeds a frame into the encoder
+   * @brief Feeds a frame into the encoder.
    */
   void feed_frame(const dwImageHandle_t* input);
 
   /**
-   * @brief Returns true if encoded bits are available in the encoder memory, otherwise waits. Has to be called after
-   * feed_frame
+   * @brief Polls the encoder and waits for encoded bits availability. Has no timeout.
+   * @attention Prerequisite : feed_frame()
+   * @throws NvidiaGmslDriverRosFatalException
    */
-  bool wait_for_bits();
+  bool bits_available();
 
   /**
-   * @brief Pull the bits from the encoder memory to the local image. Must be called after bits_available
+   * @brief Returns a ptr to the image bits pulled from the encoder.
    */
   void pull_bits();
 
   /**
-   * @brief Returns a ptr to the image bits pulled from the encoder
+   * @brief Returns a ptr to the image bits pulled from the encoder.
    */
   [[nodiscard]] uint8_t* get_buffer();
 
   /**
-   * @brief Returns the size in bytes of the current image.
+   * @brief Returns the size in bytes of the data stored in the buffer.
    */
   [[nodiscard]] uint32_t get_num_bytes_available() const;
 
 private:
+  /** 1 image buffer. */
+  static constexpr int BUFFER_SIZE = 3 * 1290 * 1208;
+
   DriveworksApiWrapper* driveworksApiWrapper_;
 
   NvMediaDevice* nvmediaDevice_ = nullptr;

@@ -8,7 +8,6 @@
 #include <memory>
 
 /**
- * @class NvidiaGmslDriverRosMinorException
  * @brief Thrown when the nvidia_gmsl_driver_ros encounters a recoverable error
  */
 class NvidiaGmslDriverRosMinorException : public std::runtime_error

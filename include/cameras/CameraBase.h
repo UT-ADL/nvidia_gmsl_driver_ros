@@ -26,13 +26,8 @@ class CameraBase
 {
 public:
   /**
-   * @brief Constructor, initializes the camera handles and ros variables.
-   * @throws NvidiaGmslDriverRosFatalException
-   * @param driveworksApiWrapper
-   * @param config
-   * @param interface
-   * @param link
-   * @param nodehandle
+   * @brief Constructor, initializes ROS parameters, camera handles and properties, camera calibration, image
+   * transformer.
    */
   CameraBase(DriveworksApiWrapper* driveworksApiWrapper, const YAML::Node& config, std::string interface,
              std::string link, ros::NodeHandle* nodehandle);
@@ -55,6 +50,7 @@ public:
 
   /**
    * @brief Polls the camera until the buffer is empty. ensuring the frame is the most recent one.
+   * @throws NvidiaGmslDriverRosMinorException
    */
   void poll();
 

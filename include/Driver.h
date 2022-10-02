@@ -11,24 +11,28 @@
 #include "cameras/CameraH264.h"
 #include "cameras/CameraJpg.h"
 #include <DriveworksApiWrapper.h>
-#include "thread_pool.hpp"
+#include "framework/thread_pool.hpp"
 
 #include "exceptions/NvidiaGmslDriverRosFatalException.h"
 #include "exceptions/NvidiaGmslDriverRosMinorException.h"
 
 static constexpr size_t MAX_TRIALS = 100;
 
+/**
+ * @brief Main class of the driver. Creates and runs camera pipelines, handles exception.
+ */
 class Driver
 {
 public:
   /**
-   * Constructor
+   * Constructor.
    * @param nodehandle
    */
   explicit Driver(const ros::NodeHandle* nodehandle);
 
   /**
-   * @brief Initializes all parameters and config, handles exception.
+   * @brief Loads camera definition from config and parameters then calls create_camera(). Handles exceptions.
+   * @throws NvidiaGmslDriverRosFatalException
    */
   void setup_cameras();
 

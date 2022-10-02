@@ -1,5 +1,5 @@
 // Copyright (c) 2015-2016 NVIDIA Corporation. All rights reserved.
-// Edited by Maxandre Ogeret - 2021 - University of Tartu - Autonomous Driving
+// Edited by Maxandre Ogeret - 2022 - University of Tartu - Autonomous Driving
 // Lab.
 
 #pragma once
