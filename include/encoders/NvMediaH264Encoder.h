@@ -3,13 +3,13 @@
 
 #pragma once
 
-#include <nvmedia_iep.h>
 #include <dw/image/Image.h>
+#include <nvmedia_iep.h>
 
+#include "DriveworksApiWrapper.h"
+#include "cameras/CameraCommon.h"
 #include "exceptions/NvidiaGmslDriverRosFatalException.h"
 #include "framework/Checks.hpp"
-#include "cameras/CameraCommon.h"
-#include "DriveworksApiWrapper.h"
 
 /**
  * @brief Wrapper around NVIDIA Media Interface: NvMedia Image Encode Processing API for H264.

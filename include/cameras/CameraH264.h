@@ -3,12 +3,12 @@
 
 #pragma once
 
-#include <memory>
-
 #include <sensor_msgs/CompressedImage.h>
 
-#include "encoders/NvMediaH264Encoder.h"
+#include <memory>
+
 #include "cameras/CameraBase.h"
+#include "encoders/NvMediaH264Encoder.h"
 
 /**
  * @brief Camera publishing H264 frames.
@@ -18,12 +18,6 @@ class CameraH264 : public CameraBase
 public:
   /**
    * @brief Constructor, initializes encoder and h264 image publisher.
-   * @throws NvidiaGmslDriverRosFatalException
-   * @param driveworksApiWrapper
-   * @param config
-   * @param interface
-   * @param link
-   * @param nodehandle
    */
   CameraH264(DriveworksApiWrapper* driveworksApiWrapper, const YAML::Node& config, std::string interface,
              std::string link, ros::NodeHandle* nodehandle);

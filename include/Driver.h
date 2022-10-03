@@ -3,18 +3,17 @@
 
 #pragma once
 
-#include <yaml-cpp/yaml.h>
+#include <DriveworksApiWrapper.h>
 #include <dw/sensors/Sensors.h>
 #include <ros/package.h>
 #include <ros/ros.h>
+#include <yaml-cpp/yaml.h>
 
 #include "cameras/CameraH264.h"
 #include "cameras/CameraJpg.h"
-#include <DriveworksApiWrapper.h>
-#include "framework/thread_pool.hpp"
-
 #include "exceptions/NvidiaGmslDriverRosFatalException.h"
 #include "exceptions/NvidiaGmslDriverRosMinorException.h"
+#include "framework/thread_pool.hpp"
 
 static constexpr size_t MAX_TRIALS = 100;
 
@@ -53,7 +52,7 @@ public:
 
 private:
   bool all_cameras_valid_;
-  std::unique_ptr<thread_pool> pool_;
+  std::unique_ptr<BS::thread_pool> pool_;
   std::vector<std::future<bool>> future_pool_;
   size_t trials_ = 0;
   ros::NodeHandle nh_;

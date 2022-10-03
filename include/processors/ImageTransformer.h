@@ -3,13 +3,13 @@
 
 #pragma once
 
+#include <dw/image/Image.h>
 #include <dw/imageprocessing/geometry/imagetransformation/ImageTransformation.h>
 #include <dw/sensors/camera/Camera.h>
-#include <dw/image/Image.h>
 
 #include "DriveworksApiWrapper.h"
-#include "framework/Checks.hpp"
 #include "cameras/CameraCommon.h"
+#include "framework/Checks.hpp"
 
 /**
  * @brief Wrapper class around the Nvidia DriveWorks Image Transformation Interface.

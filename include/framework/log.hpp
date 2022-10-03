@@ -4,10 +4,10 @@
 #pragma once
 
 #include <dw/core/Logger.h>
-
-#include <string>
-#include <iostream>
 #include <ros/ros.h>
+
+#include <iostream>
+#include <string>
 
 #include "exceptions/NvidiaGmslDriverRosFatalException.h"
 

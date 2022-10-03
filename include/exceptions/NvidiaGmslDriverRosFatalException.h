@@ -3,9 +3,9 @@
 
 #pragma once
 
+#include <memory>
 #include <stdexcept>
 #include <string>
-#include <memory>
 
 /**
  * @brief Thrown when the nvidia_gmsl_driver_ros encounters a fatal error

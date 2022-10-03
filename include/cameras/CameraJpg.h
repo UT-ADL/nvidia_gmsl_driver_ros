@@ -3,14 +3,15 @@
 
 #pragma once
 
-#include <memory>
 #include <sensor_msgs/CompressedImage.h>
 #include <std_msgs/Header.h>
+
 #include <condition_variable>
+#include <memory>
 
 #include "DriveworksApiWrapper.h"
-#include "encoders/NvMediaJpgEncoder.h"
 #include "cameras/CameraBase.h"
+#include "encoders/NvMediaJpgEncoder.h"
 
 /**
  * @brief Camera publishing jpg images.

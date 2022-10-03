@@ -3,14 +3,14 @@
 
 #pragma once
 
+#include <dw/image/Image.h>
+#include <nvmedia_ijpe.h>
+
 #include <memory>
 
-#include <nvmedia_ijpe.h>
-#include <dw/image/Image.h>
-
-#include "framework/Checks.hpp"
-#include "cameras/CameraCommon.h"
 #include "DriveworksApiWrapper.h"
+#include "cameras/CameraCommon.h"
+#include "framework/Checks.hpp"
 
 /**
  * @brief Wrapper around NVIDIA Media Interface: Image JPEG Encode Processing API.

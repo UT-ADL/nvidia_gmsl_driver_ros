@@ -35,7 +35,7 @@ void Driver::setup_cameras()
   for (auto const& camera : camera_vector_) {
     camera->start();
   }
-  pool_ = std::make_unique<thread_pool>(camera_count_);
+  pool_ = std::make_unique<BS::thread_pool>(camera_count_);
   ROS_INFO_STREAM(camera_vector_.size() << " cameras initialized.");
 
   if (camera_vector_.empty()) {
