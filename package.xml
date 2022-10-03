@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
     <name>nvidia_gmsl_driver_ros</name>
-    <version>0.0.0</version>
+    <version>0.0.1</version>
     <description>GMSL Driver for Nvidia Platform</description>
 
     <maintainer email="adl@ut.ee">University of Tartu Autonomous Driving Lab</maintainer>
