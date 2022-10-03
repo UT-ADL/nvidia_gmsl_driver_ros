@@ -10,7 +10,9 @@
 #include <yaml-cpp/yaml.h>
 
 #include "cameras/CameraH264.h"
+#include "cameras/CameraH265.h"
 #include "cameras/CameraJpg.h"
+#include "cameras/CameraVp9.h"
 #include "exceptions/NvidiaGmslDriverRosFatalException.h"
 #include "exceptions/NvidiaGmslDriverRosMinorException.h"
 #include "framework/thread_pool.hpp"

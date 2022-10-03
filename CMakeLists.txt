@@ -39,15 +39,20 @@ set(NODE_NAME ${PROJECT_NAME}_node)
 
 add_executable(
   ${NODE_NAME}
-  src/main.cpp
   src/Driver.cpp
+  src/DriveworksApiWrapper.cpp
   src/cameras/CameraBase.cpp
   src/cameras/CameraH264.cpp
+  src/cameras/CameraH265.cpp
   src/cameras/CameraJpg.cpp
-  src/DriveworksApiWrapper.cpp
-  src/log.cpp
-  src/encoders/NvMediaJpgEncoder.cpp
+  src/cameras/CameraVp9.cpp
+  src/cameras/CameraVp9.cpp
   src/encoders/NvMediaH264Encoder.cpp
+  src/encoders/NvMediaH265Encoder.cpp
+  src/encoders/NvMediaJpgEncoder.cpp
+  src/encoders/NvMediaVp9Encoder.cpp
+  src/log.cpp
+  src/main.cpp
   src/processors/ImageTransformer.cpp)
 
 target_link_libraries(${NODE_NAME} ${catkin_LIBRARIES} nvmedia driveworks

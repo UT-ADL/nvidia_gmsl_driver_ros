@@ -48,9 +48,15 @@ void Driver::create_camera(const YAML::Node& config, const std::string& interfac
   if (encoder_name_ == CameraH264::ENCODER_TYPE) {
     camera_vector_.emplace_back(
         std::make_unique<CameraH264>(driveworksApiWrapper_.get(), config, interface, link, &nh_));
+  } else if (encoder_name_ == CameraH265::ENCODER_TYPE) {
+    camera_vector_.emplace_back(
+        std::make_unique<CameraH265>(driveworksApiWrapper_.get(), config, interface, link, &nh_));
   } else if (encoder_name_ == CameraJpg::ENCODER_TYPE) {
     camera_vector_.emplace_back(
         std::make_unique<CameraJpg>(driveworksApiWrapper_.get(), config, interface, link, &nh_));
+  } else if (encoder_name_ == CameraVp9::ENCODER_TYPE) {
+    camera_vector_.emplace_back(
+        std::make_unique<CameraVp9>(driveworksApiWrapper_.get(), config, interface, link, &nh_));
   }
   ROS_INFO_STREAM(camera_vector_.size() << " cameras created.");
 }
