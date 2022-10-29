@@ -104,6 +104,5 @@ void CameraBase::preprocess()
 
   if (transformation_needed_) {
     imageTransformer_->transform_image(&imgOutOfCamera_, &imgTransformed_);
-    return;
   }
 }
