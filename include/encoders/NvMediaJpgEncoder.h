@@ -59,8 +59,8 @@ public:
   [[nodiscard]] uint32_t get_num_bytes_available() const;
 
 private:
-  /** 1 image buffer. */
-  static constexpr int BUFFER_SIZE = 3 * 1290 * 1208;
+  /** 4 MiB buffer. */
+  static constexpr int BUFFER_SIZE = 4194304;
 
   DriveworksApiWrapper* driveworksApiWrapper_;
 
