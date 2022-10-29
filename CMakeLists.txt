@@ -46,7 +46,6 @@ add_executable(
   src/cameras/CameraH265.cpp
   src/cameras/CameraJpg.cpp
   src/cameras/CameraVp9.cpp
-  src/cameras/CameraVp9.cpp
   src/encoders/NvMediaH264Encoder.cpp
   src/encoders/NvMediaH265Encoder.cpp
   src/encoders/NvMediaJpgEncoder.cpp

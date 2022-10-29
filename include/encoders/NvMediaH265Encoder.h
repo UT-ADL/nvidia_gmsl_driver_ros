@@ -11,6 +11,11 @@
 #include "exceptions/NvidiaGmslDriverRosFatalException.h"
 #include "framework/Checks.hpp"
 
+/**
+ * @brief Wrapper around NVIDIA Media Interface: NvMedia Image Encode Processing API for H265.
+ * @see
+ * https://docs.nvidia.com/drive/drive-os-5.2.0.0L/drive-os/DRIVE_OS_Linux_SDK_Development_Guide/baggage/nvmedia__iep_8h.html
+ */
 class NvMediaH265Encoder
 {
 public:

@@ -133,9 +133,10 @@ void NvMediaH264Encoder::pull_bits()
     case NVMEDIA_STATUS_PENDING:
       return;
     default:
-      throw NvidiaGmslDriverRosFatalException(
-          "Error while pulling data from h264 encoder. Error ID: " + std::to_string(nvMediaStatus_) + ", " +
-          NVMEDIA_ERROR_TO_STRING.at(nvMediaStatus_) + ".");
+      std::string msg = "Error while pulling data from h264 encoder. Error ID: " + std::to_string(nvMediaStatus_) +
+                        ", " + NVMEDIA_ERROR_TO_STRING.at(nvMediaStatus_) + ".";
+      ROS_FATAL_STREAM(msg);
+      throw NvidiaGmslDriverRosFatalException(msg);
   }
 }
 
