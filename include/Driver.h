@@ -3,32 +3,35 @@
 
 #pragma once
 
-#include <yaml-cpp/yaml.h>
+#include <DriveworksApiWrapper.h>
 #include <dw/sensors/Sensors.h>
 #include <ros/package.h>
 #include <ros/ros.h>
+#include <yaml-cpp/yaml.h>
 
 #include "cameras/CameraH264.h"
 #include "cameras/CameraJpg.h"
-#include <DriveworksApiWrapper.h>
-#include "thread_pool.hpp"
-
 #include "exceptions/NvidiaGmslDriverRosFatalException.h"
 #include "exceptions/NvidiaGmslDriverRosMinorException.h"
+#include "framework/thread_pool.hpp"
 
-static constexpr size_t MAX_TRIALS_ = 100;
+static constexpr size_t MAX_TRIALS = 100;
 
+/**
+ * @brief Main class of the driver. Creates and runs camera pipelines, handles exception.
+ */
 class Driver
 {
 public:
   /**
-   * Constructor
+   * Constructor.
    * @param nodehandle
    */
   explicit Driver(const ros::NodeHandle* nodehandle);
 
   /**
-   * @brief Initializes all parameters and config, handles exception.
+   * @brief Loads camera definition from config and parameters then calls create_camera(). Handles exceptions.
+   * @throws NvidiaGmslDriverRosFatalException
    */
   void setup_cameras();
 
@@ -49,7 +52,7 @@ public:
 
 private:
   bool all_cameras_valid_;
-  std::unique_ptr<thread_pool> pool_;
+  std::unique_ptr<BS::thread_pool> pool_;
   std::vector<std::future<bool>> future_pool_;
   size_t trials_ = 0;
   ros::NodeHandle nh_;
@@ -57,6 +60,6 @@ private:
   std::string config_file_path_;
   YAML::Node config_;
   std::unique_ptr<DriveworksApiWrapper> driveworksApiWrapper_;
-  size_t camera_count = 0;
+  size_t camera_count_ = 0;
   std::vector<std::unique_ptr<CameraBase>> camera_vector_;
 };

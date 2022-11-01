@@ -1,26 +1,27 @@
 <?xml version="1.0"?>
 <package>
     <name>nvidia_gmsl_driver_ros</name>
-    <version>0.0.0</version>
+    <version>1.2.0</version>
     <description>GMSL Driver for Nvidia Platform</description>
 
-    <maintainer email="maxandre.ogeret@ut.ee">Maxandre Ogeret</maintainer>
+    <maintainer email="adl@ut.ee">University of Tartu Autonomous Driving Lab</maintainer>
+    <author email="maxandre.ogeret@mogrobotics.com">Maxandre Ogeret</author>
     <license>MIT</license>
 
     <buildtool_depend>catkin</buildtool_depend>
-    <build_depend>roscpp</build_depend>
-    <build_depend>std_msgs</build_depend>
-    <build_depend>sensor_msgs</build_depend>
-    <build_depend>image_transport</build_depend>
-    <build_depend>camera_info_manager</build_depend>
-    <build_depend>h264_image_transport_msgs</build_depend>
 
-    <run_depend>sensor_msgs</run_depend>
-    <run_depend>roscpp</run_depend>
-    <run_depend>std_msgs</run_depend>
-    <run_depend>image_transport</run_depend>
+    <build_depend>camera_info_manager</build_depend>
+    <build_depend>image_transport</build_depend>
+    <build_depend>roscpp</build_depend>
+    <build_depend>sensor_msgs</build_depend>
+    <build_depend>std_msgs</build_depend>
+
     <run_depend>camera_info_manager</run_depend>
+    <run_depend>image_transport</run_depend>
     <run_depend>message_runtime</run_depend>
+    <run_depend>roscpp</run_depend>
+    <run_depend>sensor_msgs</run_depend>
+    <run_depend>std_msgs</run_depend>
 
     <export></export>
 </package>

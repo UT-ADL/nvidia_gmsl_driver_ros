@@ -3,52 +3,54 @@
 
 #pragma once
 
+#include <sensor_msgs/CompressedImage.h>
+
 #include <memory>
 
-#include "encoders/DriveWorksH264Serializer.h"
 #include "cameras/CameraBase.h"
+#include "encoders/NvMediaH264Encoder.h"
 
-#include <dw/sensors/SensorSerializer.h>
-
+/**
+ * @brief Camera publishing H264 frames.
+ */
 class CameraH264 : public CameraBase
 {
 public:
   /**
    * @brief Constructor, initializes encoder and h264 image publisher.
-   * @throws NvidiaGmslDriverRosFatalException
-   * @param driveworksApiWrapper
-   * @param config
-   * @param interface
-   * @param link
-   * @param nodehandle
    */
   CameraH264(DriveworksApiWrapper* driveworksApiWrapper, const YAML::Node& config, std::string interface,
              std::string link, ros::NodeHandle* nodehandle);
 
   /**
-   * @brief Calls poll, encode. Doesn't call publish as it is part of the encoder's callback.
+   * @brief Default constructor.
    */
-  void run_pipeline() override;
-
-  /**
-   * @brief Polls camera for frame, extracts image and timestamp.
-   * @throws NvidiaGmslDriverRosFatalException
-   * @throws NvidiaGmslDriverRosMinorException
-   */
-  void poll() override;
+  ~CameraH264() override = default;
 
   /**
    * @brief Pushes polled data to the encoder. The encoder will then call it's own callback.
+   * @attention Prerequisite : preprocess()
    * @throws NvidiaGmslDriverRosFatalException
    */
   void encode() override;
 
-  inline static const std::string ENCODER_TYPE_ = "h264";
+  /**
+   * @brief Publishes compressed images and camera info to ROS.
+   * @attention Prerequisite : encode()
+   */
+  void publish() override;
+
+  inline static const std::string ENCODER_TYPE = "h264";
 
 private:
-  ros::Publisher pub_h264_;
-  std::unique_ptr<DriveWorksH264Serializer> encoder_;
+  constexpr static int DEFAULT_BITRATE = 8000000;
 
+  // params
   int bitrate_;
-  serializer_user_data_t_ serializerUserData_{};
+
+  ros::Publisher pub_compressed_;
+  std_msgs::Header header_;
+  sensor_msgs::CompressedImage packet_;
+
+  std::unique_ptr<NvMediaH264Encoder> encoder_;
 };

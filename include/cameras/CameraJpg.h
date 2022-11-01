@@ -3,16 +3,19 @@
 
 #pragma once
 
-#include "cameras/CameraBase.h"
-
-#include <memory>
 #include <sensor_msgs/CompressedImage.h>
 #include <std_msgs/Header.h>
+
 #include <condition_variable>
+#include <memory>
 
 #include "DriveworksApiWrapper.h"
+#include "cameras/CameraBase.h"
 #include "encoders/NvMediaJpgEncoder.h"
 
+/**
+ * @brief Camera publishing jpg images.
+ */
 class CameraJpg : public CameraBase
 {
 public:
@@ -29,16 +32,9 @@ public:
             std::string link, ros::NodeHandle* nodehandle);
 
   /**
-   * @brief Calls poll, encode, publish
+   * @brief Default constructor.
    */
-  void run_pipeline() override;
-
-  /**
-   * @brief Polls camera for frame, extracts image, timestamp and nvmedia image.
-   * @throws NvidiaGmslDriverRosFatalException
-   * @throws NvidiaGmslDriverRosMinorException
-   */
-  void poll() override;
+  ~CameraJpg() override = default;
 
   /**
    * @brief Pushes polled data to the encoder and pulls jpg bytes.
@@ -48,21 +44,15 @@ public:
 
   /**
    * @brief Publishes compressed images and camera info to ROS.
+   * @attention Prerequisite : encode()
    */
-  void publish();
+  void publish() override;
 
-  inline static const std::string ENCODER_TYPE_ = "jpg";
+  inline static const std::string ENCODER_TYPE = "jpg";
 
 private:
   std::unique_ptr<NvMediaJpgEncoder> encoder_;
   ros::Publisher pub_compressed_;
   std_msgs::Header header_;
   sensor_msgs::CompressedImage img_msg_compressed_;
-
-  dwImageProperties imageProperties_;
-  dwCameraProperties cameraProperties_;
-  dwImageNvMedia* image_nvmedia_;
-
-  NvMediaSurfFormatAttr attrs_[7];
-  NvMediaSurfaceType surfaceType_;
 };

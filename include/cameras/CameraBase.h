@@ -4,17 +4,19 @@
 #pragma once
 
 #include <camera_info_manager/camera_info_manager.h>
-#include <ros/package.h>
-
-#include <yaml-cpp/yaml.h>
-#include <chrono>
-#include <thread>
-#include <memory>
-
 #include <dw/sensors/camera/Camera.h>
+#include <ros/package.h>
+#include <sensor_msgs/CompressedImage.h>
+#include <yaml-cpp/yaml.h>
+
+#include <chrono>
+#include <memory>
+#include <thread>
 
 #include "DriveworksApiWrapper.h"
+#include "cameras/CameraCommon.h"
 #include "framework/Checks.hpp"
+#include "processors/ImageTransformer.h"
 
 /**
  * @brief Base class for cameras.
@@ -23,13 +25,8 @@ class CameraBase
 {
 public:
   /**
-   * @brief Constructor, initializes the camera handles and ros variables.
-   * @throws NvidiaGmslDriverRosFatalException
-   * @param driveworksApiWrapper
-   * @param config
-   * @param interface
-   * @param link
-   * @param nodehandle
+   * @brief Constructor, initializes ROS parameters, camera handles and properties, camera calibration, image
+   * transformer.
    */
   CameraBase(DriveworksApiWrapper* driveworksApiWrapper, const YAML::Node& config, std::string interface,
              std::string link, ros::NodeHandle* nodehandle);
@@ -46,35 +43,51 @@ public:
   void start();
 
   /**
-   * @brief Has to be overridden. Executes once all the steps that the camera implements.
+   * @brief Executes once all the steps that the camera implements.
    */
-  virtual void run_pipeline() = 0;
+  void run_pipeline();
 
   /**
-   * @brief Has to be overridden. Polls camera for a frame + eventually extra processing.
+   * @brief Polls the camera until the buffer is empty. ensuring the frame is the most recent one.
+   * @throws NvidiaGmslDriverRosMinorException
    */
-  virtual void poll() = 0;
+  void poll();
 
   /**
-   * @brief Has to be overridden. Pushes and pulls polled data to the encoder.
+   * @brief Run any required preprocessing on the polled image. E.g. Image Transformer.
+   * @attention Prerequisite : poll()
+   */
+  void preprocess();
+
+  /**
+   * @brief Has to be overridden. Pushes the polled data (preprocessed or not) to the encoder, then fetches the data.
+   * @attention Prerequisite : preprocess()
    */
   virtual void encode() = 0;
 
   /**
-   * @brief Polls the camera until the buffer is empty. ensuring the frame is the most recent one.
+   * @brief Has to be overridden. Publishes to ROS the data pulled in the encode() function.
+   * @attention Prerequisite : encode()
    */
-  bool get_last_frame();
+  virtual void publish() = 0;
 
 protected:
+  bool transformation_needed_ = false;
   int framerate_;
+  int width_;
+  int height_;
   DriveworksApiWrapper* driveworksApiWrapper_;
+  std::unique_ptr<ImageTransformer> imageTransformer_;
 
   dwSensorHandle_t sensorHandle_ = DW_NULL_HANDLE;
   dwCameraFrameHandle_t cameraFrameHandle_;
-  dwImageHandle_t imageHandleOriginal_;
   dwSensorParams sensorParams_;
   dwStatus status_;
   dwTime_t timestamp_;
+  dwImageProperties cameraImgProps_;
+  dwCameraProperties cameraProperties_;
+  dwImageHandle_t imgOutOfCamera_ = DW_NULL_HANDLE;
+  dwImageHandle_t imgTransformed_ = DW_NULL_HANDLE;
 
   ros::NodeHandle nh_;
   ros::Publisher pub_info_;

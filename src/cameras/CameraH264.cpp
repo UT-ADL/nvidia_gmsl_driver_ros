@@ -7,42 +7,35 @@ CameraH264::CameraH264(DriveworksApiWrapper* driveworksApiWrapper, const YAML::N
                        std::string link, ros::NodeHandle* nodehandle)
   : CameraBase(driveworksApiWrapper, config, interface, link, nodehandle)
 {
-  serializerUserData_.h264_publisher = &pub_h264_;
-  serializerUserData_.info_publisher = &pub_info_;
-  serializerUserData_.timestamp = &timestamp_;
-  serializerUserData_.frame_id = &frame_;
-  serializerUserData_.camera_info = &camera_info_;
-
-  nh_.param<int>("h264_bitrate", bitrate_, 8000000);
+  nh_.param<int>("bitrate", bitrate_, DEFAULT_BITRATE);
   ROS_INFO_STREAM("H264 Bitrate: " << bitrate_);
 
-  // ROS
-  pub_h264_ =
-      nh_.advertise<h264_image_transport_msgs::H264Packet>(config_["topic"].as<std::string>() + "/image/h264", 1);
+  pub_compressed_ =
+      nh_.advertise<sensor_msgs::CompressedImage>(config_["topic"].as<std::string>() + "/image/" + ENCODER_TYPE, 1);
 
-  // Encoder
-  encoder_ = std::make_unique<DriveWorksH264Serializer>(&sensorHandle_, framerate_, &serializerUserData_, bitrate_);
-}
-
-void CameraH264::run_pipeline()
-{
-  poll();
-  encode();
-}
-
-void CameraH264::poll()
-{
-  if (!get_last_frame()) {
-    throw NvidiaGmslDriverRosMinorException("Unable to get frame");
-  }
-
-  CHECK_DW_ERROR_ROS(
-      dwSensorCamera_getImage(&imageHandleOriginal_, DW_CAMERA_OUTPUT_NATIVE_PROCESSED, cameraFrameHandle_))
-  CHECK_DW_ERROR_ROS(dwImage_getTimestamp(&timestamp_, imageHandleOriginal_))
+  encoder_ = std::make_unique<NvMediaH264Encoder>(driveworksApiWrapper_, width_, height_, framerate_, bitrate_);
 }
 
 void CameraH264::encode()
 {
-  encoder_->feed_frame(cameraFrameHandle_);
-  CHECK_DW_ERROR_ROS(dwSensorCamera_returnFrame(&cameraFrameHandle_))
+  encoder_->feed_frame(transformation_needed_ ? &imgTransformed_ : &imgOutOfCamera_);
+
+  if (!encoder_->bits_available()) {
+    return;
+  }
+  encoder_->pull_bits();
+}
+
+void CameraH264::publish()
+{
+  header_.stamp = ros::Time(static_cast<double>(timestamp_) * 10e-7);
+  header_.frame_id = frame_;
+
+  packet_.data.assign(encoder_->get_buffer(), encoder_->get_buffer() + encoder_->get_num_bytes_available());
+  packet_.header = header_;
+  packet_.format = ENCODER_TYPE;
+  pub_compressed_.publish(packet_);
+
+  camera_info_.header = header_;
+  pub_info_.publish(camera_info_);
 }

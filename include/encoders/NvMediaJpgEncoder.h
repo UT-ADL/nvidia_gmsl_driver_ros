@@ -3,59 +3,78 @@
 
 #pragma once
 
+#include <dw/image/Image.h>
 #include <nvmedia_ijpe.h>
+
 #include <memory>
 
+#include "DriveworksApiWrapper.h"
+#include "cameras/CameraCommon.h"
 #include "framework/Checks.hpp"
-#include <dw/image/Image.h>
 
-static constexpr uint32_t MAX_JPG_BYTES = 3 * 1290 * 1208;
-
+/**
+ * @brief Wrapper around NVIDIA Media Interface: Image JPEG Encode Processing API.
+ * @see
+ * https://docs.nvidia.com/drive/drive-os-5.2.0.0L/drive-os/DRIVE_OS_Linux_SDK_Development_Guide/baggage/nvmedia__ijpe_8h.html
+ */
 class NvMediaJpgEncoder
 {
 public:
   /**
-   * @brief Constructor
+   * @brief Constructor.
+   * @throws NvidiaGmslDriverRosFatalException
    */
-  NvMediaJpgEncoder(const NvMediaSurfaceType* surfaceType);
+  NvMediaJpgEncoder(DriveworksApiWrapper* driveworksApiWrapper, int width, int height);
 
   /**
-   * @brief Destructor
+   * @brief Destructor.
    */
   virtual ~NvMediaJpgEncoder();
 
   /**
-   * @brief Feeds a frame into the encoder
+   * @brief Feeds a frame into the encoder.
    */
-  void feed_frame(dwImageNvMedia* inNvMediaImage) const;
+  void feed_frame(const dwImageHandle_t* input);
 
   /**
-   * @brief Returns true if encoded bits are available in the encoder memory, otherwise waits. Has to be called after
-   * feed_frame
+   * @brief Polls the encoder and waits for encoded bits availability. Has no timeout.
+   * @attention Prerequisite : feed_frame()
+   * @throws NvidiaGmslDriverRosFatalException
    */
-  bool wait_for_bits();
+  bool bits_available();
 
   /**
-   * @brief Pull the bits from the encoder memory to the local image. Must be called after wait_for_bits
+   * @brief Returns a ptr to the image bits pulled from the encoder.
    */
   void pull_bits();
 
   /**
-   * @brief Returns a ptr to the image bits pulled from the encoder
+   * @brief Returns a ptr to the image bits pulled from the encoder.
    */
-  uint8_t* get_image();
+  [[nodiscard]] uint8_t* get_buffer();
 
   /**
-   * @brief Returns the size in bytes of the current image.
+   * @brief Returns the size in bytes of the data stored in the buffer.
    */
-  [[nodiscard]] uint32_t get_count_bytes() const;
+  [[nodiscard]] uint32_t get_num_bytes_available() const;
 
 private:
+  /** 4 MiB buffer. */
+  static constexpr int BUFFER_SIZE = 4194304;
+
+  DriveworksApiWrapper* driveworksApiWrapper_;
+
   NvMediaDevice* nvmediaDevice_ = nullptr;
   NvMediaIJPE* nvMediaIjpe_ = nullptr;
-  NvMediaSurfaceType surfaceType_;
+  NvMediaSurfaceType surfaceType_ = camera_common::get_yuv420_pitch_img_surface();
   NvMediaStatus nvMediaStatus_;
 
-  uint32_t countByteJpeg_;
-  std::unique_ptr<uint8_t[]> jpegImage_;
+  dwImageHandle_t imgYuv420Pi_ = DW_NULL_HANDLE;
+  dwImageNvMedia* image_nvmedia_ = nullptr;
+
+  uint32_t numBytesAvailable_;
+  std::array<uint8_t, BUFFER_SIZE> buffer_;
+
+  int width_;
+  int height_;
 };

@@ -1,35 +1,29 @@
 // Created by Maxandre Ogeret.
 // (c) 2022 University of Tartu - Autonomous Driving Lab.
 
-#include "Driver.h"
-#include "log.hpp"
 #include <dw/core/VersionCurrent.h>
 #include <ros/ros.h>
 
+#include "Driver.h"
+#include "framework/log.hpp"
+
 int main(int argc, char** argv)
 {
-  if (!(DW_VERSION.major == 3 && DW_VERSION.minor == 5)) {
-    ROS_FATAL("This driver requires Driveworks 3.5 !");
-    return 1;
-  }
-
-  std::vector<std::string> args_out;
-  ros::removeROSArgs(argc, argv, args_out);
-  for (auto const& arg : args_out) {
-    ROS_DEBUG_STREAM(arg);
-    if (arg == "--verbose") {
-      // initialize loggers
-      ros::console::set_logger_level(ROSCONSOLE_DEFAULT_NAME, ros::console::levels::Debug);
-      dwLogger_initialize(rosLogWrapper());
-      dwLogger_setLogLevel(DW_LOG_VERBOSE);
-    }
-  }
+  static_assert(DW_VERSION.major == 3 && DW_VERSION.minor == 5);
 
   ros::init(argc, argv, "nvidia_gmsl_driver_ros");
   ros::NodeHandle nh("~");
 
-  double framerate = 0;
-  nh.param<double>("framerate", framerate, 30);
+  if (nh.param<bool>("verbose", false)) {
+    ROS_INFO_STREAM("Running in verbose mode.");
+    // initialize loggers
+    ros::console::set_logger_level(ROSCONSOLE_DEFAULT_NAME, ros::console::levels::Debug);
+    ros::console::notifyLoggerLevelsChanged();
+    dwLogger_initialize(ros_log_wrapper());
+    dwLogger_setLogLevel(DW_LOG_VERBOSE);
+  }
+
+  double framerate = nh.param<double>("framerate", 30);
 
   ros::Rate rate(std::min(framerate, 30.0));
   std::unique_ptr<Driver> driver;
@@ -37,8 +31,7 @@ int main(int argc, char** argv)
 
   try {
     driver->setup_cameras();
-  }
-  catch (NvidiaGmslDriverRosFatalException const& e) {
+  } catch (NvidiaGmslDriverRosFatalException const& e) {
     ROS_FATAL_STREAM(e.what());
     ros::shutdown();
     return 1;
@@ -47,15 +40,13 @@ int main(int argc, char** argv)
   while (ros::ok()) {
     try {
       driver->run();
-    }
-    catch (NvidiaGmslDriverRosFatalException const& e) {
+    } catch (NvidiaGmslDriverRosFatalException const& e) {
       ROS_FATAL_STREAM(e.what());
       ros::shutdown();
       return 1;
     }
 
     ROS_INFO_ONCE("Driver started !");
-    ros::spinOnce();
     rate.sleep();
   }
   return 0;
