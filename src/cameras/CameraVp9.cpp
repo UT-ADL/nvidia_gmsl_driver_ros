@@ -28,7 +28,7 @@ void CameraVp9::encode()
 
 void CameraVp9::publish()
 {
-  header_.stamp = ros::Time(static_cast<double>(timestamp_) * 10e-7);
+  header_.stamp = ros::Time().fromNSec(timestamp_ * 1e3);
   header_.frame_id = frame_;
 
   packet_.data.assign(encoder_->get_buffer(), encoder_->get_buffer() + encoder_->get_num_bytes_available());

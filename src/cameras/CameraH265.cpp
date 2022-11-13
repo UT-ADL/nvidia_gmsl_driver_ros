@@ -30,7 +30,7 @@ void CameraH265::encode()
 
 void CameraH265::publish()
 {
-  header_.stamp = ros::Time(static_cast<double>(timestamp_) * 10e-7);
+  header_.stamp = ros::Time().fromNSec(timestamp_ * 1e3);
   header_.frame_id = frame_;
 
   packet_.data.assign(encoder_->get_buffer(), encoder_->get_buffer() + encoder_->get_num_bytes_available());

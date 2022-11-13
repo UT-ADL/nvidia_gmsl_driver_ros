@@ -22,8 +22,9 @@ void CameraJpg::encode()
 
 void CameraJpg::publish()
 {
-  header_.stamp = ros::Time(static_cast<double>(timestamp_) * 10e-7);
+  header_.stamp = ros::Time().fromNSec(timestamp_ * 1e3);
   header_.frame_id = frame_;
+
   img_msg_compressed_.data.assign(encoder_->get_buffer(), encoder_->get_buffer() + encoder_->get_num_bytes_available());
   img_msg_compressed_.header = header_;
   img_msg_compressed_.format = ENCODER_TYPE;
