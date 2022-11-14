@@ -3,8 +3,8 @@
     <arg name="calib_dir_path" default="$(dirname)/../calib/" doc="Path to calib dir with trailing slash."/>
     <arg name="framerate" default="30" doc="Camera publishing rate."/>
     <arg name="verbose" default="false" doc="{true, false}"/>
-    <arg name="encoder" default="jpg" doc="{jpg, h264}"/>
-    <arg name="bitrate" default="8000000" doc="Output bitrate."/>
+    <arg name="encoder" default="jpg" doc="{h264, h265, jpg, vp9}"/>
+    <arg name="bitrate" default="8000000" doc="Output bitrate, only for h264, h265, vp9."/>
     <arg name="output_width" default="1920" doc="Desired output width."/>
     <arg name="output_height" default="1208" doc="Desired output height."/>
 

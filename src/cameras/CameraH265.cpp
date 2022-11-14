@@ -1,22 +1,24 @@
 // Created by Maxandre Ogeret.
 // (c) 2022 University of Tartu - Autonomous Driving Lab.
 
-#include "cameras/CameraH264.h"
+#include "cameras/CameraH265.h"
 
-CameraH264::CameraH264(DriveworksApiWrapper* driveworksApiWrapper, const YAML::Node& config, std::string interface,
+CameraH265::CameraH265(DriveworksApiWrapper* driveworksApiWrapper, const YAML::Node& config, std::string interface,
                        std::string link, ros::NodeHandle* nodehandle)
   : CameraBase(driveworksApiWrapper, config, interface, link, nodehandle)
 {
   nh_.param<int>("bitrate", bitrate_, DEFAULT_BITRATE);
-  ROS_INFO_STREAM("H264 Bitrate: " << bitrate_);
+  ROS_INFO_STREAM("H265 Bitrate: " << bitrate_);
 
   pub_compressed_ =
       nh_.advertise<sensor_msgs::CompressedImage>(config_["topic"].as<std::string>() + "/image/" + ENCODER_TYPE, 1);
 
-  encoder_ = std::make_unique<NvMediaH264Encoder>(driveworksApiWrapper_, width_, height_, framerate_, bitrate_);
+  encoder_ = std::make_unique<NvMediaH265Encoder>(driveworksApiWrapper_, width_, height_, framerate_, bitrate_);
 }
 
-void CameraH264::encode()
+CameraH265::~CameraH265() {}
+
+void CameraH265::encode()
 {
   encoder_->feed_frame(transformation_needed_ ? &imgTransformed_ : &imgOutOfCamera_);
 
@@ -26,7 +28,7 @@ void CameraH264::encode()
   encoder_->pull_bits();
 }
 
-void CameraH264::publish()
+void CameraH265::publish()
 {
   header_.stamp = ros::Time().fromNSec(timestamp_ * 1e3);
   header_.frame_id = frame_;

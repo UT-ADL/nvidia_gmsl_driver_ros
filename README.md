@@ -23,7 +23,7 @@
 - Ubuntu 18.04.
 - Nvidia GPU drivers:
   ```bash
-  sudo apt install nvidia-drivers-470
+  sudo apt install nvidia-driver-470
   ```
 - NVIDIA DRIVE™ OS 5.2.0 and DriveWorks 3.5 (Linux):
     - Follow the download [page](https://developer.nvidia.com/drive/downloads) to install NVIDIA DRIVE™ OS 5.2.0 and
@@ -209,16 +209,16 @@ roslaunch nvidia_gmsl_driver_ros nvidia_gmsl_driver_ros.launch
 
 ##### Launchfile parameters
 
-| Parameter        |                           Default |                                                       Comment |
-|------------------|----------------------------------:|--------------------------------------------------------------:|
-| `config_path`    | `$(dirname)/../config/ports.yaml` |                                      Path to the config file. |
-| `calib_dir_path` |            `$(dirname)/../calib/` |                          Path to the camera calibration file. |
-| `framerate`      |                              `30` |                                             Output framerate. |
-| `verbose`        |                           `False` |                                       Enables verbose output. | 
-| `encoder`        |                             `jpg` |                                    Encoder. (`jpg` or `h264`) | 
-| `bitrate`        |                         `8000000` | Output bitrate (Minimum `30000`).<br>Only for `encoder=h264`. | 
-| `output_width`   |                            `1920` |                                                 Output width. | 
-| `output_height`  |                            `1208` |                                                Output height. | 
+| Parameter        |                           Default |                                                                             Comment |
+|------------------|----------------------------------:|------------------------------------------------------------------------------------:|
+| `config_path`    | `$(dirname)/../config/ports.yaml` |                                                            Path to the config file. |
+| `calib_dir_path` |            `$(dirname)/../calib/` |                                           Path to the camera calibration directory. |
+| `framerate`      |                              `30` |                                                                   Output framerate. |
+| `verbose`        |                           `False` |                                                             Enables verbose output. | 
+| `encoder`        |                             `jpg` |                       Encoder. <br/>Possible values: {`jpg`, `h264`, `h265`, `vp9`} | 
+| `bitrate`        |                         `8000000` | Output bitrate (Minimum `30000`).<br>Only for `encoder` in {`h264`, `h265`, `vp9`}. | 
+| `output_width`   |                            `1920` |                                                                       Output width. | 
+| `output_height`  |                            `1208` |                                                                      Output height. | 
 
 ### Useful links
 
