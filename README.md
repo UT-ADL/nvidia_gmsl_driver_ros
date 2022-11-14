@@ -23,7 +23,7 @@
 - Ubuntu 18.04.
 - Nvidia GPU drivers:
   ```bash
-  sudo apt install nvidia-drivers-470
+  sudo apt install nvidia-driver-470
   ```
 - NVIDIA DRIVE™ OS 5.2.0 and DriveWorks 3.5 (Linux):
     - Follow the download [page](https://developer.nvidia.com/drive/downloads) to install NVIDIA DRIVE™ OS 5.2.0 and
