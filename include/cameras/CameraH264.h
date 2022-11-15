@@ -4,6 +4,7 @@
 #pragma once
 
 #include <sensor_msgs/CompressedImage.h>
+#include <nvmedia_common_encode.h>
 
 #include <memory>
 
@@ -44,9 +45,13 @@ public:
 
 private:
   constexpr static int DEFAULT_BITRATE = 8000000;
+  constexpr static NvMediaEncodeProfile DEFAULT_PROFILE = NVMEDIA_ENCODE_PROFILE_AUTOSELECT;
+  constexpr static NvMediaEncodeLevel DEFAULT_LEVEL = NVMEDIA_ENCODE_LEVEL_AUTOSELECT;
 
   // params
   int bitrate_;
+  NvMediaEncodeProfile profile_;
+  NvMediaEncodeLevel level_;
 
   ros::Publisher pub_compressed_;
   std_msgs::Header header_;
