@@ -4,7 +4,6 @@
 #pragma once
 
 #include <sensor_msgs/CompressedImage.h>
-#include <nvmedia_common_encode.h>
 
 #include <memory>
 

@@ -10,8 +10,8 @@ CameraH264::CameraH264(DriveworksApiWrapper* driveworksApiWrapper, const YAML::N
   int profile;
   int level;
   nh_.param<int>("bitrate", bitrate_, DEFAULT_BITRATE);
-  nh_.param<int>("profile", profile, (int)(DEFAULT_PROFILE));
-  nh_.param<int>("level", level, (int)DEFAULT_LEVEL);
+  nh_.param<int>("profile", profile, static_cast<int>(DEFAULT_PROFILE));
+  nh_.param<int>("level", level, static_cast<int>(DEFAULT_LEVEL));
   profile_ = static_cast<NvMediaEncodeProfile>(profile);
   level_ = static_cast<NvMediaEncodeLevel>(level);
   ROS_INFO_STREAM("H264 Bitrate: " << bitrate_ << ", Profile: " << profile_ << ", Level: " << level_);

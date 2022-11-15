@@ -5,7 +5,6 @@
 
 #include <dw/image/Image.h>
 #include <nvmedia_iep.h>
-#include <nvmedia_common_encode.h>
 
 #include "DriveworksApiWrapper.h"
 #include "cameras/CameraCommon.h"
@@ -24,7 +23,8 @@ public:
    * @brief Constructor.
    * @throws NvidiaGmslDriverRosFatalException
    */
-  NvMediaH264Encoder(DriveworksApiWrapper* driveworksApiWrapper, int width, int height, int framerate, int bitrate, NvMediaEncodeProfile profile, NvMediaEncodeLevel level);
+  NvMediaH264Encoder(DriveworksApiWrapper* driveworksApiWrapper, int width, int height, int framerate, int bitrate,
+                     NvMediaEncodeProfile profile, NvMediaEncodeLevel level);
 
   /**
    * @brief Destructor.
