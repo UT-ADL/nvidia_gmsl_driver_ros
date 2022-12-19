@@ -1,18 +1,18 @@
 image_width: 1920
 image_height: 1208
 camera_name: interfacea_link2
-distortion_model: plumb_bob
+distortion_model: rational_polynomial
 camera_matrix:
   rows: 3
   cols: 3
-  data: [969.78186,   0.     , 958.64773,
-           0.     , 976.98311, 611.19286,
-           0.     ,   0.     ,   1.     ]
-camera_model: plumb_bob
+  data: [966.857490,   0.000000, 968.493016,
+           0.000000, 966.857490, 630.614303,
+           0.000000,   0.000000,   1.000000]
+camera_model: rational_polynomial
 distortion_coefficients:
   rows: 1
-  cols: 5
-  data: [-0.257498, 0.044477, 0.001824, -0.000257, 0.000000]
+  cols: 8
+  data: [1.261429, 0.283981, 0.000000, 0.000000, 0.005330, 1.646277, 0.652196, 0.044805]
 rectification_matrix:
   rows: 3
   cols: 3
@@ -22,6 +22,6 @@ rectification_matrix:
 projection_matrix:
   rows: 3
   cols: 4
-  data: [621.80701,   0.     , 955.09616,   0.     ,
-           0.     , 864.25366, 616.81531,   0.     ,
-           0.     ,   0.     ,   1.     ,   0.     ]
+  data: [578.062927,   0.000000, 979.497568, 0.000000,
+           0.000000, 815.361755, 640.728504, 0.000000,
+           0.000000,   0.000000,   1.000000, 0.000000]
