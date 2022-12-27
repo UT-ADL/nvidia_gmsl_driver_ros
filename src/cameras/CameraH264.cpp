@@ -7,13 +7,19 @@ CameraH264::CameraH264(DriveworksApiWrapper* driveworksApiWrapper, const YAML::N
                        std::string link, ros::NodeHandle* nodehandle)
   : CameraBase(driveworksApiWrapper, config, interface, link, nodehandle)
 {
+  int profile;
+  int level;
   nh_.param<int>("bitrate", bitrate_, DEFAULT_BITRATE);
-  ROS_INFO_STREAM("H264 Bitrate: " << bitrate_);
+  nh_.param<int>("profile", profile, static_cast<int>(DEFAULT_PROFILE));
+  nh_.param<int>("level", level, static_cast<int>(DEFAULT_LEVEL));
+  profile_ = static_cast<NvMediaEncodeProfile>(profile);
+  level_ = static_cast<NvMediaEncodeLevel>(level);
+  ROS_INFO_STREAM("H264 Bitrate: " << bitrate_ << ", Profile: " << profile_ << ", Level: " << level_);
 
   pub_compressed_ =
       nh_.advertise<sensor_msgs::CompressedImage>(config_["topic"].as<std::string>() + "/image/" + ENCODER_TYPE, 1);
 
-  encoder_ = std::make_unique<NvMediaH264Encoder>(driveworksApiWrapper_, width_, height_, framerate_, bitrate_);
+  encoder_ = std::make_unique<NvMediaH264Encoder>(driveworksApiWrapper_, width_, height_, framerate_, bitrate_, profile_, level_);
 }
 
 void CameraH264::encode()

@@ -4,12 +4,14 @@
 #include "encoders/NvMediaH264Encoder.h"
 
 NvMediaH264Encoder::NvMediaH264Encoder(DriveworksApiWrapper* driveworksApiWrapper, int width, int height, int framerate,
-                                       int bitrate)
+                                       int bitrate, NvMediaEncodeProfile profile, NvMediaEncodeLevel level)
   : driveworksApiWrapper_(driveworksApiWrapper)
   , width_(width)
   , height_(height)
   , framerate_(framerate)
   , bitrate_(bitrate)
+  , profile_(profile)
+  , level_(level)
 {
   NvMediaIEPGetVersion(&nvMediaVersion_);
   nvMediaDevice_ = NvMediaDeviceCreate();
@@ -51,8 +53,8 @@ void NvMediaH264Encoder::set_encode_init_params()
   encodeInitParams_.encodeHeight = static_cast<uint16_t>(height_);
   encodeInitParams_.frameRateNum = framerate_;
   encodeInitParams_.frameRateDen = 1;
-  encodeInitParams_.profile = 0;
-  encodeInitParams_.level = 0;
+  encodeInitParams_.profile = profile_;
+  encodeInitParams_.level = level_;
   encodeInitParams_.maxNumRefFrames = 2;
   encodeInitParams_.enableExternalMEHints = NVMEDIA_FALSE;
   encodeInitParams_.useBFramesAsRef = 0;
